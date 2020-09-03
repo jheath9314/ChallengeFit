@@ -12,6 +12,8 @@ using SWENG894.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using SWENG894.Utility;
 
 namespace SWENG894
 {
@@ -32,6 +34,8 @@ namespace SWENG894
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddTransient<IEmailSender, EmailSender>();
+            services.Configure<EmailOptions>(Configuration.GetSection("EmailOptions"));
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
