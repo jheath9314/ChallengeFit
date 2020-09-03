@@ -15,6 +15,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using SWENG894.Utility;
 using SWENG894.Data.Initializer;
+using SWENG894.Data.Repository.IRepository;
+using SWENG894.Data.Repository;
 
 namespace SWENG894
 {
@@ -37,6 +39,7 @@ namespace SWENG894
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders()
                 .AddDefaultUI();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<EmailOptions>(Configuration.GetSection("EmailOptions"));
             services.AddScoped<IDbInitializer, DbInitializer>();
