@@ -42,6 +42,22 @@ namespace SWENG894
             services.AddScoped<IDbInitializer, DbInitializer>();
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            services.AddAuthentication()
+                .AddGoogle(googOptions =>
+                {
+                    // https://console.developers.google.com/
+                    IConfigurationSection googleAuth = Configuration.GetSection("GoogleAuth");
+                    googOptions.ClientId = googleAuth["ClientId"];
+                    googOptions.ClientSecret = googleAuth["ClientSecret"];
+                });
+            //.AddFacebook(fbOptions =>
+            //{
+            //    // http://developers.facebook.com/
+            //    IConfigurationSection fbAuth = Configuration.GetSection("FaceBookAuth");
+            //    fbOptions.AppId = fbAuth["AppId"];
+            //    fbOptions.AppSecret = fbAuth["AppSecret"];
+            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
