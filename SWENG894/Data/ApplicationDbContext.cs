@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using SWENG894.Models;
 
 namespace SWENG894.Data
 {
@@ -11,6 +12,9 @@ namespace SWENG894.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+
         }
+
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
     }
 }
