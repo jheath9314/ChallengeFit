@@ -1,0 +1,55 @@
+﻿@model SWENG894.Models.ApplicationUser
+
+@if (Model.HasRequestFrom(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value))
+{
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">
+            You already sent a friend request to this person.
+        </h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <form asp-action="SendRequest">
+                <input type="hidden" asp-for="Id" />
+                <a class="btn btn-secondary mr-2" asp-action="Find">Back to List</a>
+            </form>
+        </div>
+    </div>
+}
+else
+{
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h1 class="h2">
+            Send a friend request to this person?
+        </h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <form asp-action="SendRequest">
+                <input type="hidden" asp-for="Id" />
+                <a class="btn btn-secondary mr-2" asp-action="Index">Back to List</a>
+                <input type="submit" class="btn btn-primary" value="Yes" />
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.FirstName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.FirstName)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.LastName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.LastName)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Email)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Email)
+            </dd>
+        </dl>
+    </div>
+}
+
