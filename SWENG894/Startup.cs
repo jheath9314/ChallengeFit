@@ -17,6 +17,7 @@ using SWENG894.Utility;
 using SWENG894.Data.Initializer;
 using SWENG894.Data.Repository.IRepository;
 using SWENG894.Data.Repository;
+using SWENG894.Hubs;
 
 namespace SWENG894
 {
@@ -61,6 +62,7 @@ namespace SWENG894
             //    fbOptions.AppId = fbAuth["AppId"];
             //    fbOptions.AppSecret = fbAuth["AppSecret"];
             //});
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -97,6 +99,7 @@ namespace SWENG894
                     pattern: "{Area=User}/{controller=Home}/{action=Index}/{id?}");
 
                 endpoints.MapRazorPages();
+                endpoints.MapHub<NotificationHub>("/notificationhub");
             });
         }
     }
