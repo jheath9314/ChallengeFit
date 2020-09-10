@@ -19,6 +19,7 @@ namespace SWENG894.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // FriendRequest setup
             modelBuilder.Entity<FriendRequest>()
                 .HasKey(t => new { t.RequestedById, t.RequestedForId });
 
@@ -32,9 +33,24 @@ namespace SWENG894.Data
                 .WithMany(b => b.ReceievedFriendRequests)
                 .HasForeignKey(c => c.RequestedForId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            // Messages setup
+            modelBuilder.Entity<Message>()
+                .HasOne(a => a.SentBy)
+                .WithMany(b => b.SentMessages)
+                .HasForeignKey(c => c.SentById)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Message>()
+                .HasOne(a => a.SentTo)
+                .WithMany(b => b.ReceievedMessages)
+                .HasForeignKey(c => c.SentToId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<FriendRequest> FriendRequests { get; set; }
+        public DbSet<Message> Messages { get; set; }
+
     }
 }
