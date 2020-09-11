@@ -24,6 +24,9 @@ namespace SWENG894.Models
         public string ZipCode { get; set; }
 
         [NotMapped]
+        public string FullName => FirstName + " " + LastName;
+
+        [NotMapped]
         public string Role { get; set; }
 
         // Friend requests

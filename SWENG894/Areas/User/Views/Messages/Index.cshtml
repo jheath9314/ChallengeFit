@@ -1,0 +1,54 @@
+﻿@model IEnumerable<SWENG894.Models.Message>
+
+<h4>Messages</h4>
+
+
+    
+    <div class="btn-group mb-2" role="group" aria-label="InOut Box">
+        <a type="button" class="btn btn-outline-secondary">Inbox</a>
+        <a type="button" class="btn btn-outline-secondary">Sent</a>
+    </div>
+    <a class="btn btn-primary float-right mb-2" asp-action="Create">Create New</a>
+    
+<table class="table">
+    <thead>
+        <tr>
+
+            <th>
+                @Html.DisplayNameFor(model => model.SentTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SentTo.FullName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Subject)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Body)
+            </th>
+            
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.SentTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SentTo.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SubjectPreview)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BodyPreview)
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id">View</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

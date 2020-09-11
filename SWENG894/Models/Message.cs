@@ -21,14 +21,20 @@ namespace SWENG894.Models
         [MaxLength(50, ErrorMessage = "Subject cannot exceed 50 characters.")]
         public string Subject { get; set; }
 
+        [NotMapped]
+        public string SubjectPreview => Subject.Length > 10 ? Subject.Substring(0, 10) + "..." : Subject + "...";
+
         [Required(ErrorMessage = "Message is required.")]
         [Display(Name = "Message")]
         [MaxLength(500, ErrorMessage = "Message cannot exceed 500 characters.")]
         public string Body { get; set; }
 
+        [NotMapped]
+        public string BodyPreview => Body.Length > 10 ? Body.Substring(0, 10) + "..." : Body + "...";
+
         [Required]
         [Display(Name = "Sent Time")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = = "{0:MM/dd/yyyy mm:hh}")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy mm:hh}")]
         [DataType(DataType.DateTime)]
         public DateTime SentTime { get; set; }
 
@@ -41,6 +47,10 @@ namespace SWENG894.Models
 
         [NotMapped]
         public bool MessageRead => ReadStatus == MessageReadStatud.Read;
+
+        public bool DeletedBySender { get; set; }
+
+        public bool DeletedByReceiver { get; set; }
 
         public enum MessageSendStatud
         {

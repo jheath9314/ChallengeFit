@@ -40,7 +40,7 @@
                 </td>
                 <td>
                     <a asp-action="SendChallenge" asp-route-id="@item.RequestedFor.Id">Send Challenge</a> | 
-                    <a asp-action="SendMessage" asp-route-id="@item.RequestedFor.Id">Send Message</a>
+                    <a asp-area="User" asp-controller="Messages" asp-action="Create" asp-route-id="@item.RequestedFor.Id">Send Message</a>
                 </td>
             </tr>
         }
