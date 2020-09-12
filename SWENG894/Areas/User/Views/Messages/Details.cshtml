@@ -1,60 +1,46 @@
 ﻿@model SWENG894.Models.Message
 
-@{
-    ViewData["Title"] = "Details";
-}
-
-<h1>Details</h1>
-
 <div>
     <h4>Message</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SentBy)
+        <dt class="col-sm-2">
+            From
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SentBy.Id)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SentBy.FullName)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SentTo)
+        <dt class="col-sm-2">
+            To
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SentTo.Id)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SentTo.FullName)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Subject)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Subject)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Body)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Body)
-        </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.SentTime)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.SentTime)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SendStatus)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Subject)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SendStatus)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Subject)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ReadStatus)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Body)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ReadStatus)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Body)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    @if (Model.SentById == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value)
+    {
+        <a asp-action="Create" asp-route-id="Model.SentToId" class="btn btn-default disabled">Reply</a> @("|")
+        <a asp-action="Index" asp-route-box="sent" class="btn btn-default">Back to List</a>
+    }
+
 </div>

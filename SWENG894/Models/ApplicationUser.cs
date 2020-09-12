@@ -2,6 +2,7 @@
 using SWENG894.Data;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -24,6 +25,7 @@ namespace SWENG894.Models
         public string ZipCode { get; set; }
 
         [NotMapped]
+        [Display(Name = "Name")]
         public string FullName => FirstName + " " + LastName;
 
         [NotMapped]

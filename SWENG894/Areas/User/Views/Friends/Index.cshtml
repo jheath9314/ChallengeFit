@@ -1,34 +1,29 @@
 ﻿@model SWENG894.Utility.PaginatedList<SWENG894.Models.FriendRequest>
 
-<h3>Friends List</h3>
+<h4>Friends List</h4>
 
 <form asp-action="Index" method="get">
-    <div class="form-row align-items-end">
-        <div class="col-auto">
-            <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Search" aria-label="Search" name="search" aria-describedby="button-find" value="@ViewBag.CurrentFilter">
-                <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="submit" id="button-find">Search</button>
-                </div>
-                <a class="btn btn-primary ml-2 float-right" id="button-find" asp-action="Find">Find More Friends!</a>
+    <div class="btn-group mb-2" role="group" aria-label="InOut Box">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Search" aria-label="Search" name="search" aria-describedby="button-find" value="@ViewBag.CurrentFilter">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="submit" id="button-find">Search</button>
             </div>
-            
+
         </div>
-        
     </div>
-    
+    <a class="btn btn-primary float-right" id="button-find" asp-action="Find">Find More Friends!</a>
 </form>
 
 <table class="table table-striped">
     <thead>
         <tr>
             <th>
-                First Name
+                <a asp-action="Index" asp-route-sort="@ViewBag.SortOrder" asp-route-filter="@ViewBag.CurrentFilter">Name</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sort="@ViewBag.SortOrder" asp-route-filter="@ViewBag.CurrentFilter">Last Name</a>
+                Options
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -36,14 +31,11 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.RequestedFor.FirstName)
+                    @Html.DisplayFor(modelItem => item.RequestedFor.FullName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.RequestedFor.LastName)
-                </td>
-                <td>
-                    <a asp-action="SendChallenge" asp-route-id="@item.RequestedFor.Id">Send Challenge</a> | 
-                    <a asp-area="User" asp-controller="Messages" asp-action="Create" asp-route-id="@item.RequestedFor.Id">Send Message</a>
+                    <a asp-action="SendChallenge" asp-route-id="@item.RequestedFor.Id"><i class="fas fa-dumbbell" tool-tip-toggle="tooltip" data-original-title="Send Challenge"></i></a> |
+                    <a asp-area="User" asp-controller="Messages" asp-action="Create" asp-route-id="@item.RequestedFor.Id"><i class="far fa-comment-dots" tool-tip-toggle="tooltip" data-original-title="Send Message"></i></a>
                 </td>
             </tr>
         }

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SWENG894.Data;
 using SWENG894.Models;
+using SWENG894.Utility;
 using SWENG894.ViewModels;
 
 namespace SWENG894.Areas.User.Controllers
@@ -25,10 +26,53 @@ namespace SWENG894.Areas.User.Controllers
         }
 
         // GET: User/Messages
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sort, string search, string filter, int? page, string box)
         {
-            var applicationDbContext = _context.Messages.Include(m => m.SentBy).Include(m => m.SentTo);
-            return View(await applicationDbContext.ToListAsync());
+            ViewData["CurrentSort"] = sort;
+            ViewData["SortOrder"] = String.IsNullOrEmpty(sort) ? "desc" : "";
+            ViewData["Box"] = String.IsNullOrEmpty(box) ? "inbox" : "sent";
+
+            if (search == null)
+            {
+                search = filter;
+            }
+            else
+            {
+                search = search.ToLower();
+            }
+
+            ViewData["CurrentFilter"] = search;
+
+            var messages = _context.Messages
+                .Include(m => m.SentBy)
+                .Include(m => m.SentTo)
+                .Where(m => (m.SentById == User.FindFirstValue(ClaimTypes.NameIdentifier) && !m.DeletedBySender) || 
+                            (m.SentToId == User.FindFirstValue(ClaimTypes.NameIdentifier) && !m.DeletedByReceiver));
+
+            if (!String.IsNullOrEmpty(search))
+            {
+                messages = messages.Where(m => m.Subject.ToLower().Contains(search) ||
+                    m.Body.ToLower().Contains(search));
+            }
+
+            if(!String.IsNullOrEmpty(box))
+            {
+                messages = messages.Where(m => m.SentById == User.FindFirstValue(ClaimTypes.NameIdentifier) && !m.DeletedBySender);
+            } else
+            {
+                messages = messages.Where(m => m.SentToId == User.FindFirstValue(ClaimTypes.NameIdentifier) && !m.DeletedByReceiver);
+            }
+
+            messages = sort switch
+            {
+                "desc" => messages.OrderByDescending(m => m.SentTime),
+                _ => messages.OrderBy(m => m.SentTime)
+            };
+
+            int pageSize = 3;
+            var personList = await PaginatedList<Message>.CreateAsync(messages, page ?? 1, pageSize);
+
+            return View(personList);
         }
 
         // GET: User/Messages/Details/5
@@ -55,14 +99,14 @@ namespace SWENG894.Areas.User.Controllers
         // GET: User/Messages/Create
         public IActionResult Create(string id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
             var receiver = _context.ApplicationUsers.FirstOrDefault(u => u.Id.Equals(id));
 
-            if(receiver == null)
+            if (receiver == null)
             {
                 return NotFound();
             }
@@ -119,7 +163,8 @@ namespace SWENG894.Areas.User.Controllers
             var message = await _context.Messages
                 .Include(m => m.SentBy)
                 .Include(m => m.SentTo)
-                .FirstOrDefaultAsync(m => m.Id == id && m.SentToId == User.FindFirstValue(ClaimTypes.NameIdentifier));
+                .FirstOrDefaultAsync(m => m.Id == id && (m.SentToId == User.FindFirstValue(ClaimTypes.NameIdentifier) || 
+                                                         m.SentById == User.FindFirstValue(ClaimTypes.NameIdentifier)));
             if (message == null)
             {
                 return NotFound();

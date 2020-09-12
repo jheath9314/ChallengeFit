@@ -2,53 +2,59 @@
 
 <h4>Messages</h4>
 
+<div class="btn-group mb-2" role="group" aria-label="InOut Box">
+    <a asp-action="Index" asp-route-box="" type="button" class="btn btn-outline-secondary">Inbox</a>
+    <a asp-action="Index" asp-route-box="sent" type="button" class="btn btn-outline-secondary">Sent</a>
+</div>
+<a class="btn btn-primary float-right mb-2" asp-action="Create">Create New</a>
 
-    
-    <div class="btn-group mb-2" role="group" aria-label="InOut Box">
-        <a type="button" class="btn btn-outline-secondary">Inbox</a>
-        <a type="button" class="btn btn-outline-secondary">Sent</a>
-    </div>
-    <a class="btn btn-primary float-right mb-2" asp-action="Create">Create New</a>
-    
 <table class="table">
     <thead>
         <tr>
-
-            <th>
-                @Html.DisplayNameFor(model => model.SentTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SentTo.FullName)
-            </th>
+            @if (ViewBag.Box == "sent")
+            {
+                <th>
+                    @Html.DisplayNameFor(model => model.SentTime)
+                </th>
+                <th>
+                    Sent To
+                </th>
+            }
+            else
+            {
+                <th>
+                    Received On
+                </th>
+                <th>
+                    From
+                </th>
+            }
             <th>
                 @Html.DisplayNameFor(model => model.Subject)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Body)
+                Options
             </th>
-            
-            <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.SentTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SentTo.FullName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SubjectPreview)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BodyPreview)
-            </td>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.Id">View</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SentTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SentTo.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SubjectPreview)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id"><i class="fab fa-readme" tool-tip-toggle="tooltip" data-original-title="View Message"></i></a> | 
+                    <a asp-action="Delete" asp-route-id="@item.Id"><i class="fas fa-trash-alt" tool-tip-toggle="tooltip" data-original-title="Delete Message"></i></a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

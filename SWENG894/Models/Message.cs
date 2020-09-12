@@ -22,7 +22,7 @@ namespace SWENG894.Models
         public string Subject { get; set; }
 
         [NotMapped]
-        public string SubjectPreview => Subject.Length > 10 ? Subject.Substring(0, 10) + "..." : Subject + "...";
+        public string SubjectPreview => Subject.Length > 7 ? Subject.Substring(0, 7) + "..." : Subject;
 
         [Required(ErrorMessage = "Message is required.")]
         [Display(Name = "Message")]
@@ -30,11 +30,11 @@ namespace SWENG894.Models
         public string Body { get; set; }
 
         [NotMapped]
-        public string BodyPreview => Body.Length > 10 ? Body.Substring(0, 10) + "..." : Body + "...";
+        public string BodyPreview => Body.Length > 7 ? Body.Substring(0, 7) + "..." : Body;
 
         [Required]
-        [Display(Name = "Sent Time")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy mm:hh}")]
+        [Display(Name = "Sent Date")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy h:mm}")]
         [DataType(DataType.DateTime)]
         public DateTime SentTime { get; set; }
 
