@@ -11,32 +11,27 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.name)
+            @Html.DisplayNameFor(model => model.Name)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.name)
+            @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.time)
+            @Html.DisplayNameFor(model => model.Time)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.time)
+            @Html.DisplayFor(model => model.Time)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.notes)
+            @Html.DisplayNameFor(model => model.Notes)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.notes)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.reps)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.reps)
+            @Html.DisplayFor(model => model.Notes)
         </dd>
     </dl>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-area="User" asp-controller="Exercises" asp-action="Create" asp-route-id="@Model.Id">Add Exercise</a> |
     <a asp-action="Index">Back to List</a>
 </div>

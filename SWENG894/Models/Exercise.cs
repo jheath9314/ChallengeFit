@@ -8,7 +8,7 @@ namespace SWENG894.Models
     public class Exercise
     {
         public int Id { get; set; }
-        public enum exercises
+        public enum Exercises
         {
             Pushup,
             Benchpress,
@@ -30,8 +30,9 @@ namespace SWENG894.Models
             Jerk
         }
 
-        public exercises exercise;
+        public Exercises Exer { get; set; }
 
-        public int reps { get; set; }
+        public int Reps { get; set; }
+
     }
 }

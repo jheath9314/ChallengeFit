@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWENG894.Data;
 
 namespace SWENG894.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200912164812_Workout_Updated_Exercise_Key_2")]
+    partial class Workout_Updated_Exercise_Key_2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -234,12 +236,12 @@ namespace SWENG894.Data.Migrations
                     b.Property<int>("Reps")
                         .HasColumnType("int");
 
-                    b.Property<int?>("WorkoutId")
+                    b.Property<int?>("WrkOtId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("WorkoutId");
+                    b.HasIndex("WrkOtId");
 
                     b.ToTable("Exercise");
                 });
@@ -358,9 +360,9 @@ namespace SWENG894.Data.Migrations
 
             modelBuilder.Entity("SWENG894.Models.Exercise", b =>
                 {
-                    b.HasOne("SWENG894.Models.Workout", null)
+                    b.HasOne("SWENG894.Models.Workout", "WrkOt")
                         .WithMany("Exercises")
-                        .HasForeignKey("WorkoutId");
+                        .HasForeignKey("WrkOtId");
                 });
 
             modelBuilder.Entity("SWENG894.Models.FriendRequest", b =>

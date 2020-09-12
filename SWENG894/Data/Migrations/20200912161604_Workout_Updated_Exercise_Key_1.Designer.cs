@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWENG894.Data;
 
 namespace SWENG894.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200912161604_Workout_Updated_Exercise_Key_1")]
+    partial class Workout_Updated_Exercise_Key_1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -228,18 +230,18 @@ namespace SWENG894.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Exer")
+                    b.Property<int>("exercise")
                         .HasColumnType("int");
 
-                    b.Property<int>("Reps")
+                    b.Property<int>("reps")
                         .HasColumnType("int");
 
-                    b.Property<int?>("WorkoutId")
+                    b.Property<int?>("workoutId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("WorkoutId");
+                    b.HasIndex("workoutId");
 
                     b.ToTable("Exercise");
                 });
@@ -275,13 +277,13 @@ namespace SWENG894.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Name")
+                    b.Property<string>("name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Notes")
+                    b.Property<string>("notes")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Time")
+                    b.Property<int>("time")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -358,9 +360,9 @@ namespace SWENG894.Data.Migrations
 
             modelBuilder.Entity("SWENG894.Models.Exercise", b =>
                 {
-                    b.HasOne("SWENG894.Models.Workout", null)
+                    b.HasOne("SWENG894.Models.Workout", "workout")
                         .WithMany("Exercises")
-                        .HasForeignKey("WorkoutId");
+                        .HasForeignKey("workoutId");
                 });
 
             modelBuilder.Entity("SWENG894.Models.FriendRequest", b =>
