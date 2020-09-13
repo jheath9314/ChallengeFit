@@ -60,8 +60,10 @@ namespace SWENG894.Areas.User.Controllers
         {
             if (ModelState.IsValid) {
 
-
+                //Needed since any other ID results in the entity
+                //framework rejecting the insert
                 e.Id = 0;
+                e.WorkoutId = Id;
                 _context.Add(e);
                 await _context.SaveChangesAsync();
                 var workout = _context.Workouts.Include(w => w.Exercises).FirstOrDefault(workout => workout.Id == Id);

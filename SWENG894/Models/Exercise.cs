@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace SWENG894.Models
 {
@@ -32,7 +33,10 @@ namespace SWENG894.Models
 
         public Exercises Exer { get; set; }
 
+        [DataType(DataType.Duration)]
         public int Reps { get; set; }
+
+        public int WorkoutId { get; set; }
 
     }
 }

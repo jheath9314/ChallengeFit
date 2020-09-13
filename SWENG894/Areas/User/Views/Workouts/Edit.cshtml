@@ -20,13 +20,23 @@
             </div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Time" class="form-control" />
+                <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Time" class="control-label"></label>
-                <input asp-for="Notes" class="form-control" />
+                <input asp-for="Time" class="form-control" />
                 <span asp-validation-for="Time" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ScoringType" class="control-label"></label>
+                <input asp-for="ScoringType" class="form-control" />
+                <span asp-validation-for="ScoringType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ScalingOptions" class="control-label"></label>
+                <input asp-for="ScalingOptions" class="form-control" />
+                <span asp-validation-for="ScalingOptions" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -40,5 +50,5 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_Validationtial");}
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

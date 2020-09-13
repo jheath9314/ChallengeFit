@@ -20,7 +20,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Reps" class="control-label"></label>
-                <input asp-for="Reps" class="form-control" />
+                <input asp-for="Reps" min="1" max="1000" class="form-control" />
                 <span asp-validation-for="Reps" class="text-danger"></span>
             </div>
             <div class="form-group">
