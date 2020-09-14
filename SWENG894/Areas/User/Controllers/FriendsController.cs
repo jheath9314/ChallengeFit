@@ -174,25 +174,30 @@ namespace SWENG894.Areas.User.Controllers
                     Status = FriendRequestStatus.New
                 };
                 _context.Add(request);
-                await _context.SaveChangesAsync();
+                
 
+                Message msg = new Message()
+                {
+                    SentById = request.RequestedById,
+                    SentToId = request.RequestedForId,
+                    Subject = "New friend request.",
+                    Body = "Click here to view the request.",
+                    SentTime = DateTime.Now,
+                    MessageType = Message.MessageTypes.FriendRequest,
+                    SendStatus = Message.MessageSendStatud.New,
+                    ReadStatus = Message.MessageReadStatud.New,
+                    DeletedByReceiver = false,
+                    DeletedBySender = false
+                };
+                _context.Messages.Add(msg);
+
+                await _context.SaveChangesAsync();
                 return View(userToFriend);
             }
 
             return View(userToFriend);
             //return RedirectToAction(nameof(Index));
         }
-
-
-
-
-
-
-
-
-
-
-
 
         // GET: User/Friends/Details/5
         public async Task<IActionResult> Details(string id)
@@ -214,121 +219,127 @@ namespace SWENG894.Areas.User.Controllers
             return View(friendRequest);
         }
 
-        // GET: User/Friends/Create
-        public IActionResult Create()
-        {
-            ViewData["RequestedById"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
-            ViewData["RequestedForId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
-            return View();
-        }
 
-        // POST: User/Friends/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("RequestedById,RequestedForId,RequestTime,BecameFriendsTime,FriendRequestFlag")] FriendRequest friendRequest)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(friendRequest);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["RequestedById"] = new SelectList(_context.ApplicationUsers, "Id", "Id", friendRequest.RequestedById);
-            ViewData["RequestedForId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", friendRequest.RequestedForId);
-            return View(friendRequest);
-        }
 
-        // GET: User/Friends/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var friendRequest = await _context.FriendRequests.FindAsync(id);
-            if (friendRequest == null)
-            {
-                return NotFound();
-            }
-            ViewData["RequestedById"] = new SelectList(_context.ApplicationUsers, "Id", "Id", friendRequest.RequestedById);
-            ViewData["RequestedForId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", friendRequest.RequestedForId);
-            return View(friendRequest);
-        }
 
-        // POST: User/Friends/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("RequestedById,RequestedForId,RequestTime,BecameFriendsTime,FriendRequestFlag")] FriendRequest friendRequest)
-        {
-            if (id != friendRequest.RequestedById)
-            {
-                return NotFound();
-            }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(friendRequest);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!FriendRequestExists(friendRequest.RequestedById))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["RequestedById"] = new SelectList(_context.ApplicationUsers, "Id", "Id", friendRequest.RequestedById);
-            ViewData["RequestedForId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", friendRequest.RequestedForId);
-            return View(friendRequest);
-        }
 
-        // GET: User/Friends/Delete/5
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //// GET: User/Friends/Create
+        //public IActionResult Create()
+        //{
+        //    ViewData["RequestedById"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
+        //    ViewData["RequestedForId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
+        //    return View();
+        //}
 
-            var friendRequest = await _context.FriendRequests
-                .Include(f => f.RequestedBy)
-                .Include(f => f.RequestedFor)
-                .FirstOrDefaultAsync(m => m.RequestedById == id);
-            if (friendRequest == null)
-            {
-                return NotFound();
-            }
+        //// POST: User/Friends/Create
+        //// To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        //// more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("RequestedById,RequestedForId,RequestTime,BecameFriendsTime,FriendRequestFlag")] FriendRequest friendRequest)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Add(friendRequest);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    ViewData["RequestedById"] = new SelectList(_context.ApplicationUsers, "Id", "Id", friendRequest.RequestedById);
+        //    ViewData["RequestedForId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", friendRequest.RequestedForId);
+        //    return View(friendRequest);
+        //}
 
-            return View(friendRequest);
-        }
+        //// GET: User/Friends/Edit/5
+        //public async Task<IActionResult> Edit(string id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-        // POST: User/Friends/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            var friendRequest = await _context.FriendRequests.FindAsync(id);
-            _context.FriendRequests.Remove(friendRequest);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        //    var friendRequest = await _context.FriendRequests.FindAsync(id);
+        //    if (friendRequest == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    ViewData["RequestedById"] = new SelectList(_context.ApplicationUsers, "Id", "Id", friendRequest.RequestedById);
+        //    ViewData["RequestedForId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", friendRequest.RequestedForId);
+        //    return View(friendRequest);
+        //}
 
-        private bool FriendRequestExists(string id)
-        {
-            return _context.FriendRequests.Any(e => e.RequestedById == id);
-        }
+        //// POST: User/Friends/Edit/5
+        //// To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        //// more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Edit(string id, [Bind("RequestedById,RequestedForId,RequestTime,BecameFriendsTime,FriendRequestFlag")] FriendRequest friendRequest)
+        //{
+        //    if (id != friendRequest.RequestedById)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            _context.Update(friendRequest);
+        //            await _context.SaveChangesAsync();
+        //        }
+        //        catch (DbUpdateConcurrencyException)
+        //        {
+        //            if (!FriendRequestExists(friendRequest.RequestedById))
+        //            {
+        //                return NotFound();
+        //            }
+        //            else
+        //            {
+        //                throw;
+        //            }
+        //        }
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    ViewData["RequestedById"] = new SelectList(_context.ApplicationUsers, "Id", "Id", friendRequest.RequestedById);
+        //    ViewData["RequestedForId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", friendRequest.RequestedForId);
+        //    return View(friendRequest);
+        //}
+
+        //// GET: User/Friends/Delete/5
+        //public async Task<IActionResult> Delete(string id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var friendRequest = await _context.FriendRequests
+        //        .Include(f => f.RequestedBy)
+        //        .Include(f => f.RequestedFor)
+        //        .FirstOrDefaultAsync(m => m.RequestedById == id);
+        //    if (friendRequest == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(friendRequest);
+        //}
+
+        //// POST: User/Friends/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(string id)
+        //{
+        //    var friendRequest = await _context.FriendRequests.FindAsync(id);
+        //    _context.FriendRequests.Remove(friendRequest);
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
+
+        //private bool FriendRequestExists(string id)
+        //{
+        //    return _context.FriendRequests.Any(e => e.RequestedById == id);
+        //}
     }
 }

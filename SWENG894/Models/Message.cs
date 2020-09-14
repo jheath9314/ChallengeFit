@@ -48,6 +48,8 @@ namespace SWENG894.Models
         [NotMapped]
         public bool MessageRead => ReadStatus == MessageReadStatud.Read;
 
+        public MessageTypes MessageType { get; set; }
+
         public bool DeletedBySender { get; set; }
 
         public bool DeletedByReceiver { get; set; }
@@ -62,6 +64,12 @@ namespace SWENG894.Models
         {
             New,
             Read
+        }
+
+        public enum MessageTypes
+        {
+            Correspondence,
+            FriendRequest
         }
     }
 }

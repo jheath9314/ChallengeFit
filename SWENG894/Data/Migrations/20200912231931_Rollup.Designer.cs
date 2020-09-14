@@ -10,8 +10,8 @@ using SWENG894.Data;
 namespace SWENG894.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200910225943_UpdateMessageAddMessageOwner")]
-    partial class UpdateMessageAddMessageOwner
+    [Migration("20200912231931_Rollup")]
+    partial class Rollup
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -259,8 +259,11 @@ namespace SWENG894.Data.Migrations
                         .HasColumnType("nvarchar(500)")
                         .HasMaxLength(500);
 
-                    b.Property<int>("MessageOwner")
-                        .HasColumnType("int");
+                    b.Property<bool>("DeletedByReceiver")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("DeletedBySender")
+                        .HasColumnType("bit");
 
                     b.Property<int>("ReadStatus")
                         .HasColumnType("int");

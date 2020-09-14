@@ -1,8 +1,27 @@
 ﻿@model SWENG894.Models.Message
 
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+    <h4>
+        Message
+    </h4>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        @if (Model.SentById == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value)
+        {
+            <a asp-action="Create" asp-route-id="Model.SentToId" class="btn btn-primary disabled mr-2">Reply</a>
+        }
+        else if (Model.MessageType == Message.MessageTypes.FriendRequest)
+        {
+            <a asp-area="User" asp-controller="Friends" asp-action="ViewRequest" asp-route-sender="@Model.SentById" asp-route-receiver="@Model.SentToId" class="btn btn-primary mr-2">View Request</a>
+        }
+        else
+        {
+            <a asp-action="Create" asp-route-id="@Model.SentById" class="btn btn-primary mr-2">Reply</a>
+        }
+        <a asp-action="Index" asp-route-box="sent" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+
 <div>
-    <h4>Message</h4>
-    <hr />
     <dl class="row">
         <dt class="col-sm-2">
             From
@@ -36,11 +55,4 @@
         </dd>
     </dl>
 </div>
-<div>
-    @if (Model.SentById == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value)
-    {
-        <a asp-action="Create" asp-route-id="Model.SentToId" class="btn btn-default disabled">Reply</a> @("|")
-        <a asp-action="Index" asp-route-box="sent" class="btn btn-default">Back to List</a>
-    }
 
-</div>

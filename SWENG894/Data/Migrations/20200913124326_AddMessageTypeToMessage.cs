@@ -2,12 +2,12 @@
 
 namespace SWENG894.Data.Migrations
 {
-    public partial class UpdateMessageAddMessageOwner : Migration
+    public partial class AddMessageTypeToMessage : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
-                name: "MessageOwner",
+                name: "MessageType",
                 table: "Messages",
                 nullable: false,
                 defaultValue: 0);
@@ -16,7 +16,7 @@ namespace SWENG894.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "MessageOwner",
+                name: "MessageType",
                 table: "Messages");
         }
     }

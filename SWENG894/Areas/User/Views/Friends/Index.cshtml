@@ -9,55 +9,61 @@
             <div class="input-group-append">
                 <button class="btn btn-outline-secondary" type="submit" id="button-find">Search</button>
             </div>
-
         </div>
     </div>
-    <a class="btn btn-primary float-right" id="button-find" asp-action="Find">Find More Friends!</a>
+    <a class="btn btn-primary float-right" id="button-find" asp-action="Find">Add Friends</a>
 </form>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>
-                <a asp-action="Index" asp-route-sort="@ViewBag.SortOrder" asp-route-filter="@ViewBag.CurrentFilter">Name</a>
-            </th>
-            <th>
-                Options
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+@if (Model.Count > 0)
+{
+    <table class="table table-striped">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.RequestedFor.FullName)
-                </td>
-                <td>
-                    <a asp-action="SendChallenge" asp-route-id="@item.RequestedFor.Id"><i class="fas fa-dumbbell" tool-tip-toggle="tooltip" data-original-title="Send Challenge"></i></a> |
-                    <a asp-area="User" asp-controller="Messages" asp-action="Create" asp-route-id="@item.RequestedFor.Id"><i class="far fa-comment-dots" tool-tip-toggle="tooltip" data-original-title="Send Message"></i></a>
-                </td>
+                <th>
+                    <a asp-action="Index" asp-route-sort="@ViewBag.SortOrder" asp-route-filter="@ViewBag.CurrentFilter">Name</a>
+                </th>
+                <th>
+                    Options
+                </th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RequestedFor.FullName)
+                    </td>
+                    <td>
+                        <a asp-action="SendChallenge" asp-route-id="@item.RequestedFor.Id"><i class="fas fa-dumbbell" tool-tip-toggle="tooltip" data-original-title="Send Challenge"></i></a> |
+                        <a asp-area="User" asp-controller="Messages" asp-action="Create" asp-route-id="@item.RequestedFor.Id"><i class="far fa-comment-dots" tool-tip-toggle="tooltip" data-original-title="Send Message"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-@{
+
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-}
 
-<a asp-action="Index"
-   asp-route-sort="@ViewBag.CurrentSort"
-   asp-route-page="@(Model.PageIndex - 1)"
-   asp-route-search="@ViewBag.CurrentFilter"
-   class="btn btn-default @prevDisabled">
-    Previous
-</a>
-<a asp-action="Index"
-   asp-route-sort="@ViewBag.CurrentSort"
-   asp-route-page="@(Model.PageIndex + 1)"
-   asp-route-search="@ViewBag.CurrentFilter"
-   class="btn btn-default @nextDisabled">
-    Next
-</a>
+    <a asp-action="Index"
+       asp-route-sort="@ViewBag.CurrentSort"
+       asp-route-page="@(Model.PageIndex - 1)"
+       asp-route-search="@ViewBag.CurrentFilter"
+       class="btn btn-default @prevDisabled">
+        Previous
+    </a>
+    <a asp-action="Index"
+       asp-route-sort="@ViewBag.CurrentSort"
+       asp-route-page="@(Model.PageIndex + 1)"
+       asp-route-search="@ViewBag.CurrentFilter"
+       class="btn btn-default @nextDisabled">
+        Next
+    </a>
+}
+else
+{
+    <i class="far fa-surprise fa-3x"></i>
+    <p>No friends found. Change your search parameter or add more friends.</p>
+}

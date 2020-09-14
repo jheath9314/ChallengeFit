@@ -3,16 +3,16 @@
     <h4>Find Friends</h4>
 
     <form asp-action="Find" method="get">
-        <div class="form-row align-items-end">
-            <div class="col-auto">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Search" aria-label="Search" name="search" aria-describedby="button-find" value="@ViewBag.CurrentFilter">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="submit" id="button-find">Search</button>
-                    </div>
+        <div class="btn-group mb-2" role="group" aria-label="InOut Box">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Search" aria-label="Search" name="search" aria-describedby="button-find" value="@ViewBag.CurrentFilter">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="submit" id="button-find">Search</button>
                 </div>
+
             </div>
         </div>
+        <a class="btn btn-secondary float-right" id="button-find" asp-action="Index">Cancel</a>
     </form>
 
     <table class="table table-striped">

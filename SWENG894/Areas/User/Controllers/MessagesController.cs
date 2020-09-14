@@ -46,7 +46,7 @@ namespace SWENG894.Areas.User.Controllers
             var messages = _context.Messages
                 .Include(m => m.SentBy)
                 .Include(m => m.SentTo)
-                .Where(m => (m.SentById == User.FindFirstValue(ClaimTypes.NameIdentifier) && !m.DeletedBySender) || 
+                .Where(m => (m.SentById == User.FindFirstValue(ClaimTypes.NameIdentifier) && !m.DeletedBySender) ||
                             (m.SentToId == User.FindFirstValue(ClaimTypes.NameIdentifier) && !m.DeletedByReceiver));
 
             if (!String.IsNullOrEmpty(search))
@@ -55,10 +55,11 @@ namespace SWENG894.Areas.User.Controllers
                     m.Body.ToLower().Contains(search));
             }
 
-            if(!String.IsNullOrEmpty(box))
+            if (!String.IsNullOrEmpty(box))
             {
                 messages = messages.Where(m => m.SentById == User.FindFirstValue(ClaimTypes.NameIdentifier) && !m.DeletedBySender);
-            } else
+            }
+            else
             {
                 messages = messages.Where(m => m.SentToId == User.FindFirstValue(ClaimTypes.NameIdentifier) && !m.DeletedByReceiver);
             }
@@ -99,14 +100,15 @@ namespace SWENG894.Areas.User.Controllers
         // GET: User/Messages/Create
         public IActionResult Create(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var receiver = _context.ApplicationUsers.FirstOrDefault(u => u.Id.Equals(id));
+            var sender = _context.ApplicationUsers
+                .Include(u => u.SentFriendRequests)
+                .ThenInclude(u => u.RequestedFor)
+                .Include(u => u.ReceievedFriendRequests)
+                .ThenInclude(u => u.RequestedFor)
+                .FirstOrDefault(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            if (receiver == null)
+            if (sender == null)
             {
                 return NotFound();
             }
@@ -114,10 +116,21 @@ namespace SWENG894.Areas.User.Controllers
             MessageViewModel message = new MessageViewModel()
             {
                 SentById = User.FindFirstValue(ClaimTypes.NameIdentifier),//User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value,
-                SentTo = receiver,
-                SentToId = receiver.Id,
-                FullName = receiver.FullName
+                SentBy = sender
             };
+
+            if (id != null)
+            {
+                var receiver = _context.ApplicationUsers.FirstOrDefault(u => u.Id.Equals(id));
+
+                if (receiver == null)
+                {
+                    return NotFound();
+                }
+
+                message.SentToId = id;
+                message.SentTo = receiver;
+            }
 
             return View(message);
         }
@@ -138,6 +151,7 @@ namespace SWENG894.Areas.User.Controllers
                     Subject = message.Subject,
                     Body = message.Body,
                     SentTime = DateTime.Now,
+                    MessageType = Message.MessageTypes.Correspondence,
                     SendStatus = Message.MessageSendStatud.New,
                     ReadStatus = Message.MessageReadStatud.New,
                     DeletedByReceiver = false,
@@ -163,8 +177,8 @@ namespace SWENG894.Areas.User.Controllers
             var message = await _context.Messages
                 .Include(m => m.SentBy)
                 .Include(m => m.SentTo)
-                .FirstOrDefaultAsync(m => m.Id == id && (m.SentToId == User.FindFirstValue(ClaimTypes.NameIdentifier) || 
-                                                         m.SentById == User.FindFirstValue(ClaimTypes.NameIdentifier)));
+                .FirstOrDefaultAsync(m => m.Id == id && ((m.SentToId == User.FindFirstValue(ClaimTypes.NameIdentifier) && !m.DeletedByReceiver) ||
+                                                         (m.SentById == User.FindFirstValue(ClaimTypes.NameIdentifier) && !m.DeletedBySender)));
             if (message == null)
             {
                 return NotFound();
@@ -178,14 +192,23 @@ namespace SWENG894.Areas.User.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var message = await _context.Messages.FirstOrDefaultAsync(m => m.Id == id && m.SentToId == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var message = await _context.Messages
+                .FirstOrDefaultAsync(m => m.Id == id && ((m.SentToId == User.FindFirstValue(ClaimTypes.NameIdentifier) && !m.DeletedByReceiver) ||
+                                                         (m.SentById == User.FindFirstValue(ClaimTypes.NameIdentifier) && !m.DeletedBySender)));
 
-            if(message != null)
+            if (message != null)
             {
-                _context.Messages.Remove(message);
+                if (message.SentById == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                {
+                    message.DeletedBySender = true;
+                }
+                else if (message.SentToId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                {
+                    message.DeletedByReceiver = true;
+                }
                 await _context.SaveChangesAsync();
             }
-            
+
             return RedirectToAction(nameof(Index));
         }
 

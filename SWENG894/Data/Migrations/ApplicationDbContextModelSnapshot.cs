@@ -263,6 +263,9 @@ namespace SWENG894.Data.Migrations
                     b.Property<bool>("DeletedBySender")
                         .HasColumnType("bit");
 
+                    b.Property<int>("MessageType")
+                        .HasColumnType("int");
+
                     b.Property<int>("ReadStatus")
                         .HasColumnType("int");
 
