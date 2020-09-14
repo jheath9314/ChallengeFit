@@ -46,7 +46,7 @@ namespace SWENG894.Areas.User.Controllers
                 .Include(u => u.SentFriendRequests)
                 .ThenInclude(u => u.RequestedFor)
                 .Include(u => u.ReceievedFriendRequests)
-                .ThenInclude(u => u.RequestedFor)
+                .ThenInclude(u => u.RequestedBy)
                 .FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             var matchingUsers = user.Friends;
@@ -115,6 +115,11 @@ namespace SWENG894.Areas.User.Controllers
                 matchingUsers.Remove(request.RequestedFor);
             }
 
+            foreach (var request in user.ReceievedFriendRequests)
+            {
+                matchingUsers.Remove(request.RequestedBy);
+            }
+
             int pageSize = 3;
             var resultList = await PaginatedList<ApplicationUser>.Create(matchingUsers.ToList(), page ?? 1, pageSize);
 
@@ -174,7 +179,7 @@ namespace SWENG894.Areas.User.Controllers
                     Status = FriendRequestStatus.New
                 };
                 _context.Add(request);
-                
+
 
                 Message msg = new Message()
                 {
@@ -219,7 +224,59 @@ namespace SWENG894.Areas.User.Controllers
             return View(friendRequest);
         }
 
+        // GET: User/Friends/ViewRequest/5
+        public async Task<IActionResult> ViewRequest(string sender, string receiver)
+        {
+            if (sender == null || receiver == null)
+            {
+                return NotFound();
+            }
 
+            var friendRequest = await _context.FriendRequests
+                .Include(f => f.RequestedBy)
+                .Include(f => f.RequestedFor)
+                .FirstOrDefaultAsync(m => m.RequestedById == sender && m.RequestedForId == receiver);
+
+            if (friendRequest == null)
+            {
+                return NotFound();
+            }
+
+            if (friendRequest.RequestedForId != User.FindFirstValue(ClaimTypes.NameIdentifier) && friendRequest.RequestedById != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
+                return NotFound();
+            }
+
+            return View(friendRequest);
+        }
+
+        // POST: User/Friends/ViewRequest
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost, ActionName("ViewRequest")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ViewRequestPost(string sender, string receiver, FriendRequestStatus status)
+        {
+            var friendRequest = await _context.FriendRequests
+                .Include(f => f.RequestedBy)
+                .Include(f => f.RequestedFor)
+                .FirstOrDefaultAsync(m => m.RequestedById == sender && m.RequestedForId == receiver);
+
+            if (friendRequest == null || friendRequest.RequestedForId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
+                return NotFound();
+            }
+
+            friendRequest.Status = status;
+
+            if(status == FriendRequestStatus.Approved)
+            {
+                friendRequest.BecameFriendsTime = DateTime.Now;
+            }
+
+            await _context.SaveChangesAsync();
+            return View(friendRequest);
+        }
 
 
 

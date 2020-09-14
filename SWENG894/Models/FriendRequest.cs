@@ -28,9 +28,7 @@ namespace SWENG894.Models
         {
             New,
             Approved,
-            Rejected,
-            Blocked,
-            Spam
+            Rejected
         }
     }
 }

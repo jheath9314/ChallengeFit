@@ -105,7 +105,7 @@ namespace SWENG894.Areas.User.Controllers
                 .Include(u => u.SentFriendRequests)
                 .ThenInclude(u => u.RequestedFor)
                 .Include(u => u.ReceievedFriendRequests)
-                .ThenInclude(u => u.RequestedFor)
+                .ThenInclude(u => u.RequestedBy)
                 .FirstOrDefault(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             if (sender == null)
@@ -116,21 +116,34 @@ namespace SWENG894.Areas.User.Controllers
             MessageViewModel message = new MessageViewModel()
             {
                 SentById = User.FindFirstValue(ClaimTypes.NameIdentifier),//User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value,
-                SentBy = sender
+                SentBy = sender,
+                Friends = new List<ApplicationUser>()
             };
 
-            if (id != null)
+            foreach(var request in sender.Friends)
             {
-                var receiver = _context.ApplicationUsers.FirstOrDefault(u => u.Id.Equals(id));
-
-                if (receiver == null)
+                if(request.RequestedById == User.FindFirstValue(ClaimTypes.NameIdentifier))
                 {
-                    return NotFound();
+                    message.Friends.Add(request.RequestedFor);
                 }
-
-                message.SentToId = id;
-                message.SentTo = receiver;
+                else
+                {
+                    message.Friends.Add(request.RequestedBy);
+                }
             }
+
+            //if (id != null)
+            //{
+            //    var receiver = _context.ApplicationUsers.FirstOrDefault(u => u.Id.Equals(id));
+
+            //    if (receiver == null)
+            //    {
+            //        return NotFound();
+            //    }
+
+            //    message.SentToId = id;
+            //    message.SentTo = receiver;
+            //}
 
             return View(message);
         }

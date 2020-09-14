@@ -27,5 +27,8 @@ namespace SWENG894.ViewModels
 
         [Display(Name = "Send To")]
         public string FullName { get; set; }
+
+        public List<ApplicationUser> Friends { get; set; }
+
     }
 }

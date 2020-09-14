@@ -195,6 +195,7 @@ namespace SWENG894.Data.Migrations
                     SentTime = table.Column<DateTime>(nullable: false),
                     SendStatus = table.Column<int>(nullable: false),
                     ReadStatus = table.Column<int>(nullable: false),
+                    MessageType = table.Column<int>(nullable: false),
                     DeletedBySender = table.Column<bool>(nullable: false),
                     DeletedByReceiver = table.Column<bool>(nullable: false)
                 },

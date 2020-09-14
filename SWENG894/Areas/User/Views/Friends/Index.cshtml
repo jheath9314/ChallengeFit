@@ -32,11 +32,28 @@
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.RequestedFor.FullName)
+                        @if (item.RequestedById == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value)
+                        {
+                            @Html.DisplayFor(modelItem => item.RequestedFor.FullName)
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(modelItem => item.RequestedBy.FullName)
+                        }
+
                     </td>
                     <td>
-                        <a asp-action="SendChallenge" asp-route-id="@item.RequestedFor.Id"><i class="fas fa-dumbbell" tool-tip-toggle="tooltip" data-original-title="Send Challenge"></i></a> |
-                        <a asp-area="User" asp-controller="Messages" asp-action="Create" asp-route-id="@item.RequestedFor.Id"><i class="far fa-comment-dots" tool-tip-toggle="tooltip" data-original-title="Send Message"></i></a>
+                        @if (item.RequestedById == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value)
+                        {
+                            <a asp-action="SendChallenge" asp-route-id="@item.RequestedForId"><i class="fas fa-dumbbell" tool-tip-toggle="tooltip" data-original-title="Send Challenge"></i></a> @("|")
+                            <a asp-area="User" asp-controller="Messages" asp-action="Create" asp-route-id="@item.RequestedForId"><i class="far fa-comment-dots" tool-tip-toggle="tooltip" data-original-title="Send Message"></i></a>
+                        }
+                        else
+                        {
+                            <a asp-action="SendChallenge" asp-route-id="@item.RequestedById"><i class="fas fa-dumbbell" tool-tip-toggle="tooltip" data-original-title="Send Challenge"></i></a> @("|")
+                            <a asp-area="User" asp-controller="Messages" asp-action="Create" asp-route-id="@item.RequestedById"><i class="far fa-comment-dots" tool-tip-toggle="tooltip" data-original-title="Send Message"></i></a>
+                        }
+
                     </td>
                 </tr>
             }
