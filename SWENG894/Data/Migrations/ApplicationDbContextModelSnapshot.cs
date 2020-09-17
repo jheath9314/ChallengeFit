@@ -15,7 +15,7 @@ namespace SWENG894.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.7")
+                .HasAnnotation("ProductVersion", "3.1.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -245,6 +245,56 @@ namespace SWENG894.Data.Migrations
                     b.ToTable("FriendRequests");
                 });
 
+            modelBuilder.Entity("SWENG894.Models.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(500)")
+                        .HasMaxLength(500);
+
+                    b.Property<bool>("DeletedByReceiver")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("DeletedBySender")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MessageType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReadStatus")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SendStatus")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SentById")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("SentTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SentToId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SentById");
+
+                    b.HasIndex("SentToId");
+
+                    b.ToTable("Messages");
+                });
+
             modelBuilder.Entity("SWENG894.Models.ApplicationUser", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
@@ -325,6 +375,19 @@ namespace SWENG894.Data.Migrations
                         .HasForeignKey("RequestedForId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SWENG894.Models.Message", b =>
+                {
+                    b.HasOne("SWENG894.Models.ApplicationUser", "SentBy")
+                        .WithMany("SentMessages")
+                        .HasForeignKey("SentById")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("SWENG894.Models.ApplicationUser", "SentTo")
+                        .WithMany("ReceievedMessages")
+                        .HasForeignKey("SentToId")
+                        .OnDelete(DeleteBehavior.NoAction);
                 });
 #pragma warning restore 612, 618
         }

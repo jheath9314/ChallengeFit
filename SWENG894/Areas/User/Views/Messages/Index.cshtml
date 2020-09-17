@@ -1,0 +1,103 @@
+﻿@model SWENG894.Utility.PaginatedList<SWENG894.Models.Message>
+
+<h4>Messages</h4>
+
+<div class="btn-group btn-group-toggle mb-2" role="group">
+    <a asp-action="Index" asp-route-box="" type="button" class="btn btn-outline-secondary" id="inbox">Inbox</a>
+    <a asp-action="Index" asp-route-box="sent" type="button" class="btn btn-outline-secondary" id="sent">Sent</a>
+</div>
+<a class="btn btn-primary float-right mb-2" asp-action="Create">Create New</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            @if (ViewBag.Box == "sent")
+            {
+                <th>
+                    Sent On
+                </th>
+                <th>
+                    Sent To
+                </th>
+            }
+            else
+            {
+                <th>
+                    Received On
+                </th>
+                <th>
+                    From
+                </th>
+            }
+            <th>
+                Subject
+            </th>
+            <th>
+                Options
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SentTime)
+                </td>
+                @if (ViewBag.Box == "sent")
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SentTo.FullName)
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SentBy.FullName)
+                    </td>
+                }
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.SubjectPreview)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id"><i class="fab fa-readme" tool-tip-toggle="tooltip" data-original-title="View Message"></i></a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id"><i class="fas fa-trash-alt" tool-tip-toggle="tooltip" data-original-title="Delete Message"></i></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sort="@ViewBag.CurrentSort"
+   asp-route-page="@(Model.PageIndex - 1)"
+   asp-route-search="@ViewBag.CurrentFilter"
+   asp-route-box="@ViewBag.Box"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sort="@ViewBag.CurrentSort"
+   asp-route-page="@(Model.PageIndex + 1)"
+   asp-route-search="@ViewBag.CurrentFilter"
+   asp-route-box="@ViewBag.Box"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
+
+@section Scripts {
+    <script>
+        var tab = GetParameterByName("box");
+        if (tab != null) {
+            $("#sent").button('toggle');
+        } else {
+            $("#inbox").button('toggle');
+        }
+    </script>
+}

@@ -3,9 +3,9 @@
 @if (Model.HasRequestFrom(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value))
 {
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-        <h1 class="h2">
-            You already sent a friend request to this person.
-        </h1>
+        <h4>
+            Friend request sent!
+        </h4>
         <div class="btn-toolbar mb-2 mb-md-0">
             <form asp-action="SendRequest">
                 <input type="hidden" asp-for="Id" />
@@ -17,13 +17,13 @@
 else
 {
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-        <h1 class="h2">
+        <h4>
             Send a friend request to this person?
-        </h1>
+        </h4>
         <div class="btn-toolbar mb-2 mb-md-0">
             <form asp-action="SendRequest">
                 <input type="hidden" asp-for="Id" />
-                <a class="btn btn-secondary mr-2" asp-action="Index">Back to List</a>
+                <a class="btn btn-secondary mr-2" asp-action="Find">Back to List</a>
                 <input type="submit" class="btn btn-primary" value="Yes" />
             </form>
         </div>

@@ -1,0 +1,28 @@
+﻿@model SWENG894.Models.FriendRequest
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+    <h4>
+        Friend Request
+    </h4>
+    <div>
+        <form asp-action="ViewRequest">
+            @if (Model.RequestedForId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value)
+            {
+                var canApprove = Model.Status == FriendRequest.FriendRequestStatus.Approved ? "disabled" : "";
+                var canReject = Model.Status == FriendRequest.FriendRequestStatus.Rejected ? "disabled" : "";
+
+                <input asp-action="ViewRequest" asp-route-sender="@Model.RequestedById" asp-route-receiver="@Model.RequestedForId" asp-route-status="@FriendRequest.FriendRequestStatus.Approved" type="submit" value="Approve" class="btn btn-primary mr-2 @canApprove" />
+                <input asp-action="ViewRequest" asp-route-sender="@Model.RequestedById" asp-route-receiver="@Model.RequestedForId" asp-route-status="@FriendRequest.FriendRequestStatus.Rejected" type="submit" value="Reject" class="btn btn-danger @canReject" />
+            }
+        </form>
+    </div>
+</div>
+
+<div class="mb-3">
+    @Model.RequestedBy.FullName sent you a friend request.<br />
+    Status: @Html.DisplayFor(model => model.Status)
+</div>
+
+<div class="btn-toolbar mb-2 mb-md-0">
+    <a class="btn btn-secondary mr-2" asp-area="User" asp-controller="Messages" asp-action="Index">Cancel</a>
+</div>
