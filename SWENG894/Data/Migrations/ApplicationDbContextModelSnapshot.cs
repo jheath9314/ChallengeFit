@@ -294,6 +294,49 @@ namespace SWENG894.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Workouts");
+					
+            modelBuilder.Entity("SWENG894.Models.Message", b =>
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(500)")
+                        .HasMaxLength(500));
+
+                    b.Property<bool>("DeletedByReceiver")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("DeletedBySender")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MessageType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReadStatus")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SendStatus")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SentById")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("SentTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SentToId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SentById");
+
+                    b.HasIndex("SentToId");
+
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("SWENG894.Models.ApplicationUser", b =>
@@ -385,6 +428,19 @@ namespace SWENG894.Data.Migrations
                         .HasForeignKey("RequestedForId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SWENG894.Models.Message", b =>
+                {
+                    b.HasOne("SWENG894.Models.ApplicationUser", "SentBy")
+                        .WithMany("SentMessages")
+                        .HasForeignKey("SentById")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("SWENG894.Models.ApplicationUser", "SentTo")
+                        .WithMany("ReceievedMessages")
+                        .HasForeignKey("SentToId")
+                        .OnDelete(DeleteBehavior.NoAction);
                 });
 #pragma warning restore 612, 618
         }

@@ -1,0 +1,49 @@
+﻿@model SWENG894.Models.Message
+
+<form asp-action="Delete">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h4>
+            Delete this message?
+        </h4>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <a class="btn btn-secondary mr-2" asp-area="User" asp-controller="Messages" asp-action="Index">Cancel</a>
+            <input type="submit" value="Delete" class="btn btn-danger" />
+        </div>
+    </div>
+    <input type="hidden" asp-for="Id" />
+</form>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SentBy)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SentBy.FullName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SentTo)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SentTo.FullName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SentTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SentTime)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Subject)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Subject)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Body)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Body)
+        </dd>
+    </dl>
+</div>
