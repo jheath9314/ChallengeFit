@@ -17,10 +17,10 @@
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Time)
+            Reps/Time
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Time)
+            @Model.getTimeDisplayString()
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Notes)

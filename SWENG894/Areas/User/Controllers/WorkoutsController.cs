@@ -58,13 +58,22 @@ namespace SWENG894.Areas.User.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Workout workout, int seconds)
+        public async Task<IActionResult> Create(Workout workout, int seconds = 0)
         {
             //time is in minutes, store in seconds. Could be broken up and written as unit test
+            if(seconds == 0)
+            {
+                seconds = 0;
+            }
+            
             if(workout.ScoringType == Workout.Scoring.Time)
             {
                 workout.Time = workout.Time * 60 + seconds;
             }
+            //This is needed since the "seconds" value in the function arguments can
+            //cause an error if it's not set within the HTML form. We don't always need it
+            //set and it's annoying to default it to 0
+            ModelState.Remove("seconds");
             if (ModelState.IsValid)
             {
                 _context.Add(workout);
