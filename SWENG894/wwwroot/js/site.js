@@ -10,6 +10,28 @@ function handleScoringTypeChange() {
     
     $(document).on('change', '#scoringType', function () {
         var label = $('#scoringType').find(":selected").text();
+        if (label == "Time") {
+            label = label + " (Minutes and Seconds)";
+            showSecondsField();
+        }
+        else {
+            hideSecondsField();
+        }
         $('#timeLabel').text(label);
+        
     });
+}
+
+function hideSecondsField() {
+    var label = $('#scoringType').find(":selected").text();
+    if (label != "Time") {
+        $('#timeSeconds').hide();
+    }
+}
+
+function showSecondsField() {
+    var label = $('#scoringType').find(":selected").text();
+    if (label == "Time") {
+        $('#timeSeconds').show();
+    }
 }

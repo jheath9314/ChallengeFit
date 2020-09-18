@@ -6,6 +6,10 @@
 
 <h1>View</h1>
 
+<script type="text/javascript">
+
+    window.onload = hideSecondsField();
+</script>
 <h4>Workout</h4>
 <hr />
 <div class="row">
@@ -19,7 +23,8 @@
             </div>
             <div class="form-group">
                 <label asp-for="Time" id="timeLabel" class="control-label"></label>
-                <input asp-for="Time" class="form-control" />
+                <input asp-for="Time" min="0" max="1000" class="form-control" />
+                <input type="number" id ="timeSeconds" name="seconds" min="0" max="59" class="form-control" />
                 <span asp-validation-for="Time" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -42,6 +47,7 @@
             </div>
         </form>
     </div>
+
 </div>
 
 <div>

@@ -58,8 +58,13 @@ namespace SWENG894.Areas.User.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Workout workout)
+        public async Task<IActionResult> Create(Workout workout, int seconds)
         {
+            //time is in minutes, store in seconds. Could be broken up and written as unit test
+            if(workout.ScoringType == Workout.Scoring.Time)
+            {
+                workout.Time = workout.Time * 60 + seconds;
+            }
             if (ModelState.IsValid)
             {
                 _context.Add(workout);

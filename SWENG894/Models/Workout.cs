@@ -20,14 +20,17 @@ namespace SWENG894.Models
         [Required(ErrorMessage = "You must provide a name")]
         public String Name { get; set; }
 
+        [Display(Name = "Time (Minutes and Seconds)")]
         public int Time { get; set; }
 
         [DataType(DataType.MultilineText)]
         public String Notes { get; set; }
 
+        [Display(Name = "Scoring Type")]
         public Scoring ScoringType {get; set; }
 
         [DataType(DataType.MultilineText)]
+        [Display(Name = "Scaling Options")]
         public String ScalingOptions { get; set; }
 
         public List<Exercise> Exercises { get; set; }
