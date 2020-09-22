@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ using SWENG894.Models;
 namespace SWENG894.Areas.User.Controllers
 {
     [Area("User")]
+    [Authorize(Roles = "Admin, User")]
     public class ExercisesController : Controller
     {
         private readonly ApplicationDbContext _context;

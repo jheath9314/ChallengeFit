@@ -12,6 +12,7 @@ using SWENG894.Models;
 namespace SWENG894.Areas.User.Controllers
 {
     [Area("User")]
+    [Authorize(Roles = "Admin, User")]
     public class WorkoutsController : Controller
     {
         private readonly ApplicationDbContext _context;
