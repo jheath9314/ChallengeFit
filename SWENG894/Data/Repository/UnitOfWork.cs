@@ -9,10 +9,12 @@ namespace SWENG894.Data.Repository
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
+        public IMessageRepository Message { get; private set; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
+            Message = new MessageRepository(context);
         }
 
         public void Dispose()
@@ -20,9 +22,9 @@ namespace SWENG894.Data.Repository
             _context.Dispose();
         }
 
-        public void Save()
+        public async Task Save()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

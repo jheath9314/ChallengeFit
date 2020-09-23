@@ -19,17 +19,32 @@ namespace SWENG894.Data.Repository
             _dbSet = _context.Set<T>();
         }
 
-        public void Add(T entity)
+        public async Task<T> GetAsync(int id)
         {
-            _dbSet.Add(entity);
+            return await _dbSet.FindAsync(id);
         }
 
-        public T Get(int id)
+        public async Task<T> GetFirstOrDefaultAsync(Expression<Func<T, bool>> filter = null, string includeProperties = null)
         {
-            return _dbSet.Find(id);
+            IQueryable<T> query = _dbSet;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            if (includeProperties != null)
+            {
+                foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
+
+            return await query.FirstOrDefaultAsync();
         }
 
-        public IEnumerable<T> GetAll(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = null)
+        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = null)
         {
             IQueryable<T> query = _dbSet;
 
@@ -48,46 +63,36 @@ namespace SWENG894.Data.Repository
 
             if (orderBy != null)
             {
-                return orderBy(query).ToList();
+                return await orderBy(query).ToListAsync();
             }
 
-            return query.ToList();
+            return await query.ToListAsync();
         }
 
-        public T GetFirstOrDefault(Expression<Func<T, bool>> filter = null, string includeProperties = null)
+        public async Task AddAsync(T entity)
         {
-            IQueryable<T> query = _dbSet;
-
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-
-            if (includeProperties != null)
-            {
-                foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    query = query.Include(includeProp);
-                }
-            }
-
-            return query.FirstOrDefault();
+            await _dbSet.AddAsync(entity);
         }
 
-        public void Remove(int id)
-        {
-            T entity = _dbSet.Find(id);
-            Remove(entity);
-        }
-
-        public void Remove(T entity)
+        public async Task RemoveAsync(T entity)
         {
             _dbSet.Remove(entity);
         }
 
-        public void RemoveRange(IEnumerable<T> entities)
+        public async Task RemoveAsync(int id)
         {
-            _dbSet.RemoveRange(entities);
+            T entity = await _dbSet.FindAsync(id);
+            await RemoveAsync(entity);
+        }
+
+        public async Task RemoveRangeAsync(IEnumerable<T> entity)
+        {
+            _dbSet.RemoveRange(entity);
+        }
+
+        public bool ObjectExists(int id)
+        {
+            return _dbSet.FindAsync(id) != null;
         }
     }
 }
