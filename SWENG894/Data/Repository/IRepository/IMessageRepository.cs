@@ -9,10 +9,10 @@ namespace SWENG894.Data.Repository.IRepository
 {
     public interface IMessageRepository : IRepository<Message>
     {
-        void Update(Message category);
+        public void Update(Message category);
 
-        IEnumerable<Message> GetAllUserMessages(string sort, string search, string box, string userId);
+        public IEnumerable<Message> GetAllUserMessages(string sort, string search, string box, string userId);
 
-        MessageViewModel CreateNewMesage(string fromUserId);
+        public MessageViewModel CreateNewMesage(string fromUserId);
     }
 }

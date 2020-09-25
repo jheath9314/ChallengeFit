@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SWENG894.Data.Repository.IRepository;
+using SWENG894.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace SWENG894.Data.Repository
 {
-    public class Repository<T> : IRepository<T> where T : class
+    public class MessageRepository<T> : IRepository<T> where T : class
     {
         private readonly ApplicationDbContext _context;
         internal DbSet<T> _dbSet;
 
-        public Repository(ApplicationDbContext context)
+        public MessageRepository(ApplicationDbContext context)
         {
             _context = context;
             _dbSet = _context.Set<T>();
@@ -92,7 +93,7 @@ namespace SWENG894.Data.Repository
 
         public bool ObjectExists(int id)
         {
-            return _dbSet.FindAsync(id) != null;
+            return GetAsync(id).Result != null;
         }
     }
 }
