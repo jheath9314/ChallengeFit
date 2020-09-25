@@ -86,7 +86,7 @@ namespace SWENG894.Data.Repository
             return messages;
         }
 
-        public void Update(Message category)
+        public void UpdateAsync(Message category)
         {
             throw new NotImplementedException();
         }
