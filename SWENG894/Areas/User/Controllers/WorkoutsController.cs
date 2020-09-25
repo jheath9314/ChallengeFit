@@ -36,10 +36,9 @@ namespace SWENG894.Areas.User.Controllers
                 return NotFound();
             }
 
-            var workout = await _context.Workouts
+            var workout = await _context.Workouts.Include("Exercises")
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            workout.Exercises = await _context.Exercise.Include(ex => workout.Id).ToListAsync();
             if (workout == null)
             {
                 return NotFound();

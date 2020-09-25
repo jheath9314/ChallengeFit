@@ -33,7 +33,7 @@ namespace SWENG894.Models
         [Display(Name = "Scaling Options")]
         public String ScalingOptions { get; set; }
 
-        public List<Exercise> Exercises { get; set; }
+        public List<Exercise> Exercises { get; set; } = new List<Exercise>();
 
        public string getTimeDisplayString()
         {
