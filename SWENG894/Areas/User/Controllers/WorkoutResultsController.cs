@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using SWENG894.Areas.User.Controllers;
 using SWENG894.Data;
 using SWENG894.Models;
 
@@ -24,7 +25,19 @@ namespace SWENG894.Areas.User.Views
         // GET: User/WorkoutResults
         public async Task<IActionResult> Index()
         {
-            return View(await _context.WorkoutResults.ToListAsync());
+            //We should consider filtering by username here or this could get very slow
+            var workoutResults = await _context.WorkoutResults.ToListAsync();
+
+            for(int i = 0; i < workoutResults.Count; i++)
+            {
+                var user = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == workoutResults[i].UserId);
+                var workout = await _context.Workouts.FirstOrDefaultAsync(w => w.Id == workoutResults[i].WorkoutId);
+
+                workoutResults[i].username = user.FullName;
+                workoutResults[i].workoutName = workout.Name;
+            }
+
+            return View(workoutResults);
         }
 
         // GET: User/WorkoutResults/Details/5
@@ -37,6 +50,12 @@ namespace SWENG894.Areas.User.Views
 
             var workoutResults = await _context.WorkoutResults
                 .FirstOrDefaultAsync(m => m.Id == id);
+
+            var user = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var workout = await _context.Workouts.FirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);
+            workoutResults.username = user.FullName;
+            workoutResults.workoutName = workout.Name;
+
             if (workoutResults == null)
             {
                 return NotFound();
@@ -65,6 +84,13 @@ namespace SWENG894.Areas.User.Views
             workoutResults.WorkoutId = Id;
             workoutResults.Id = 0;
 
+            
+            var workout = await _context.Workouts.FirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);
+
+            workoutResults.username = user.FullName;
+            workoutResults.workoutName = workout.Name;
+
+
 
 
             if (ModelState.IsValid)
@@ -73,6 +99,10 @@ namespace SWENG894.Areas.User.Views
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            workoutResults.username = user.FullName;
+            workoutResults.workoutName = workout.Name;
+            
             return View(workoutResults);
         }
 
@@ -89,6 +119,12 @@ namespace SWENG894.Areas.User.Views
             {
                 return NotFound();
             }
+
+            var user = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var workout = await _context.Workouts.FirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);
+            workoutResults.username = user.FullName;
+            workoutResults.workoutName = workout.Name;
+
             return View(workoutResults);
         }
 
@@ -141,6 +177,11 @@ namespace SWENG894.Areas.User.Views
             {
                 return NotFound();
             }
+
+            var user = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var workout = await _context.Workouts.FirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);
+            workoutResults.username = user.FullName;
+            workoutResults.workoutName = workout.Name;
 
             return View(workoutResults);
         }

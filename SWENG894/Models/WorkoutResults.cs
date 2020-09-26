@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWENG894.Models
 {
@@ -20,6 +21,10 @@ namespace SWENG894.Models
 
         public int Score { get; set; }
 
-        public int temp { get; set; }
+        [NotMapped]
+        public String username { get; set; }
+
+        [NotMapped]
+        public String workoutName { get; set; }
     }
 }
