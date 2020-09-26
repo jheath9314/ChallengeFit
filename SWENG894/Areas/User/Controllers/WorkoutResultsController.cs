@@ -61,7 +61,6 @@ namespace SWENG894.Areas.User.Views
 
             var user = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            workoutResults.Id = 0;
             workoutResults.UserId = user.Id;
             workoutResults.WorkoutId = Id;
 

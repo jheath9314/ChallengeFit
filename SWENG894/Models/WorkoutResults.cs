@@ -8,6 +8,7 @@ namespace SWENG894.Models
 {
     public class WorkoutResults
     {
+        [Key]
         public int Id { get; set; }
 
         public Workout workout { get; set; }
