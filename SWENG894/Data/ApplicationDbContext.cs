@@ -50,7 +50,7 @@ namespace SWENG894.Data
 
             //workout results
 
-           modelBuilder.Entity<WorkoutResults>().HasKey(t => new { t.UserId, t.WorkoutId });
+           //modelBuilder.Entity<WorkoutResults>().HasKey(t => new { t.UserId, t.WorkoutId });
 
 
 

@@ -63,6 +63,7 @@ namespace SWENG894.Areas.User.Views
 
             workoutResults.UserId = user.Id;
             workoutResults.WorkoutId = Id;
+            workoutResults.Id = 0;
 
 
 
