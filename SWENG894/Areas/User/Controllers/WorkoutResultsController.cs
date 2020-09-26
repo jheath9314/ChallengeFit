@@ -1,37 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using SQLitePCL;
 using SWENG894.Data;
 using SWENG894.Models;
 
-namespace SWENG894.Areas.User.Controllers
+namespace SWENG894.Areas.User.Views
 {
     [Area("User")]
-    [Authorize(Roles = "Admin, User")]
-    public class ExercisesController : Controller
+    public class WorkoutResultsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public ExercisesController(ApplicationDbContext context)
+        public WorkoutResultsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: User/Exercises
+        // GET: User/WorkoutResults
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Exercise.ToListAsync());
+            return View(await _context.WorkoutResults.ToListAsync());
         }
 
-        // GET: User/Exercises/Details/5
+        // GET: User/WorkoutResults/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -39,48 +35,48 @@ namespace SWENG894.Areas.User.Controllers
                 return NotFound();
             }
 
-            var exercise = await _context.Exercise
+            var workoutResults = await _context.WorkoutResults
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (exercise == null)
+            if (workoutResults == null)
             {
                 return NotFound();
             }
 
-            return View(exercise);
+            return View(workoutResults);
         }
 
-        // GET: User/Exercises/Create
+        // GET: User/WorkoutResults/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: User/Exercises/Create
+        // POST: User/WorkoutResults/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int Id, Exercise e)
+        public async Task<IActionResult> Create([Bind("Id,WorkoutId,UserId,Score")] int Id, WorkoutResults workoutResults)
         {
-            if (ModelState.IsValid) {
 
-                //Needed since any other ID results in the entity
-                //framework rejecting the insert
-                e.Id = 0;
-                e.WorkoutId = Id;
-                _context.Add(e);
-                await _context.SaveChangesAsync();
-                var workout = _context.Workouts.Include(w => w.Exercises).FirstOrDefault(workout => workout.Id == Id);
-                workout.Exercises.Add(e);
-                _context.Update(workout);
-                await _context.SaveChangesAsync();
+            var user = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-                return RedirectToAction("Details", "Workouts", new { Id = e.WorkoutId });
+            workoutResults.Id = 0;
+            workoutResults.UserId = user.Id;
+            workoutResults.WorkoutId = Id;
+
+
+
+            if (ModelState.IsValid)
+            {
+                _context.Add(workoutResults);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
-            return View(e);
+            return View(workoutResults);
         }
 
-        // GET: User/Exercises/Edit/5
+        // GET: User/WorkoutResults/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -88,22 +84,22 @@ namespace SWENG894.Areas.User.Controllers
                 return NotFound();
             }
 
-            var exercise = await _context.Exercise.FindAsync(id);
-            if (exercise == null)
+            var workoutResults = await _context.WorkoutResults.FindAsync(id);
+            if (workoutResults == null)
             {
                 return NotFound();
             }
-            return View(exercise);
+            return View(workoutResults);
         }
 
-        // POST: User/Exercises/Edit/5
+        // POST: User/WorkoutResults/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,exercise,reps")] Exercise exercise)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,WorkoutId,UserId,Score")] WorkoutResults workoutResults)
         {
-            if (id != exercise.Id)
+            if (id != workoutResults.Id)
             {
                 return NotFound();
             }
@@ -112,12 +108,12 @@ namespace SWENG894.Areas.User.Controllers
             {
                 try
                 {
-                    _context.Update(exercise);
+                    _context.Update(workoutResults);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ExerciseExists(exercise.Id))
+                    if (!WorkoutResultsExists(workoutResults.Id))
                     {
                         return NotFound();
                     }
@@ -128,10 +124,10 @@ namespace SWENG894.Areas.User.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(exercise);
+            return View(workoutResults);
         }
 
-        // GET: User/Exercises/Delete/5
+        // GET: User/WorkoutResults/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -139,30 +135,30 @@ namespace SWENG894.Areas.User.Controllers
                 return NotFound();
             }
 
-            var exercise = await _context.Exercise
+            var workoutResults = await _context.WorkoutResults
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (exercise == null)
+            if (workoutResults == null)
             {
                 return NotFound();
             }
 
-            return View(exercise);
+            return View(workoutResults);
         }
 
-        // POST: User/Exercises/Delete/5
+        // POST: User/WorkoutResults/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var exercise = await _context.Exercise.FindAsync(id);
-            _context.Exercise.Remove(exercise);
+            var workoutResults = await _context.WorkoutResults.FindAsync(id);
+            _context.WorkoutResults.Remove(workoutResults);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ExerciseExists(int id)
+        private bool WorkoutResultsExists(int id)
         {
-            return _context.Exercise.Any(e => e.Id == id);
+            return _context.WorkoutResults.Any(e => e.Id == id);
         }
     }
 }
