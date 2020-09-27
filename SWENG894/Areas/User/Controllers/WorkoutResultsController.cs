@@ -26,7 +26,8 @@ namespace SWENG894.Areas.User.Views
         public async Task<IActionResult> Index()
         {
             //We should consider filtering by username here or this could get very slow
-            var workoutResults = await _context.WorkoutResults.ToListAsync();
+            var loggedInUser = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var workoutResults = await _context.WorkoutResults.Where(w => w.UserId == loggedInUser.Id).ToListAsync();
 
             for(int i = 0; i < workoutResults.Count; i++)
             {
