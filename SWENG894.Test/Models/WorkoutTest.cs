@@ -40,9 +40,6 @@ namespace SWENG894.Test.Models
             myWorkout.Time = 297;
             Assert.True(myWorkout.getTimeDisplayString() == "4:57");
 
-            myWorkout.Time = 297;
-            Assert.True(myWorkout.getTimeDisplayString() == "4:57");
-
             myWorkout.Time = 660;
             Assert.True(myWorkout.getTimeDisplayString() == "11:00");
             
