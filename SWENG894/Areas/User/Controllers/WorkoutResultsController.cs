@@ -36,6 +36,7 @@ namespace SWENG894.Areas.User.Views
 
                 workoutResults[i].username = user.FullName;
                 workoutResults[i].workoutName = workout.Name;
+                workoutResults[i].ScoringType = workout.ScoringType;
             }
 
             return View(workoutResults);
@@ -56,6 +57,7 @@ namespace SWENG894.Areas.User.Views
             var workout = await _context.Workouts.FirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);
             workoutResults.username = user.FullName;
             workoutResults.workoutName = workout.Name;
+            workoutResults.ScoringType = workout.ScoringType;
 
             if (workoutResults == null)
             {
@@ -66,9 +68,14 @@ namespace SWENG894.Areas.User.Views
         }
 
         // GET: User/WorkoutResults/Create
-        public IActionResult Create()
+        public IActionResult Create(int Id)
         {
-            return View();
+            //get the model data needed for determining how to record results
+            var workout = _context.Workouts.FirstOrDefault(w => w.Id == Id);
+            var workoutResults = new WorkoutResults();
+            workoutResults.ScoringType = workout.ScoringType;
+            workoutResults.workoutName = workout.Name;
+            return View(workoutResults);
         }
 
         // POST: User/WorkoutResults/Create
@@ -76,7 +83,7 @@ namespace SWENG894.Areas.User.Views
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,WorkoutId,UserId,Score")] int Id, WorkoutResults workoutResults)
+        public async Task<IActionResult> Create([Bind("Id,WorkoutId,UserId,Score")] int Id, WorkoutResults workoutResults, int seconds)
         {
 
             var user = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -85,15 +92,18 @@ namespace SWENG894.Areas.User.Views
             workoutResults.WorkoutId = Id;
             workoutResults.Id = 0;
 
-            
+            if (workoutResults.ScoringType == Workout.Scoring.Time)
+            {
+                workoutResults.Score = workoutResults.Score * 60 + seconds;
+            }
+
             var workout = await _context.Workouts.FirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);
 
             workoutResults.username = user.FullName;
             workoutResults.workoutName = workout.Name;
+            workoutResults.ScoringType = workout.ScoringType;
 
-
-
-
+            ModelState.Remove("seconds");
             if (ModelState.IsValid)
             {
                 _context.Add(workoutResults);
@@ -101,8 +111,6 @@ namespace SWENG894.Areas.User.Views
                 return RedirectToAction(nameof(Index));
             }
 
-            workoutResults.username = user.FullName;
-            workoutResults.workoutName = workout.Name;
             
             return View(workoutResults);
         }
@@ -125,6 +133,7 @@ namespace SWENG894.Areas.User.Views
             var workout = await _context.Workouts.FirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);
             workoutResults.username = user.FullName;
             workoutResults.workoutName = workout.Name;
+            workoutResults.ScoringType = workout.ScoringType;
 
             return View(workoutResults);
         }
@@ -134,13 +143,24 @@ namespace SWENG894.Areas.User.Views
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,WorkoutId,UserId,Score")] WorkoutResults workoutResults)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,WorkoutId,UserId,Score")] WorkoutResults workoutResults, int seconds)
         {
             if (id != workoutResults.Id)
             {
                 return NotFound();
             }
 
+            //get the real workout results
+            var workout = await _context.Workouts.FirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);
+
+            workoutResults.ScoringType = workout.ScoringType;
+
+            if (workoutResults.ScoringType == Workout.Scoring.Time)
+            {
+                workoutResults.Score = workoutResults.Score * 60 + seconds;
+            }
+
+            ModelState.Remove("seconds");
             if (ModelState.IsValid)
             {
                 try
@@ -183,6 +203,7 @@ namespace SWENG894.Areas.User.Views
             var workout = await _context.Workouts.FirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);
             workoutResults.username = user.FullName;
             workoutResults.workoutName = workout.Name;
+            workoutResults.ScoringType = workout.ScoringType;
 
             return View(workoutResults);
         }

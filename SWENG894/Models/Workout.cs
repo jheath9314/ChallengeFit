@@ -36,7 +36,7 @@ namespace SWENG894.Models
         public List<Exercise> Exercises { get; set; } = new List<Exercise>();
 
        public string getTimeDisplayString()
-        {
+       {
             if(ScoringType == Scoring.Time)
             {
                 string minutes = (Time / 60).ToString();
