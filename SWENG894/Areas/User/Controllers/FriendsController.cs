@@ -17,7 +17,6 @@ namespace SWENG894.Areas.User.Controllers
     [Authorize(Roles = "Admin, User")]
     public class FriendsController : Controller
     {
-        //private readonly ApplicationDbContext _context;
         private readonly IUnitOfWork _unitOfWork;
         private readonly int _pageSize;
 

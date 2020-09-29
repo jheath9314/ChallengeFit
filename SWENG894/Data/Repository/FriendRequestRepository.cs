@@ -94,5 +94,20 @@ namespace SWENG894.Data.Repository
         {
             throw new NotImplementedException();
         }
+
+        public override Task<FriendRequest> GetAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task RemoveAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool ObjectExists(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
