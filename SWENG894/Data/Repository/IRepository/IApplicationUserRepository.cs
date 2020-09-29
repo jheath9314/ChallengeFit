@@ -8,6 +8,12 @@ namespace SWENG894.Data.Repository.IRepository
 {
     public interface IApplicationUserRepository : IRepository<ApplicationUser>
     {
-        public void UpdateAsync(FriendRequest request);
+        public void UpdateAsync(ApplicationUser user);
+
+        public Task<ApplicationUser> GetAsync(string id);
+
+        public Task RemoveAsync(string id);
+
+        public bool ObjectExists(string id);
     }
 }

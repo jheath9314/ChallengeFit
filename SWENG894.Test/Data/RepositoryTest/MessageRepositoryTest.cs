@@ -493,10 +493,6 @@ namespace SWENG894.Test.RepositoryTest
             _context.SaveChangesAsync().GetAwaiter();
         }
 
-        #endregion
-
-        #region Methods Specific To Interface
-
         [Fact]
         public void GetAllUserMessages()
         {

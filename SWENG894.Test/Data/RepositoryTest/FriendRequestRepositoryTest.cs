@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SWENG894.Data;
+using SWENG894.Data.Repository;
+using SWENG894.Data.Repository.IRepository;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,7 +12,7 @@ namespace SWENG894.Test.RepositoryTest
     public class FriendRequestRepositoryTest
     {
         private readonly ApplicationDbContext _context;
-        //private readonly IFriendRequestRepository _cut;
+        private readonly IFriendRequestRepository _cut;
 
         public FriendRequestRepositoryTest()
         {
@@ -22,7 +24,7 @@ namespace SWENG894.Test.RepositoryTest
             _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
 
-            //_cut = new MessageRepository(_context);
+            _cut = new FriendRequestRepository(_context);
         }
 
         #region Methods Inherited From Repository
@@ -113,6 +115,36 @@ namespace SWENG894.Test.RepositoryTest
 
         [Fact]
         public async void UpdateAsyncTest()
+        {
+            //Setup
+
+            //Test
+
+            //Reset
+        }
+
+        [Fact]
+        public async void GetAllUserFriendRequestsTest()
+        {
+            //Setup
+
+            //Test
+
+            //Reset
+        }
+
+        [Fact]
+        public async void FindNewFriendsTest()
+        {
+            //Setup
+
+            //Test
+
+            //Reset
+        }
+
+        [Fact]
+        public async void GetPersonToFriendTest()
         {
             //Setup
 

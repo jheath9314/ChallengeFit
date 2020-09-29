@@ -20,7 +20,7 @@ namespace SWENG894.Data.Repository
             _dbSet = _context.Set<T>();
         }
 
-        public async Task<T> GetAsync(int id)
+        public virtual async Task<T> GetAsync(int id)
         {
             return await _dbSet.FindAsync(id);
         }
@@ -80,7 +80,7 @@ namespace SWENG894.Data.Repository
             _dbSet.Remove(entity);
         }
 
-        public async Task RemoveAsync(int id)
+        public virtual async Task RemoveAsync(int id)
         {
             T entity = await _dbSet.FindAsync(id);
             await RemoveAsync(entity);
@@ -91,7 +91,7 @@ namespace SWENG894.Data.Repository
             _dbSet.RemoveRange(entity);
         }
 
-        public bool ObjectExists(int id)
+        public virtual bool ObjectExists(int id)
         {
             return GetAsync(id).Result != null;
         }

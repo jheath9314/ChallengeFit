@@ -9,6 +9,7 @@ namespace SWENG894.Data.Repository.IRepository
     public interface IFriendRequestRepository : IRepository<FriendRequest>
     {
         public void UpdateAsync(FriendRequest request);
+
         public IEnumerable<FriendRequest> GetAllUserFriendRequests(string sort, string search, string userId);
 
         public IEnumerable<ApplicationUser> FindNewFriends(string sort, string search, string userId);
