@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1.Mozilla;
 using SWENG894.Models;
 
 namespace SWENG894.Data
@@ -46,6 +47,13 @@ namespace SWENG894.Data
                 .WithMany(b => b.ReceievedMessages)
                 .HasForeignKey(c => c.SentToId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            //workout results
+
+           //modelBuilder.Entity<WorkoutResults>().HasKey(t => new { t.UserId, t.WorkoutId });
+
+
+
         }
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
@@ -55,6 +63,9 @@ namespace SWENG894.Data
         public DbSet<Exercise> Exercise { get; set; }
 
         public DbSet<Message> Messages { get; set; }
+
+        public DbSet<SWENG894.Models.WorkoutResults> WorkoutResults { get; set; }
+
 
     }
 }
