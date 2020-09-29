@@ -10,9 +10,16 @@ namespace SWENG894.Data.Repository
     {
         private readonly ApplicationDbContext _context;
 
+        public IApplicationUserRepository ApplicationUser { get; private set; }
+        public IMessageRepository Message { get; private set; }
+        public IFriendRequestRepository FriendRequest { get; private set; }
+
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
+            ApplicationUser = new ApplicationUserRepository(context);
+            Message = new MessageRepository(context);
+            FriendRequest = new FriendRequestRepository(context);
         }
 
         public void Dispose()
@@ -20,9 +27,9 @@ namespace SWENG894.Data.Repository
             _context.Dispose();
         }
 
-        public void Save()
+        public async Task Save()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

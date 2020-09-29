@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SWENG894.Data;
+using SWENG894.Data.Repository;
+using SWENG894.Data.Repository.IRepository;
 using SWENG894.Models;
 using SWENG894.Utility;
 using SWENG894.ViewModels;
@@ -18,11 +20,14 @@ namespace SWENG894.Areas.User.Controllers
     [Authorize(Roles = "Admin, User")]
     public class MessagesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        //private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly int _pageSize;
 
-        public MessagesController(ApplicationDbContext context)
+        public MessagesController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
+            _pageSize = 5;
         }
 
         // GET: User/Messages
@@ -41,37 +46,9 @@ namespace SWENG894.Areas.User.Controllers
                 search = search.ToLower();
             }
 
-            ViewData["CurrentFilter"] = search;
+            ViewData["CurrentFilter"] = search;          
 
-            var messages = _context.Messages
-                .Include(m => m.SentBy)
-                .Include(m => m.SentTo)
-                .Where(m => (m.SentById == User.FindFirstValue(ClaimTypes.NameIdentifier) && !m.DeletedBySender) ||
-                            (m.SentToId == User.FindFirstValue(ClaimTypes.NameIdentifier) && !m.DeletedByReceiver));
-
-            if (!String.IsNullOrEmpty(search))
-            {
-                messages = messages.Where(m => m.Subject.ToLower().Contains(search) ||
-                    m.Body.ToLower().Contains(search));
-            }
-
-            if (!String.IsNullOrEmpty(box))
-            {
-                messages = messages.Where(m => m.SentById == User.FindFirstValue(ClaimTypes.NameIdentifier) && !m.DeletedBySender);
-            }
-            else
-            {
-                messages = messages.Where(m => m.SentToId == User.FindFirstValue(ClaimTypes.NameIdentifier) && !m.DeletedByReceiver);
-            }
-
-            messages = sort switch
-            {
-                "desc" => messages.OrderByDescending(m => m.SentTime),
-                _ => messages.OrderBy(m => m.SentTime)
-            };
-
-            int pageSize = 3;
-            var personList = await PaginatedList<Message>.CreateAsync(messages, page ?? 1, pageSize);
+            var personList = await PaginatedList<Message>.Create(_unitOfWork.Message.GetAllUserMessages(sort, search, box, User.FindFirstValue(ClaimTypes.NameIdentifier)).ToList(), page ?? 1, _pageSize);
 
             return View(personList);
         }
@@ -84,10 +61,10 @@ namespace SWENG894.Areas.User.Controllers
                 return NotFound();
             }
 
-            var message = await _context.Messages
-                .Include(m => m.SentBy)
-                .Include(m => m.SentTo)
-                .FirstOrDefaultAsync(m => m.Id == id && (m.SentById == User.FindFirstValue(ClaimTypes.NameIdentifier) || m.SentToId == User.FindFirstValue(ClaimTypes.NameIdentifier)));
+            var message = await _unitOfWork.Message.GetFirstOrDefaultAsync
+                (m => m.Id == id && (m.SentById == User.FindFirstValue(ClaimTypes.NameIdentifier) || 
+                 m.SentToId == User.FindFirstValue(ClaimTypes.NameIdentifier)),
+                 includeProperties: "SentBy,SentTo");
 
             if (message == null)
             {
@@ -98,52 +75,15 @@ namespace SWENG894.Areas.User.Controllers
         }
 
         // GET: User/Messages/Create
-        public IActionResult Create(string id)
+        public IActionResult Create()
         {
 
-            var sender = _context.ApplicationUsers
-                .Include(u => u.SentFriendRequests)
-                .ThenInclude(u => u.RequestedFor)
-                .Include(u => u.ReceievedFriendRequests)
-                .ThenInclude(u => u.RequestedBy)
-                .FirstOrDefault(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var message = _unitOfWork.Message.CreateNewMesage(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            if (sender == null)
+            if (message == null)
             {
                 return NotFound();
             }
-
-            MessageViewModel message = new MessageViewModel()
-            {
-                SentById = User.FindFirstValue(ClaimTypes.NameIdentifier),//User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value,
-                SentBy = sender,
-                Friends = new List<ApplicationUser>()
-            };
-
-            foreach(var request in sender.Friends)
-            {
-                if(request.RequestedById == User.FindFirstValue(ClaimTypes.NameIdentifier))
-                {
-                    message.Friends.Add(request.RequestedFor);
-                }
-                else
-                {
-                    message.Friends.Add(request.RequestedBy);
-                }
-            }
-
-            //if (id != null)
-            //{
-            //    var receiver = _context.ApplicationUsers.FirstOrDefault(u => u.Id.Equals(id));
-
-            //    if (receiver == null)
-            //    {
-            //        return NotFound();
-            //    }
-
-            //    message.SentToId = id;
-            //    message.SentTo = receiver;
-            //}
 
             return View(message);
         }
@@ -171,8 +111,9 @@ namespace SWENG894.Areas.User.Controllers
                     DeletedBySender = false
                 };
 
-                _context.Add(msg);
-                await _context.SaveChangesAsync();
+                await _unitOfWork.Message.AddAsync(msg);
+                await _unitOfWork.Save();
+
                 return RedirectToAction(nameof(Index));
             }
 
@@ -187,11 +128,11 @@ namespace SWENG894.Areas.User.Controllers
                 return NotFound();
             }
 
-            var message = await _context.Messages
-                .Include(m => m.SentBy)
-                .Include(m => m.SentTo)
-                .FirstOrDefaultAsync(m => m.Id == id && ((m.SentToId == User.FindFirstValue(ClaimTypes.NameIdentifier) && !m.DeletedByReceiver) ||
-                                                         (m.SentById == User.FindFirstValue(ClaimTypes.NameIdentifier) && !m.DeletedBySender)));
+            var message = await _unitOfWork.Message.GetFirstOrDefaultAsync
+                (m => m.Id == id && ((m.SentToId == User.FindFirstValue(ClaimTypes.NameIdentifier) && !m.DeletedByReceiver) ||
+                (m.SentById == User.FindFirstValue(ClaimTypes.NameIdentifier) && !m.DeletedBySender)),
+                includeProperties: "SentBy,SentTo");
+
             if (message == null)
             {
                 return NotFound();
@@ -205,9 +146,9 @@ namespace SWENG894.Areas.User.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var message = await _context.Messages
-                .FirstOrDefaultAsync(m => m.Id == id && ((m.SentToId == User.FindFirstValue(ClaimTypes.NameIdentifier) && !m.DeletedByReceiver) ||
-                                                         (m.SentById == User.FindFirstValue(ClaimTypes.NameIdentifier) && !m.DeletedBySender)));
+            var message = await _unitOfWork.Message.GetFirstOrDefaultAsync
+                (m => m.Id == id && ((m.SentToId == User.FindFirstValue(ClaimTypes.NameIdentifier) && !m.DeletedByReceiver) ||
+                (m.SentById == User.FindFirstValue(ClaimTypes.NameIdentifier) && !m.DeletedBySender)));
 
             if (message != null)
             {
@@ -219,7 +160,7 @@ namespace SWENG894.Areas.User.Controllers
                 {
                     message.DeletedByReceiver = true;
                 }
-                await _context.SaveChangesAsync();
+                await _unitOfWork.Save();
             }
 
             return RedirectToAction(nameof(Index));
@@ -227,7 +168,7 @@ namespace SWENG894.Areas.User.Controllers
 
         private bool MessageExists(int id)
         {
-            return _context.Messages.Any(e => e.Id == id);
+            return _unitOfWork.Message.ObjectExists(id);
         }
     }
 }

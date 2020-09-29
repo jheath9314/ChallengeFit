@@ -7,6 +7,10 @@ namespace SWENG894.Data.Repository.IRepository
 {
     public interface IUnitOfWork : IDisposable
     {
+        IApplicationUserRepository ApplicationUser { get; }        
+        IMessageRepository Message { get; }
+        IFriendRequestRepository FriendRequest { get; }
 
+        Task Save();
     }
 }
