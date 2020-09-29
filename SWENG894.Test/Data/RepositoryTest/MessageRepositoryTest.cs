@@ -14,7 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace SWENG894.Test.Repository
+namespace SWENG894.Test.RepositoryTest
 {
     public class MessageRepositoryTest
     {

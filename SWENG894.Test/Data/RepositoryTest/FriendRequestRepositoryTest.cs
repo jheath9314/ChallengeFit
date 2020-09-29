@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace SWENG894.Test.Repository
+namespace SWENG894.Test.RepositoryTest
 {
     public class FriendRequestRepositoryTest
     {
