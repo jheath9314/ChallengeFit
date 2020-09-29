@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SWENG894.Data.Repository
 {
-    public class MessageRepository : MessageRepository<Message>, IMessageRepository
+    public class MessageRepository : Repository<Message>, IMessageRepository
     {
         private readonly ApplicationDbContext _context;
 

@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace SWENG894.Data.Repository
 {
-    public class MessageRepository<T> : IRepository<T> where T : class
+    public class Repository<T> : IRepository<T> where T : class
     {
         private readonly ApplicationDbContext _context;
         internal DbSet<T> _dbSet;
 
-        public MessageRepository(ApplicationDbContext context)
+        public Repository(ApplicationDbContext context)
         {
             _context = context;
             _dbSet = _context.Set<T>();

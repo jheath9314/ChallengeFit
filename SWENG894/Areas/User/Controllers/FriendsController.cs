@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SWENG894.Data;
+using SWENG894.Data.Repository.IRepository;
 using SWENG894.Models;
 using SWENG894.Utility;
 using static SWENG894.Models.FriendRequest;
@@ -16,11 +17,14 @@ namespace SWENG894.Areas.User.Controllers
     [Authorize(Roles = "Admin, User")]
     public class FriendsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        //private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly int _pageSize;
 
-        public FriendsController(ApplicationDbContext context)
+        public FriendsController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
+            _pageSize = 5;
         }
 
         // GET: User/Friends
@@ -39,31 +43,7 @@ namespace SWENG894.Areas.User.Controllers
             }
 
             ViewData["CurrentFilter"] = search;
-
-            var user = await _context.ApplicationUsers
-                .Include(u => u.SentFriendRequests)
-                .ThenInclude(u => u.RequestedFor)
-                .Include(u => u.ReceievedFriendRequests)
-                .ThenInclude(u => u.RequestedBy)
-                .FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-            var matchingUsers = user.Friends;
-
-            if (!String.IsNullOrEmpty(search))
-            {
-                matchingUsers = user.Friends.Where(u => u.RequestedFor.LastName.ToLower().Contains(search) ||
-                    u.RequestedFor.FirstName.ToLower().Contains(search) ||
-                    u.RequestedFor.Email.ToLower().Contains(search)).ToList();
-            }
-
-            matchingUsers = sort switch
-            {
-                "desc" => matchingUsers.OrderByDescending(s => s.RequestedFor.LastName).ToList(),
-                _ => matchingUsers.OrderBy(s => s.RequestedFor.LastName).ToList(),
-            };
-
-            int pageSize = 3;
-            var personList = await PaginatedList<FriendRequest>.Create(matchingUsers.ToList(), page ?? 1, pageSize);
+            var personList = await PaginatedList<FriendRequest>.Create(_unitOfWork.FriendRequest.GetAllUserFriendRequests(sort, search, User.FindFirstValue(ClaimTypes.NameIdentifier)).ToList(), page ?? 1, _pageSize);
 
             return View(personList);
         }
@@ -85,41 +65,7 @@ namespace SWENG894.Areas.User.Controllers
 
             ViewData["CurrentFilter"] = search;
 
-            var user = await _context.ApplicationUsers
-                    .Include(u => u.SentFriendRequests)
-                    .ThenInclude(u => u.RequestedFor)
-                    .Include(u => u.ReceievedFriendRequests)
-                    .ThenInclude(u => u.RequestedFor)
-                    .FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-            var matchingUsers = _context.ApplicationUsers.Where(u => u.EmailConfirmed == true).ToList();
-            matchingUsers.Remove(user);
-
-            if (!String.IsNullOrEmpty(search))
-            {
-                matchingUsers = matchingUsers.Where(u => u.LastName.ToLower().Contains(search) ||
-                    u.FirstName.ToLower().Contains(search) ||
-                    u.Email.ToLower().Contains(search)).ToList();
-            }
-
-            matchingUsers = sort switch
-            {
-                "desc" => matchingUsers.OrderByDescending(s => s.LastName).ToList(),
-                _ => matchingUsers.OrderBy(s => s.LastName).ToList(),
-            };
-
-            foreach (var request in user.SentFriendRequests)
-            {
-                matchingUsers.Remove(request.RequestedFor);
-            }
-
-            foreach (var request in user.ReceievedFriendRequests)
-            {
-                matchingUsers.Remove(request.RequestedBy);
-            }
-
-            int pageSize = 3;
-            var resultList = await PaginatedList<ApplicationUser>.Create(matchingUsers.ToList(), page ?? 1, pageSize);
+            var resultList = await PaginatedList<ApplicationUser>.Create(_unitOfWork.FriendRequest.FindNewFriends(sort, search, User.FindFirstValue(ClaimTypes.NameIdentifier)).ToList(), page ?? 1, _pageSize);
 
             return View(resultList);
         }
@@ -132,10 +78,7 @@ namespace SWENG894.Areas.User.Controllers
                 return NotFound();
             }
 
-            var personToFriend = await _context.ApplicationUsers
-                .Include(u => u.ReceievedFriendRequests)
-                .ThenInclude(u => u.RequestedBy)
-                .FirstOrDefaultAsync(m => m.Id == id && m.EmailConfirmed == true);
+            var personToFriend = await _unitOfWork.FriendRequest.GetPersonToFriend(id);
 
             if (personToFriend == null)
             {
@@ -157,15 +100,15 @@ namespace SWENG894.Areas.User.Controllers
                 return NotFound();
             }
 
-            var userToFriend = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == id);
+            var userToFriend = await _unitOfWork.ApplicationUser.GetFirstOrDefaultAsync(u => u.Id == id);
 
             if (userToFriend == null || User.FindFirstValue(ClaimTypes.NameIdentifier) == null)
             {
                 return NotFound();
             }
 
-            var friendRequest = await _context.FriendRequests
-                .FirstOrDefaultAsync(m => m.RequestedById == User.FindFirstValue(ClaimTypes.NameIdentifier) && m.RequestedForId == id);
+            var friendRequest = await _unitOfWork.FriendRequest
+                .GetFirstOrDefaultAsync(m => m.RequestedById == User.FindFirstValue(ClaimTypes.NameIdentifier) && m.RequestedForId == id);
 
             if (friendRequest == null)
             {
@@ -176,7 +119,7 @@ namespace SWENG894.Areas.User.Controllers
                     RequestTime = DateTime.Now,
                     Status = FriendRequestStatus.New
                 };
-                _context.Add(request);
+                await _unitOfWork.FriendRequest.AddAsync(request);
 
 
                 Message msg = new Message()
@@ -192,9 +135,9 @@ namespace SWENG894.Areas.User.Controllers
                     DeletedByReceiver = false,
                     DeletedBySender = false
                 };
-                _context.Messages.Add(msg);
+                await _unitOfWork.Message.AddAsync(msg);
 
-                await _context.SaveChangesAsync();
+                await _unitOfWork.Save();
                 return View(userToFriend);
             }
 
@@ -210,10 +153,10 @@ namespace SWENG894.Areas.User.Controllers
                 return NotFound();
             }
 
-            var friendRequest = await _context.FriendRequests
-                .Include(f => f.RequestedBy)
-                .Include(f => f.RequestedFor)
-                .FirstOrDefaultAsync(m => m.RequestedById == id);
+            var friendRequest = await _unitOfWork.FriendRequest
+                .GetFirstOrDefaultAsync(m => m.RequestedById == id,
+                includeProperties: "RequestedBy,RequestedFor");
+
             if (friendRequest == null)
             {
                 return NotFound();
@@ -230,10 +173,9 @@ namespace SWENG894.Areas.User.Controllers
                 return NotFound();
             }
 
-            var friendRequest = await _context.FriendRequests
-                .Include(f => f.RequestedBy)
-                .Include(f => f.RequestedFor)
-                .FirstOrDefaultAsync(m => m.RequestedById == sender && m.RequestedForId == receiver);
+            var friendRequest = await _unitOfWork.FriendRequest
+                .GetFirstOrDefaultAsync(m => m.RequestedById == sender && m.RequestedForId == receiver,
+                includeProperties: "RequestedBy,RequestedFor");
 
             if (friendRequest == null)
             {
@@ -255,10 +197,9 @@ namespace SWENG894.Areas.User.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ViewRequestPost(string sender, string receiver, FriendRequestStatus status)
         {
-            var friendRequest = await _context.FriendRequests
-                .Include(f => f.RequestedBy)
-                .Include(f => f.RequestedFor)
-                .FirstOrDefaultAsync(m => m.RequestedById == sender && m.RequestedForId == receiver);
+            var friendRequest = await _unitOfWork.FriendRequest
+                .GetFirstOrDefaultAsync(m => m.RequestedById == sender && m.RequestedForId == receiver,
+                includeProperties: "RequestedBy,RequestedFor");
 
             if (friendRequest == null || friendRequest.RequestedForId != User.FindFirstValue(ClaimTypes.NameIdentifier))
             {
@@ -272,129 +213,8 @@ namespace SWENG894.Areas.User.Controllers
                 friendRequest.BecameFriendsTime = DateTime.Now;
             }
 
-            await _context.SaveChangesAsync();
+            await _unitOfWork.Save();
             return View(friendRequest);
         }
-
-
-
-
-
-        //// GET: User/Friends/Create
-        //public IActionResult Create()
-        //{
-        //    ViewData["RequestedById"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
-        //    ViewData["RequestedForId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
-        //    return View();
-        //}
-
-        //// POST: User/Friends/Create
-        //// To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        //// more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("RequestedById,RequestedForId,RequestTime,BecameFriendsTime,FriendRequestFlag")] FriendRequest friendRequest)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(friendRequest);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["RequestedById"] = new SelectList(_context.ApplicationUsers, "Id", "Id", friendRequest.RequestedById);
-        //    ViewData["RequestedForId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", friendRequest.RequestedForId);
-        //    return View(friendRequest);
-        //}
-
-        //// GET: User/Friends/Edit/5
-        //public async Task<IActionResult> Edit(string id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var friendRequest = await _context.FriendRequests.FindAsync(id);
-        //    if (friendRequest == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    ViewData["RequestedById"] = new SelectList(_context.ApplicationUsers, "Id", "Id", friendRequest.RequestedById);
-        //    ViewData["RequestedForId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", friendRequest.RequestedForId);
-        //    return View(friendRequest);
-        //}
-
-        //// POST: User/Friends/Edit/5
-        //// To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        //// more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(string id, [Bind("RequestedById,RequestedForId,RequestTime,BecameFriendsTime,FriendRequestFlag")] FriendRequest friendRequest)
-        //{
-        //    if (id != friendRequest.RequestedById)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(friendRequest);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!FriendRequestExists(friendRequest.RequestedById))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["RequestedById"] = new SelectList(_context.ApplicationUsers, "Id", "Id", friendRequest.RequestedById);
-        //    ViewData["RequestedForId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", friendRequest.RequestedForId);
-        //    return View(friendRequest);
-        //}
-
-        //// GET: User/Friends/Delete/5
-        //public async Task<IActionResult> Delete(string id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var friendRequest = await _context.FriendRequests
-        //        .Include(f => f.RequestedBy)
-        //        .Include(f => f.RequestedFor)
-        //        .FirstOrDefaultAsync(m => m.RequestedById == id);
-        //    if (friendRequest == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(friendRequest);
-        //}
-
-        //// POST: User/Friends/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(string id)
-        //{
-        //    var friendRequest = await _context.FriendRequests.FindAsync(id);
-        //    _context.FriendRequests.Remove(friendRequest);
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        //private bool FriendRequestExists(string id)
-        //{
-        //    return _context.FriendRequests.Any(e => e.RequestedById == id);
-        //}
     }
 }
