@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SWENG894.Data;
 
-namespace SWENG894.Migrations
+namespace SWENG894.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200926162200_WorkoutResults_8")]
-    partial class WorkoutResults_8
+    [Migration("20200929214546_Rollup")]
+    partial class Rollup
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -350,19 +350,23 @@ namespace SWENG894.Migrations
 
             modelBuilder.Entity("SWENG894.Models.WorkoutResults", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("WorkoutId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
+                    b.HasKey("Id");
 
-                    b.Property<int>("Score")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "WorkoutId");
+                    b.HasIndex("UserId");
 
                     b.HasIndex("WorkoutId");
 
@@ -477,9 +481,7 @@ namespace SWENG894.Migrations
                 {
                     b.HasOne("SWENG894.Models.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.HasOne("SWENG894.Models.Workout", "workout")
                         .WithMany()

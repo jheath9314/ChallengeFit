@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace SWENG894.Migrations
+namespace SWENG894.Data.Migrations
 {
-    public partial class Intial : Migration
+    public partial class Rollup : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -260,8 +260,7 @@ namespace SWENG894.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     WorkoutId = table.Column<int>(nullable: false),
                     UserId = table.Column<string>(nullable: true),
-                    Score = table.Column<int>(nullable: false),
-                    temp = table.Column<int>(nullable: false)
+                    Score = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {

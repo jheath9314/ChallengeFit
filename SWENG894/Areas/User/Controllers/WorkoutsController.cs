@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using SWENG894.Data;
 using SWENG894.Models;
+using SWENG894.Utility;
 
 namespace SWENG894.Areas.User.Controllers
 {
@@ -16,16 +17,49 @@ namespace SWENG894.Areas.User.Controllers
     public class WorkoutsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly int _pageSize;
 
         public WorkoutsController(ApplicationDbContext context)
         {
             _context = context;
+            _pageSize = 5;
         }
 
         // GET: User/Workouts
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sort, string search, string filter, int? page)
         {
-            return View(await _context.Workouts.ToListAsync());
+            ViewData["CurrentSort"] = sort;
+            ViewData["SortOrder"] = String.IsNullOrEmpty(sort) ? "desc" : "";
+
+            if (search == null)
+            {
+                search = filter;
+            }
+            else
+            {
+                search = search.ToLower();
+            }
+
+            ViewData["CurrentFilter"] = search;
+
+            var workouts = _context.Workouts.Where(w => w.Name != null);
+
+            if (!String.IsNullOrEmpty(search))
+            {
+                workouts = workouts.Where(s => s.Name.Contains(search));
+            }
+
+            workouts = sort switch
+            {
+                "desc" => workouts.OrderByDescending(s => s.Name),
+                _ => workouts.OrderBy(s => s.Name),
+            };
+
+            var workoutList = await PaginatedList<Workout>.CreateAsync(workouts.AsNoTracking(), page ?? 1, _pageSize);
+
+            return View(workoutList);
+
+            //return View(await _context.Workouts.ToListAsync());
         }
 
         // GET: User/Workouts/Details/5

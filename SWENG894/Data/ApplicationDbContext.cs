@@ -58,14 +58,9 @@ namespace SWENG894.Data
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<FriendRequest> FriendRequests { get; set; }
-
         public DbSet<Workout> Workouts { get; set; }
         public DbSet<Exercise> Exercise { get; set; }
-
         public DbSet<Message> Messages { get; set; }
-
-        public DbSet<SWENG894.Models.WorkoutResults> WorkoutResults { get; set; }
-
-
+        public DbSet<WorkoutResults> WorkoutResults { get; set; }
     }
 }
