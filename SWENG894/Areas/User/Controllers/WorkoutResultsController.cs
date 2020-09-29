@@ -92,16 +92,18 @@ namespace SWENG894.Areas.User.Views
             workoutResults.WorkoutId = Id;
             workoutResults.Id = 0;
 
-            if (workoutResults.ScoringType == Workout.Scoring.Time)
-            {
-                workoutResults.Score = workoutResults.Score * 60 + seconds;
-            }
-
             var workout = await _context.Workouts.FirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);
+            workoutResults.ScoringType = workout.ScoringType;
+
 
             workoutResults.username = user.FullName;
             workoutResults.workoutName = workout.Name;
             workoutResults.ScoringType = workout.ScoringType;
+
+            if (workoutResults.ScoringType == Workout.Scoring.Time)
+            {
+                workoutResults.Score = workoutResults.Score * 60 + seconds;
+            }
 
             ModelState.Remove("seconds");
             if (ModelState.IsValid)
