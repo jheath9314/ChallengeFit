@@ -26,5 +26,27 @@ namespace SWENG894.Models
 
         [NotMapped]
         public String workoutName { get; set; }
+
+        [NotMapped]
+        public Workout.Scoring ScoringType { get; set; }
+
+        public string getTimeDisplayString()
+        {
+            if (ScoringType == Workout.Scoring.Time)
+            {
+                string minutes = (Score / 60).ToString();
+                string seconds = (Score % 60).ToString();
+                if ((Score % 60) < 10)
+                {
+                    seconds = "0" + seconds;
+                }
+                string displayValue = minutes + ":" + seconds;
+                return displayValue;
+            }
+            else
+            {
+                return Score.ToString();
+            }
+        }
     }
 }

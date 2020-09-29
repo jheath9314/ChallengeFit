@@ -24,6 +24,10 @@ function handleScoringTypeChange() {
     });
 }
 
+function hideScoringTypeField() {
+    $('#scoringType').hide();
+}
+
 function hideSecondsField() {
     var label = $('#scoringType').find(":selected").text();
     if (label != "Time") {
