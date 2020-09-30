@@ -32,7 +32,7 @@ namespace SWENG894.Test.Data.DbInitializerTest
             {
 
             var builder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            builder.UseInMemoryDatabase(databaseName: "DbInMemory");
+            builder.UseInMemoryDatabase(databaseName: "DbInMemoryInit");
 
             var dbContextOptions = builder.Options;
             _context = new ApplicationDbContext(dbContextOptions);

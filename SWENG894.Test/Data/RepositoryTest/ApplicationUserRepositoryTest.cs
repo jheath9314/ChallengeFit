@@ -19,7 +19,7 @@ namespace SWENG894.Test.Data.RepositoryTest
         public ApplicationUserRepositoryTest()
         {
             var builder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            builder.UseInMemoryDatabase(databaseName: "DbInMemory");
+            builder.UseInMemoryDatabase(databaseName: "DbInMemoryAppUser");
 
             var dbContextOptions = builder.Options;
             _context = new ApplicationDbContext(dbContextOptions);

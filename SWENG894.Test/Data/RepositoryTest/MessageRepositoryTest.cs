@@ -24,7 +24,7 @@ namespace SWENG894.Test.RepositoryTest
         public MessageRepositoryTest()
         {
             var builder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            builder.UseInMemoryDatabase(databaseName: "DbInMemory");
+            builder.UseInMemoryDatabase(databaseName: "DbInMemoryMessages");
 
             var dbContextOptions = builder.Options;
             _context = new ApplicationDbContext(dbContextOptions);
