@@ -7,25 +7,26 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SWENG894.Models
 {
-    public class WorkoutResults
+    public class WorkoutResult
     {
         [Key]
         public int Id { get; set; }
 
-        public Workout workout { get; set; }
         public int WorkoutId { get; set; }
+        public Workout Workout { get; set; }
 
         public string UserId { get; set; }
-
         public ApplicationUser User { get; set; }
 
         public int Score { get; set; }
 
-        [NotMapped]
-        public String username { get; set; }
+        //These properties can be pulled out of User and Workout
 
         [NotMapped]
-        public String workoutName { get; set; }
+        public String Username { get; set; }
+
+        [NotMapped]
+        public String WorkoutName { get; set; }
 
         [NotMapped]
         public Workout.Scoring ScoringType { get; set; }

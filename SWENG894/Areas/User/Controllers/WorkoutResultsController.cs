@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SWENG894.Areas.User.Controllers;
 using SWENG894.Data;
+using SWENG894.Data.Repository.IRepository;
 using SWENG894.Models;
 
 namespace SWENG894.Areas.User.Views
@@ -15,29 +16,35 @@ namespace SWENG894.Areas.User.Views
     [Area("User")]
     public class WorkoutResultsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        //private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly int _pageSize;
 
-        public WorkoutResultsController(ApplicationDbContext context)
+        public WorkoutResultsController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
+            _pageSize = 5;
         }
 
         // GET: User/WorkoutResults
         public async Task<IActionResult> Index()
         {
             //We should consider filtering by username here or this could get very slow
-            var loggedInUser = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var workoutResults = await _context.WorkoutResults.Where(w => w.UserId == loggedInUser.Id).ToListAsync();
+            //var loggedInUser = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            for(int i = 0; i < workoutResults.Count; i++)
-            {
-                var user = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == workoutResults[i].UserId);
-                var workout = await _context.Workouts.FirstOrDefaultAsync(w => w.Id == workoutResults[i].WorkoutId);
+            //You can skip the first query and filter directly by ClaimTypes.NameIdentifier
+            var workoutResults = await _unitOfWork.WorkoutResult.GetAllAsync(w => w.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier), includeProperties: "Workout,User");
 
-                workoutResults[i].username = user.FullName;
-                workoutResults[i].workoutName = workout.Name;
-                workoutResults[i].ScoringType = workout.ScoringType;
-            }
+            //Workout results alreay include Workout and User
+            //for(int i = 0; i < workoutResults.Count(); i++)
+            //{
+            //    var user = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == workoutResults[i].UserId);
+            //    var workout = await _context.Workouts.FirstOrDefaultAsync(w => w.Id == workoutResults[i].WorkoutId);
+
+            //    workoutResults[i].Username = user.FullName;
+            //    workoutResults[i].WorkoutName = workout.Name;
+            //    workoutResults[i].ScoringType = workout.ScoringType;
+            //}
 
             return View(workoutResults);
         }
@@ -50,14 +57,14 @@ namespace SWENG894.Areas.User.Views
                 return NotFound();
             }
 
-            var workoutResults = await _context.WorkoutResults
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var workoutResults = await _unitOfWork.WorkoutResult.GetFirstOrDefaultAsync(m => m.Id == id, includeProperties: "Workout,User");
 
-            var user = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var workout = await _context.Workouts.FirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);
-            workoutResults.username = user.FullName;
-            workoutResults.workoutName = workout.Name;
-            workoutResults.ScoringType = workout.ScoringType;
+            //Same as above we have User and Workout properties in WorkoutResult
+            //var user = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            //var workout = await _context.Workouts.FirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);
+            //workoutResults.Username = user.FullName;
+            //workoutResults.WorkoutName = workout.Name;
+            //workoutResults.ScoringType = workout.ScoringType;
 
             if (workoutResults == null)
             {
@@ -70,12 +77,15 @@ namespace SWENG894.Areas.User.Views
         // GET: User/WorkoutResults/Create
         public IActionResult Create(int Id)
         {
+            //When you create a new result from Index view, there's no workout id and this errors out. Not sure what the desired action is.
             //get the model data needed for determining how to record results
-            var workout = _context.Workouts.FirstOrDefault(w => w.Id == Id);
-            var workoutResults = new WorkoutResults();
-            workoutResults.ScoringType = workout.ScoringType;
-            workoutResults.workoutName = workout.Name;
-            return View(workoutResults);
+            //var workout = _context.Workouts.FirstOrDefault(w => w.Id == Id);
+            //var workoutResults = new WorkoutResult();
+            //workoutResults.ScoringType = workout.ScoringType;
+            //workoutResults.WorkoutName = workout.Name;
+            //return View(workoutResults);
+
+            return View();
         }
 
         // POST: User/WorkoutResults/Create
@@ -83,21 +93,21 @@ namespace SWENG894.Areas.User.Views
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,WorkoutId,UserId,Score")] int Id, WorkoutResults workoutResults, int seconds)
+        public async Task<IActionResult> Create([Bind("Id,WorkoutId,UserId,Score")] int Id, WorkoutResult workoutResults, int seconds)
         {
 
-            var user = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var user = await _unitOfWork.ApplicationUser.GetFirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             workoutResults.UserId = user.Id;
             workoutResults.WorkoutId = Id;
             workoutResults.Id = 0;
 
-            var workout = await _context.Workouts.FirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);
+            var workout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);
             workoutResults.ScoringType = workout.ScoringType;
 
 
-            workoutResults.username = user.FullName;
-            workoutResults.workoutName = workout.Name;
+            workoutResults.Username = user.FullName;
+            workoutResults.WorkoutName = workout.Name;
             workoutResults.ScoringType = workout.ScoringType;
 
             if (workoutResults.ScoringType == Workout.Scoring.Time)
@@ -108,8 +118,8 @@ namespace SWENG894.Areas.User.Views
             ModelState.Remove("seconds");
             if (ModelState.IsValid)
             {
-                _context.Add(workoutResults);
-                await _context.SaveChangesAsync();
+                await _unitOfWork.WorkoutResult.AddAsync(workoutResults);
+                await _unitOfWork.Save();
                 return RedirectToAction(nameof(Index));
             }
 
@@ -125,16 +135,16 @@ namespace SWENG894.Areas.User.Views
                 return NotFound();
             }
 
-            var workoutResults = await _context.WorkoutResults.FindAsync(id);
+            var workoutResults = await _unitOfWork.WorkoutResult.GetAsync((int)id);
             if (workoutResults == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var workout = await _context.Workouts.FirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);
-            workoutResults.username = user.FullName;
-            workoutResults.workoutName = workout.Name;
+            var user = await _unitOfWork.ApplicationUser.GetFirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var workout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);
+            workoutResults.Username = user.FullName;
+            workoutResults.WorkoutName = workout.Name;
             workoutResults.ScoringType = workout.ScoringType;
 
             return View(workoutResults);
@@ -145,7 +155,7 @@ namespace SWENG894.Areas.User.Views
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,WorkoutId,UserId,Score")] WorkoutResults workoutResults, int seconds)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,WorkoutId,UserId,Score")] WorkoutResult workoutResults, int seconds)
         {
             if (id != workoutResults.Id)
             {
@@ -153,7 +163,7 @@ namespace SWENG894.Areas.User.Views
             }
 
             //get the real workout results
-            var workout = await _context.Workouts.FirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);
+            var workout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);
 
             workoutResults.ScoringType = workout.ScoringType;
 
@@ -167,8 +177,8 @@ namespace SWENG894.Areas.User.Views
             {
                 try
                 {
-                    _context.Update(workoutResults);
-                    await _context.SaveChangesAsync();
+                    _unitOfWork.WorkoutResult.UpdateAsync(workoutResults);
+                    await _unitOfWork.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -194,17 +204,16 @@ namespace SWENG894.Areas.User.Views
                 return NotFound();
             }
 
-            var workoutResults = await _context.WorkoutResults
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var workoutResults = await _unitOfWork.WorkoutResult.GetFirstOrDefaultAsync(m => m.Id == id);
             if (workoutResults == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var workout = await _context.Workouts.FirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);
-            workoutResults.username = user.FullName;
-            workoutResults.workoutName = workout.Name;
+            var user = await _unitOfWork.ApplicationUser.GetFirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var workout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);
+            workoutResults.Username = user.FullName;
+            workoutResults.WorkoutName = workout.Name;
             workoutResults.ScoringType = workout.ScoringType;
 
             return View(workoutResults);
@@ -215,15 +224,15 @@ namespace SWENG894.Areas.User.Views
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var workoutResults = await _context.WorkoutResults.FindAsync(id);
-            _context.WorkoutResults.Remove(workoutResults);
-            await _context.SaveChangesAsync();
+            var workoutResults = await _unitOfWork.WorkoutResult.GetAsync(id);
+            await _unitOfWork.WorkoutResult.RemoveAsync(workoutResults);
+            await _unitOfWork.Save();
             return RedirectToAction(nameof(Index));
         }
 
         private bool WorkoutResultsExists(int id)
         {
-            return _context.WorkoutResults.Any(e => e.Id == id);
+            return _unitOfWork.WorkoutResult.ObjectExists(id);
         }
     }
 }

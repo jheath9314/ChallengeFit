@@ -1,4 +1,4 @@
-﻿@model SWENG894.Models.WorkoutResults
+﻿@model SWENG894.Models.WorkoutResult
 
 @{
     ViewData["Title"] = "Edit";
@@ -25,13 +25,13 @@
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="WorkoutId" class="control-label">Workout Name </label> <br />
-                <label asp-for="WorkoutId" class="control-label">@Model.workoutName</label>
+                <label asp-for="WorkoutId" class="control-label">@Model.WorkoutName</label>
                 <input asp-for="WorkoutId" class="form-control" type="hidden" />
                 <span asp-validation-for="WorkoutId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="UserId" class="control-label">Athlete Name </label> <br />
-                <label asp-for="UserId" class="control-label">@Model.username</label>
+                <label asp-for="UserId" class="control-label">@Model.Username</label>
                 <input asp-for="UserId" class="form-control" type="hidden" />
                 <span asp-validation-for="UserId" class="text-danger"></span>
             </div>

@@ -241,7 +241,7 @@ namespace SWENG894.Data.Migrations
 
                     b.HasIndex("WorkoutId");
 
-                    b.ToTable("Exercise");
+                    b.ToTable("Exercises");
                 });
 
             modelBuilder.Entity("SWENG894.Models.FriendRequest", b =>
@@ -440,7 +440,7 @@ namespace SWENG894.Data.Migrations
 
             modelBuilder.Entity("SWENG894.Models.Exercise", b =>
                 {
-                    b.HasOne("SWENG894.Models.Workout", null)
+                    b.HasOne("SWENG894.Models.Workout", "Workout")
                         .WithMany("Exercises")
                         .HasForeignKey("WorkoutId")
                         .OnDelete(DeleteBehavior.Cascade)

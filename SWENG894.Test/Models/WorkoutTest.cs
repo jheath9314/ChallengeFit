@@ -32,16 +32,16 @@ namespace SWENG894.Test.Models
             Workout myWorkout = new Workout();
             myWorkout.ScoringType = Workout.Scoring.Time;
             myWorkout.Time = 120;
-            Assert.True(myWorkout.getTimeDisplayString() == "2:00");
+            Assert.True(myWorkout.GetTimeDisplayString() == "2:00");
 
             myWorkout.Time = 0;
-            Assert.True(myWorkout.getTimeDisplayString() == "0:00");
+            Assert.True(myWorkout.GetTimeDisplayString() == "0:00");
 
             myWorkout.Time = 297;
-            Assert.True(myWorkout.getTimeDisplayString() == "4:57");
+            Assert.True(myWorkout.GetTimeDisplayString() == "4:57");
 
             myWorkout.Time = 660;
-            Assert.True(myWorkout.getTimeDisplayString() == "11:00");
+            Assert.True(myWorkout.GetTimeDisplayString() == "11:00");
             
         
         }
@@ -53,13 +53,13 @@ namespace SWENG894.Test.Models
             myWorkout.ScoringType = Workout.Scoring.Reps;
             myWorkout.Time = 123;
 
-            Assert.True(myWorkout.getTimeDisplayString() == "123");
+            Assert.True(myWorkout.GetTimeDisplayString() == "123");
 
             myWorkout.Time = 0;
-            Assert.True(myWorkout.getTimeDisplayString() == "0");
+            Assert.True(myWorkout.GetTimeDisplayString() == "0");
 
             myWorkout.Time = 300000;
-            Assert.True(myWorkout.getTimeDisplayString() == "300000");
+            Assert.True(myWorkout.GetTimeDisplayString() == "300000");
 
 
         }

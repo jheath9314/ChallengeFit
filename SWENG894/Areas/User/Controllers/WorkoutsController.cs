@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using SWENG894.Data;
 using SWENG894.Models;
 using SWENG894.Utility;
+using SWENG894.Data.Repository.IRepository;
 
 namespace SWENG894.Areas.User.Controllers
 {
@@ -16,12 +17,13 @@ namespace SWENG894.Areas.User.Controllers
     [Authorize(Roles = "Admin, User")]
     public class WorkoutsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        //private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly int _pageSize;
 
-        public WorkoutsController(ApplicationDbContext context)
+        public WorkoutsController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
             _pageSize = 5;
         }
 
@@ -42,20 +44,9 @@ namespace SWENG894.Areas.User.Controllers
 
             ViewData["CurrentFilter"] = search;
 
-            var workouts = _context.Workouts.Where(w => w.Name != null);
+            var workouts = _unitOfWork.Workout.GetAllWorkouts(sort, search);
 
-            if (!String.IsNullOrEmpty(search))
-            {
-                workouts = workouts.Where(s => s.Name.Contains(search));
-            }
-
-            workouts = sort switch
-            {
-                "desc" => workouts.OrderByDescending(s => s.Name),
-                _ => workouts.OrderBy(s => s.Name),
-            };
-
-            var workoutList = await PaginatedList<Workout>.CreateAsync(workouts.AsNoTracking(), page ?? 1, _pageSize);
+            var workoutList = await PaginatedList<Workout>.Create(workouts.ToList(), page ?? 1, _pageSize);
 
             return View(workoutList);
 
@@ -70,8 +61,7 @@ namespace SWENG894.Areas.User.Controllers
                 return NotFound();
             }
 
-            var workout = await _context.Workouts.Include("Exercises")
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var workout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(m => m.Id == id, includeProperties: "Exercises");
 
             if (workout == null)
             {
@@ -110,8 +100,8 @@ namespace SWENG894.Areas.User.Controllers
             ModelState.Remove("seconds");
             if (ModelState.IsValid)
             {
-                _context.Add(workout);
-                await _context.SaveChangesAsync();
+                await _unitOfWork.Workout.AddAsync(workout);
+                await _unitOfWork.Save();
                 return RedirectToAction(nameof(Index));
             }
             return View(workout);
@@ -125,7 +115,7 @@ namespace SWENG894.Areas.User.Controllers
                 return NotFound();
             }
 
-            var workout = await _context.Workouts.FindAsync(id);
+            var workout = await _unitOfWork.Workout.GetAsync((int)id);
             if (workout == null)
             {
                 return NotFound();
@@ -149,8 +139,8 @@ namespace SWENG894.Areas.User.Controllers
             {
                 try
                 {
-                    _context.Update(workout);
-                    await _context.SaveChangesAsync();
+                    _unitOfWork.Workout.UpdateAsync(workout);
+                    await _unitOfWork.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -176,8 +166,8 @@ namespace SWENG894.Areas.User.Controllers
                 return NotFound();
             }
 
-            var workout = await _context.Workouts
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var workout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(m => m.Id == id);
+
             if (workout == null)
             {
                 return NotFound();
@@ -191,15 +181,15 @@ namespace SWENG894.Areas.User.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var workout = await _context.Workouts.FindAsync(id);
-            _context.Workouts.Remove(workout);
-            await _context.SaveChangesAsync();
+            var workout = await _unitOfWork.Workout.GetAsync(id);
+            await _unitOfWork.Workout.RemoveAsync(workout);
+            await _unitOfWork.Save();
             return RedirectToAction(nameof(Index));
         }
 
         private bool WorkoutExists(int id)
         {
-            return _context.Workouts.Any(e => e.Id == id);
+            return _unitOfWork.Workout.ObjectExists(id);
         }
     }
 }

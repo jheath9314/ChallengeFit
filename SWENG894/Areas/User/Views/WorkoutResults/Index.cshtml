@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SWENG894.Models.WorkoutResults>
+﻿@model IEnumerable<SWENG894.Models.WorkoutResult>
 
 @{
     ViewData["Title"] = "Index";
@@ -28,10 +28,10 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.workoutName)
+                @Html.DisplayFor(modelItem => item.Workout.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.username)
+                @Html.DisplayFor(modelItem => item.User.UserName)
             </td>
             <td>
                 @item.getTimeDisplayString()

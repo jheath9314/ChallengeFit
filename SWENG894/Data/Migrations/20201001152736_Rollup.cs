@@ -232,7 +232,7 @@ namespace SWENG894.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Exercise",
+                name: "Exercises",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -243,9 +243,9 @@ namespace SWENG894.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Exercise", x => x.Id);
+                    table.PrimaryKey("PK_Exercises", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Exercise_Workouts_WorkoutId",
+                        name: "FK_Exercises_Workouts_WorkoutId",
                         column: x => x.WorkoutId,
                         principalTable: "Workouts",
                         principalColumn: "Id",
@@ -319,8 +319,8 @@ namespace SWENG894.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Exercise_WorkoutId",
-                table: "Exercise",
+                name: "IX_Exercises_WorkoutId",
+                table: "Exercises",
                 column: "WorkoutId");
 
             migrationBuilder.CreateIndex(
@@ -367,7 +367,7 @@ namespace SWENG894.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Exercise");
+                name: "Exercises");
 
             migrationBuilder.DropTable(
                 name: "FriendRequests");

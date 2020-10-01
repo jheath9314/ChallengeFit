@@ -9,6 +9,7 @@ using SWENG894.Data;
 using SWENG894.Data.Repository.IRepository;
 using SWENG894.Models;
 using SWENG894.Utility;
+using SWENG894.ViewModels;
 using static SWENG894.Models.FriendRequest;
 
 namespace SWENG894.Areas.User.Controllers
@@ -214,6 +215,34 @@ namespace SWENG894.Areas.User.Controllers
 
             await _unitOfWork.Save();
             return View(friendRequest);
+        }
+
+        // GET: User/Friends/Profile/5
+        public async Task<IActionResult> Profile(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _unitOfWork.ApplicationUser
+                .GetFirstOrDefaultAsync(m => m.Id == id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            UserProfileViewModel userView = new UserProfileViewModel
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                ZipCode = user.ZipCode
+            };
+
+            return View(userView);
         }
     }
 }

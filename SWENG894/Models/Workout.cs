@@ -20,6 +20,7 @@ namespace SWENG894.Models
         [Required(ErrorMessage = "You must provide a name")]
         public String Name { get; set; }
 
+        //If scoring is reps, would this still be time?
         [Display(Name = "Time (Minutes and Seconds)")]
         public int Time { get; set; }
 
@@ -33,10 +34,10 @@ namespace SWENG894.Models
         [Display(Name = "Scaling Options")]
         public String ScalingOptions { get; set; }
 
-        public List<Exercise> Exercises { get; set; } = new List<Exercise>();
+        public List<Exercise> Exercises { get; set; }
 
-       public string getTimeDisplayString()
-       {
+        public string GetTimeDisplayString()
+        {
             if(ScoringType == Scoring.Time)
             {
                 string minutes = (Time / 60).ToString();

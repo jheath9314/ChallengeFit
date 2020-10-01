@@ -1,4 +1,5 @@
-﻿using SWENG894.Data.Repository.IRepository;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
+using SWENG894.Data.Repository.IRepository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,9 @@ namespace SWENG894.Data.Repository
         public IApplicationUserRepository ApplicationUser { get; private set; }
         public IMessageRepository Message { get; private set; }
         public IFriendRequestRepository FriendRequest { get; private set; }
+        public IWorkoutRepository Workout { get; private set; }
+        public IExerciseRepository Exercise { get; private set; }
+        public IWorkoutResultRepository WorkoutResult { get; private set; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -20,6 +24,9 @@ namespace SWENG894.Data.Repository
             ApplicationUser = new ApplicationUserRepository(context);
             Message = new MessageRepository(context);
             FriendRequest = new FriendRequestRepository(context);
+            Workout = new WorkoutRepository(context);
+            Exercise = new ExerciseRepository(context);
+            WorkoutResult = new WorkoutResultRepository(context);
         }
 
         public void Dispose()

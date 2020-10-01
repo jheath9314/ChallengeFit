@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SQLitePCL;
 using SWENG894.Data;
+using SWENG894.Data.Repository.IRepository;
 using SWENG894.Models;
 
 namespace SWENG894.Areas.User.Controllers
@@ -18,17 +19,19 @@ namespace SWENG894.Areas.User.Controllers
     [Authorize(Roles = "Admin, User")]
     public class ExercisesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        //private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly int _pageSize;
 
-        public ExercisesController(ApplicationDbContext context)
+        public ExercisesController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         // GET: User/Exercises
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Exercise.ToListAsync());
+            return View(await _unitOfWork.Exercise.GetAllAsync());
         }
 
         // GET: User/Exercises/Details/5
@@ -39,8 +42,8 @@ namespace SWENG894.Areas.User.Controllers
                 return NotFound();
             }
 
-            var exercise = await _context.Exercise
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var exercise = await _unitOfWork.Exercise.GetFirstOrDefaultAsync(m => m.Id == id);
+
             if (exercise == null)
             {
                 return NotFound();
@@ -50,8 +53,15 @@ namespace SWENG894.Areas.User.Controllers
         }
 
         // GET: User/Exercises/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create(int id)
         {
+            var workout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(x => x.Id == id);
+
+            if (workout == null)
+            {
+                return NotFound();
+            }
+
             return View();
         }
 
@@ -60,22 +70,28 @@ namespace SWENG894.Areas.User.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int Id, Exercise e)
+        public async Task<IActionResult> Create(int id, Exercise e)
         {
             if (ModelState.IsValid) {
 
-                //Needed since any other ID results in the entity
-                //framework rejecting the insert
-                e.Id = 0;
-                e.WorkoutId = Id;
-                _context.Add(e);
-                await _context.SaveChangesAsync();
-                var workout = _context.Workouts.Include(w => w.Exercises).FirstOrDefault(workout => workout.Id == Id);
-                workout.Exercises.Add(e);
-                _context.Update(workout);
-                await _context.SaveChangesAsync();
+                var workout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(x => x.Id == id, includeProperties: "Exercises");
 
-                return RedirectToAction("Details", "Workouts", new { Id = e.WorkoutId });
+                if (workout == null)
+                {
+                    return NotFound();
+                }
+
+                Exercise exToAdd = new Exercise
+                {
+                    Workout = workout,
+                    Exer = e.Exer,
+                    Reps = e.Reps
+                };
+
+                await _unitOfWork.Exercise.AddAsync(exToAdd);
+                await _unitOfWork.Save();
+
+                return RedirectToAction("Details", "Workouts", new { Id = exToAdd.WorkoutId });
             }
             return View(e);
         }
@@ -88,7 +104,8 @@ namespace SWENG894.Areas.User.Controllers
                 return NotFound();
             }
 
-            var exercise = await _context.Exercise.FindAsync(id);
+            var exercise = await _unitOfWork.Exercise.GetAsync((int)id);
+
             if (exercise == null)
             {
                 return NotFound();
@@ -101,7 +118,7 @@ namespace SWENG894.Areas.User.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,exercise,reps")] Exercise exercise)
+        public async Task<IActionResult> Edit(int id, [Bind("exercise,reps")] Exercise exercise)
         {
             if (id != exercise.Id)
             {
@@ -112,8 +129,8 @@ namespace SWENG894.Areas.User.Controllers
             {
                 try
                 {
-                    _context.Update(exercise);
-                    await _context.SaveChangesAsync();
+                    _unitOfWork.Exercise.UpdateAsync(exercise);
+                    await _unitOfWork.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -139,8 +156,7 @@ namespace SWENG894.Areas.User.Controllers
                 return NotFound();
             }
 
-            var exercise = await _context.Exercise
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var exercise = await _unitOfWork.Exercise.GetFirstOrDefaultAsync(m => m.Id == id);
             if (exercise == null)
             {
                 return NotFound();
@@ -154,15 +170,19 @@ namespace SWENG894.Areas.User.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var exercise = await _context.Exercise.FindAsync(id);
-            _context.Exercise.Remove(exercise);
-            await _context.SaveChangesAsync();
+            var exercise = await _unitOfWork.Exercise.GetAsync(id);
+            if(exercise != null)
+            {
+                await _unitOfWork.Exercise.RemoveAsync(exercise);
+                await _unitOfWork.Save();
+            }
+            
             return RedirectToAction(nameof(Index));
         }
 
         private bool ExerciseExists(int id)
         {
-            return _context.Exercise.Any(e => e.Id == id);
+            return _unitOfWork.Exercise.ObjectExists(id);
         }
     }
 }

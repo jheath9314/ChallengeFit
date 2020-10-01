@@ -10,6 +10,9 @@ namespace SWENG894.Data.Repository.IRepository
         IApplicationUserRepository ApplicationUser { get; }        
         IMessageRepository Message { get; }
         IFriendRequestRepository FriendRequest { get; }
+        IWorkoutRepository Workout { get; }
+        IExerciseRepository Exercise { get; }
+        IWorkoutResultRepository WorkoutResult { get; }
 
         Task Save();
     }
