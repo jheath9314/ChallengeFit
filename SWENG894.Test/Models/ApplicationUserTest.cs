@@ -4,7 +4,7 @@ using SWENG894.Models;
 
 namespace SWENG894.Test
 {
-    public class testApplicationUser
+    public class ApplicationUserTest
     {
         [Fact]
         public void Test1()

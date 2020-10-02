@@ -34,19 +34,19 @@ namespace SWENG894.Areas.User.Views
 
             //You can skip the first query and filter directly by ClaimTypes.NameIdentifier
             var workoutResults = await _unitOfWork.WorkoutResult.GetAllAsync(w => w.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier), includeProperties: "Workout,User");
-
+            var workoutResultList = workoutResults.ToList();
             //Workout results alreay include Workout and User
-            //for(int i = 0; i < workoutResults.Count(); i++)
-            //{
-            //    var user = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == workoutResults[i].UserId);
-            //    var workout = await _context.Workouts.FirstOrDefaultAsync(w => w.Id == workoutResults[i].WorkoutId);
+            for(int i = 0; i < workoutResults.Count(); i++)
+            {
+                var user = await _unitOfWork.ApplicationUser.GetFirstOrDefaultAsync(u => u.Id == workoutResultList[i].UserId);
+                var workout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(w => w.Id == workoutResultList[i].WorkoutId);
 
-            //    workoutResults[i].Username = user.FullName;
-            //    workoutResults[i].WorkoutName = workout.Name;
-            //    workoutResults[i].ScoringType = workout.ScoringType;
-            //}
+                workoutResultList[i].Username = user.FullName;
+                workoutResultList[i].WorkoutName = workout.Name;
+                workoutResultList[i].ScoringType = workout.ScoringType;
+            }
 
-            return View(workoutResults);
+            return View(workoutResultList);
         }
 
         // GET: User/WorkoutResults/Details/5
@@ -60,11 +60,11 @@ namespace SWENG894.Areas.User.Views
             var workoutResults = await _unitOfWork.WorkoutResult.GetFirstOrDefaultAsync(m => m.Id == id, includeProperties: "Workout,User");
 
             //Same as above we have User and Workout properties in WorkoutResult
-            //var user = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
-            //var workout = await _context.Workouts.FirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);
-            //workoutResults.Username = user.FullName;
-            //workoutResults.WorkoutName = workout.Name;
-            //workoutResults.ScoringType = workout.ScoringType;
+            var user = await _unitOfWork.ApplicationUser.GetFirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var workout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);
+            workoutResults.Username = user.FullName;
+            workoutResults.WorkoutName = workout.Name;
+            workoutResults.ScoringType = workout.ScoringType;
 
             if (workoutResults == null)
             {
@@ -75,17 +75,17 @@ namespace SWENG894.Areas.User.Views
         }
 
         // GET: User/WorkoutResults/Create
-        public IActionResult Create(int Id)
+        public async Task<IActionResult> CreateAsync(int Id)
         {
             //When you create a new result from Index view, there's no workout id and this errors out. Not sure what the desired action is.
             //get the model data needed for determining how to record results
-            //var workout = _context.Workouts.FirstOrDefault(w => w.Id == Id);
-            //var workoutResults = new WorkoutResult();
-            //workoutResults.ScoringType = workout.ScoringType;
-            //workoutResults.WorkoutName = workout.Name;
-            //return View(workoutResults);
+            var workout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(w => w.Id == Id);
+            var workoutResults = new WorkoutResult();
+            workoutResults.ScoringType = workout.ScoringType;
+            workoutResults.WorkoutName = workout.Name;
+            return View(workoutResults);
 
-            return View();
+            //return View();
         }
 
         // POST: User/WorkoutResults/Create
