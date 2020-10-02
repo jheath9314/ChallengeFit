@@ -32,6 +32,9 @@ namespace SWENG894.Test.Models
             Assert.True(ex.Id == 1);
             Assert.True(ex.WorkoutId == 2);
 
+            ex.Workout = new Workout();
+            Assert.True(ex.Workout != null);
+
         }
     }
 }

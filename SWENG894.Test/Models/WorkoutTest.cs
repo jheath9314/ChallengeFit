@@ -90,6 +90,7 @@ namespace SWENG894.Test.Models
             ex.Exer = Exercise.Exercises.PullUp;
             ex.Reps = 10;
 
+            myWorkout.Exercises = new List<Exercise>();
             myWorkout.Exercises.Add(ex);
             myWorkout.Exercises.Add(ex_2);
 
