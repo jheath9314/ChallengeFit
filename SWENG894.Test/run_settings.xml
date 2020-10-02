@@ -6,7 +6,7 @@
         <Configuration>
           <Format>cobertura</Format>          
           <Exclude>[coverlet.*.tests?]*,[*]Coverlet.Core*</Exclude> <!-- [Assembly-Filter]Type-Filter -->
-          <Include>[*]SWENG894.Data.Initializer.*,[*]SWENG894.Data.Repository.*,[*]SWENG894.Utility.*,[*]SWENG894.Models.*,[*]SWENG894.Hubs.*</Include> <!-- [Assembly-Filter]Type-Filter -->
+          <Include>[*]SWENG894.Data.Initializer.*,[*]SWENG894.Data.Repository.*,[*]SWENG894.Utility.*,[*]SWENG894.Models.*,[*]SWENG894.Hubs.*, [*]SWENG894.Areas.User.Controllers.*,</Include> <!-- [Assembly-Filter]Type-Filter -->
         </Configuration>
       </DataCollector>
     </DataCollectors>

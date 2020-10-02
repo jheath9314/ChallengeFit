@@ -339,3 +339,41 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+SWENG894.Test/ TestResults/icon_cube.svg
+SWENG894.Test/ TestResults/icon_down-dir_active.svg
+SWENG894.Test/ TestResults/icon_fork.svg
+SWENG894.Test/ TestResults/icon_info-circled.svg
+SWENG894.Test/ TestResults/icon_minus.svg
+SWENG894.Test/ TestResults/icon_plus.svg
+SWENG894.Test/ TestResults/icon_search-minus.svg
+SWENG894.Test/ TestResults/icon_search-plus.svg
+SWENG894.Test/ TestResults/icon_sponsor.svg
+SWENG894.Test/ TestResults/icon_star.svg
+SWENG894.Test/ TestResults/icon_up-dir.svg
+SWENG894.Test/ TestResults/icon_up-dir_active.svg
+SWENG894.Test/ TestResults/icon_wrench.svg
+SWENG894.Test/ TestResults/index.htm
+SWENG894.Test/ TestResults/index.html
+SWENG894.Test/ TestResults/main.js
+SWENG894.Test/ TestResults/report.css
+SWENG894.Test/ TestResults/SWENG894_ApplicationUser.html
+SWENG894.Test/ TestResults/SWENG894_ApplicationUserRepository.html
+SWENG894.Test/ TestResults/SWENG894_DbInitializer.html
+SWENG894.Test/ TestResults/SWENG894_EmailOptions.html
+SWENG894.Test/ TestResults/SWENG894_EmailSender.html
+SWENG894.Test/ TestResults/SWENG894_ErrorViewModel.html
+SWENG894.Test/ TestResults/SWENG894_Exercise.html
+SWENG894.Test/ TestResults/SWENG894_ExerciseRepository.html
+SWENG894.Test/ TestResults/SWENG894_FriendRequest.html
+SWENG894.Test/ TestResults/SWENG894_FriendRequestRepository.html
+SWENG894.Test/ TestResults/SWENG894_Message.html
+SWENG894.Test/ TestResults/SWENG894_MessageRepository.html
+SWENG894.Test/ TestResults/SWENG894_PaginatedList_1.html
+SWENG894.Test/ TestResults/SWENG894_Repository_1.html
+SWENG894.Test/ TestResults/SWENG894_UnitOfWork.html
+SWENG894.Test/ TestResults/SWENG894_Workout.html
+SWENG894.Test/ TestResults/SWENG894_WorkoutRepository.html
+SWENG894.Test/ TestResults/SWENG894_WorkoutResult.html
+SWENG894.Test/ TestResults/SWENG894_WorkoutResultRepository.html
+SWENG894.Test/ TestResults/class.js
+SWENG894.Test/ TestResults/SWENG894_HomeController.html

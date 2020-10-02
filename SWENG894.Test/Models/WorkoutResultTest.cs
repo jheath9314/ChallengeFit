@@ -35,6 +35,7 @@ namespace SWENG894.Test.Models
             result.UserId = "12";
             result.WorkoutName = "TestName";
             result.WorkoutId = 1;
+            result.Id = 1;
 
             Assert.True(result.User != null);
             Assert.True(result.Score == 55);
@@ -45,6 +46,7 @@ namespace SWENG894.Test.Models
             Assert.True(result.UserId == "12");
             Assert.True(result.WorkoutName == "TestName");
             Assert.True(result.WorkoutId == 1);
+            Assert.True(result.Id == 1);
 
         }
 
@@ -69,19 +71,19 @@ namespace SWENG894.Test.Models
         public void getTimeDisplayTest()
         {
 
-            Workout myWorkout = new Workout();
+            WorkoutResult myWorkout = new WorkoutResult();
             myWorkout.ScoringType = Workout.Scoring.Time;
-            myWorkout.Time = 120;
-            Assert.True(myWorkout.GetTimeDisplayString() == "2:00");
+            myWorkout.Score = 120;
+            Assert.True(myWorkout.getTimeDisplayString() == "2:00");
 
-            myWorkout.Time = 0;
-            Assert.True(myWorkout.GetTimeDisplayString() == "0:00");
+            myWorkout.Score = 0;
+            Assert.True(myWorkout.getTimeDisplayString() == "0:00");
 
-            myWorkout.Time = 297;
-            Assert.True(myWorkout.GetTimeDisplayString() == "4:57");
+            myWorkout.Score = 297;
+            Assert.True(myWorkout.getTimeDisplayString() == "4:57");
 
-            myWorkout.Time = 660;
-            Assert.True(myWorkout.GetTimeDisplayString() == "11:00");
+            myWorkout.Score = 660;
+            Assert.True(myWorkout.getTimeDisplayString() == "11:00");
 
 
         }
