@@ -64,6 +64,7 @@ namespace SWENG894.Data.Repository
 
             if (!String.IsNullOrEmpty(search))
             {
+                search = search.ToLower();
                 messages = messages.Where(m => m.Subject.ToLower().Contains(search) ||
                     m.Body.ToLower().Contains(search));
             }
