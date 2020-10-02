@@ -436,35 +436,35 @@ namespace SWENG894.Test.RepositoryTest
             _context.SaveChangesAsync().GetAwaiter();
 
             //Test
-            var result = _cut.GetAllUserFriendRequests("", "", "guid-user1");
-            //Returns only 2 approved requests. fr1 is not returned as it's still New.
+            var result = _cut.GetUserFriends("", "", "guid-user1");
+            //Returns only 2 approved requests fr3 and fr4. fr1 is not returned as it's still New.
             Assert.Equal(2, result.Count());
             Assert.Equal(4, _context.FriendRequests.Count());
             Assert.Equal(4, _context.Users.Count());
-            Assert.Equal("Four", result.ElementAt(0).RequestedFor.LastName);
+            Assert.Equal("Four", result.ElementAt(0).LastName);
 
-            result = _cut.GetAllUserFriendRequests("desc", "", "guid-user1");
-            //Returns only 2 approved requests. fr1 is not returned as it's still New.
+            result = _cut.GetUserFriends("desc", "", "guid-user1");
+            //Returns only 2 approved requests fr3 and fr4. fr1 is not returned as it's still New.
             Assert.Equal(2, result.Count());
             Assert.Equal(4, _context.FriendRequests.Count());
             Assert.Equal(4, _context.Users.Count());
-            Assert.Equal("One", result.ElementAt(0).RequestedFor.LastName);
+            Assert.Equal("Three", result.ElementAt(0).LastName);
 
-            result = _cut.GetAllUserFriendRequests("", "Three", "guid-user1");
+            result = _cut.GetUserFriends("", "Three", "guid-user1");
             Assert.Single(result);
             Assert.Equal(4, _context.FriendRequests.Count());
             Assert.Equal(4, _context.Users.Count());
-            Assert.Equal("Three", result.ElementAt(0).RequestedFor.LastName);
+            Assert.Equal("Three", result.ElementAt(0).LastName);
 
             //Reset
-            _context.Remove(usr1);
-            _context.Remove(usr2);
-            _context.Remove(usr3);
-            _context.Remove(usr4);
             _context.Remove(fr1);
             _context.Remove(fr2);
             _context.Remove(fr3);
             _context.Remove(fr4);
+            _context.Remove(usr1);
+            _context.Remove(usr2);
+            _context.Remove(usr3);
+            _context.Remove(usr4);           
             _context.SaveChangesAsync().GetAwaiter();
         }
 
@@ -516,6 +516,17 @@ namespace SWENG894.Test.RepositoryTest
                 ZipCode = "44444"
             };
 
+            var usr5 = new ApplicationUser
+            {
+                Id = "guid-user5",
+                UserName = "user5@psu.edu",
+                Email = "user5@psu.edu",
+                EmailConfirmed = true,
+                FirstName = "User",
+                LastName = "Five",
+                ZipCode = "55555"
+            };
+
             var fr1 = new FriendRequest
             {
                 RequestedById = "guid-user1",
@@ -539,7 +550,7 @@ namespace SWENG894.Test.RepositoryTest
 
             var fr4 = new FriendRequest
             {
-                RequestedById = "guid-user1",
+                RequestedById = "guid-user2",
                 RequestedForId = "guid-user4",
                 Status = FriendRequest.FriendRequestStatus.Approved
             };
@@ -548,6 +559,7 @@ namespace SWENG894.Test.RepositoryTest
             _context.ApplicationUsers.Add(usr2);
             _context.ApplicationUsers.Add(usr3);
             _context.ApplicationUsers.Add(usr4);
+            _context.ApplicationUsers.Add(usr5);
             _context.FriendRequests.Add(fr1);
             _context.FriendRequests.Add(fr2);
             _context.FriendRequests.Add(fr3);
@@ -556,32 +568,39 @@ namespace SWENG894.Test.RepositoryTest
 
             //Test
             var result = _cut.FindNewFriends("", "", "guid-user1");
+            //Should return usr4 and usr5
             Assert.Equal(2, result.Count());
             Assert.Equal(4, _context.FriendRequests.Count());
-            Assert.Equal(4, _context.Users.Count());
-            Assert.Equal("Four", result.ElementAt(0).LastName);
+            Assert.Equal(5, _context.Users.Count());
+            Assert.Equal("Five", result.ElementAt(0).LastName);
 
             result = _cut.FindNewFriends("desc", "", "guid-user1");
             Assert.Equal(2, result.Count());
             Assert.Equal(4, _context.FriendRequests.Count());
-            Assert.Equal(4, _context.Users.Count());
-            Assert.Equal("One", result.ElementAt(0).LastName);
+            Assert.Equal(5, _context.Users.Count());
+            Assert.Equal("Four", result.ElementAt(0).LastName);
 
             result = _cut.FindNewFriends("", "Three", "guid-user1");
+            Assert.Empty(result);
+            Assert.Equal(4, _context.FriendRequests.Count());
+            Assert.Equal(5, _context.Users.Count());
+
+            result = _cut.FindNewFriends("", "Five", "guid-user1");
             Assert.Single(result);
             Assert.Equal(4, _context.FriendRequests.Count());
-            Assert.Equal(4, _context.Users.Count());
-            Assert.Equal("Three", result.ElementAt(0).LastName);
+            Assert.Equal(5, _context.Users.Count());
+            Assert.Equal("Five", result.ElementAt(0).LastName);
 
             //Reset
-            _context.Remove(usr1);
-            _context.Remove(usr2);
-            _context.Remove(usr3);
-            _context.Remove(usr4);
             _context.Remove(fr1);
             _context.Remove(fr2);
             _context.Remove(fr3);
             _context.Remove(fr4);
+            _context.Remove(usr1);
+            _context.Remove(usr2);
+            _context.Remove(usr3);
+            _context.Remove(usr4);
+            _context.Remove(usr5);          
             _context.SaveChangesAsync().GetAwaiter();
         }
 
@@ -671,21 +690,21 @@ namespace SWENG894.Test.RepositoryTest
             _context.FriendRequests.Add(fr4);
             _context.SaveChangesAsync().GetAwaiter();
 
-            //Test NEED MORE TESTS
+            //Test
             var result = await _cut.GetPersonToFriend("guid-user1");
             Assert.Equal(usr1, result);
             Assert.Equal(4, _context.FriendRequests.Count());
             Assert.Equal(4, _context.Users.Count());
 
             //Reset
-            _context.Remove(usr1);
-            _context.Remove(usr2);
-            _context.Remove(usr3);
-            _context.Remove(usr4);
             _context.Remove(fr1);
             _context.Remove(fr2);
             _context.Remove(fr3);
             _context.Remove(fr4);
+            _context.Remove(usr1);
+            _context.Remove(usr2);
+            _context.Remove(usr3);
+            _context.Remove(usr4);           
             _context.SaveChangesAsync().GetAwaiter();
         }
 

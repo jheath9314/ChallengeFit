@@ -43,7 +43,7 @@ namespace SWENG894.Areas.User.Controllers
             }
 
             ViewData["CurrentFilter"] = search;
-            var personList = await PaginatedList<FriendRequest>.Create(_unitOfWork.FriendRequest.GetAllUserFriendRequests(sort, search, User.FindFirstValue(ClaimTypes.NameIdentifier)).ToList(), page ?? 1, _pageSize);
+            var personList = await PaginatedList<ApplicationUser>.Create(_unitOfWork.FriendRequest.GetUserFriends(sort, search, User.FindFirstValue(ClaimTypes.NameIdentifier)).ToList(), page ?? 1, _pageSize);
 
             return View(personList);
         }

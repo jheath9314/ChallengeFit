@@ -31,6 +31,7 @@ namespace SWENG894.Data.Repository
 
             if (!String.IsNullOrEmpty(search))
             {
+                search = search.ToLower();
                 matchingUsers = matchingUsers.Where(u => u.LastName.ToLower().Contains(search) ||
                     u.FirstName.ToLower().Contains(search) ||
                     u.Email.ToLower().Contains(search)).ToList();
@@ -55,7 +56,7 @@ namespace SWENG894.Data.Repository
             return matchingUsers;
         }
 
-        public IEnumerable<FriendRequest> GetAllUserFriendRequests(string sort, string search, string userId)
+        public IEnumerable<ApplicationUser> GetUserFriends(string sort, string search, string userId)
         {
             var user = _context.ApplicationUsers
                 .Include(u => u.SentFriendRequests)
@@ -64,22 +65,35 @@ namespace SWENG894.Data.Repository
                 .ThenInclude(u => u.RequestedBy)
                 .FirstOrDefaultAsync(u => u.Id == userId).Result;
 
-            var matchingUsers = user.Friends;
+            var matchingUsers = new List<ApplicationUser>();
+
+            foreach(var friendRequest in user.Friends)
+            {
+                if(friendRequest.RequestedById == userId)
+                {
+                    matchingUsers.Add(friendRequest.RequestedFor);
+                }
+                else
+                {
+                    matchingUsers.Add(friendRequest.RequestedBy);
+                }
+            }
 
             if (!String.IsNullOrEmpty(search))
             {
-                matchingUsers = user.Friends.Where(u => u.RequestedFor.LastName.ToLower().Contains(search) ||
-                    u.RequestedFor.FirstName.ToLower().Contains(search) ||
-                    u.RequestedFor.Email.ToLower().Contains(search)).ToList();
+                search = search.ToLower();
+                matchingUsers = matchingUsers.Where(u => u.LastName.ToLower().Contains(search) ||
+                    u.FirstName.ToLower().Contains(search) ||
+                    u.Email.ToLower().Contains(search)).ToList();
             }
 
             matchingUsers = sort switch
             {
-                "desc" => matchingUsers.OrderByDescending(s => s.RequestedFor.LastName).ToList(),
-                _ => matchingUsers.OrderBy(s => s.RequestedFor.LastName).ToList(),
+                "desc" => matchingUsers.OrderByDescending(s => s.LastName).ToList(),
+                _ => matchingUsers.OrderBy(s => s.LastName).ToList(),
             };
 
-            return matchingUsers.ToList();
+            return matchingUsers;
         }
 
         public async Task<ApplicationUser> GetPersonToFriend(string id)

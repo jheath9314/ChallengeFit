@@ -10,7 +10,7 @@ namespace SWENG894.Data.Repository.IRepository
     {
         public void UpdateAsync(FriendRequest request);
 
-        public IEnumerable<FriendRequest> GetAllUserFriendRequests(string sort, string search, string userId);
+        public IEnumerable<ApplicationUser> GetUserFriends(string sort, string search, string userId);
 
         public IEnumerable<ApplicationUser> FindNewFriends(string sort, string search, string userId);
 
