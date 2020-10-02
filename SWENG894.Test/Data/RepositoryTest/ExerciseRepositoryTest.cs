@@ -1,8 +1,6 @@
 ﻿using SWENG894.Data;
 using SWENG894.Data.Repository;
 using Microsoft.EntityFrameworkCore;
-using SWENG894.Data;
-using SWENG894.Data.Repository;
 using SWENG894.Data.Repository.IRepository;
 using SWENG894.Models;
 using System;

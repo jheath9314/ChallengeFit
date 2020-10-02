@@ -28,8 +28,7 @@ namespace SWENG894.Data.Repository
 
             if (!String.IsNullOrEmpty(search))
             {
-                workouts = workouts.Where(m => m.Name.ToLower().Contains(search) ||
-                    m.Name.ToLower().Contains(search));
+                workouts = workouts.Where(m => m.Name.ToLower().Contains(search.ToLower()));
             }
 
             workouts = sort switch
