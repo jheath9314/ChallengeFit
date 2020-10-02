@@ -11,7 +11,7 @@ rem		-l html;LogFileName=<file_name> : log test results to HTML file to specifie
 rem		/p:CollectCoverage : turn on/off collect coverage data
 rem		/p:CoverletOutputFormat : specify coverage output file format
 rem		/p:Exclude : specify assemblies and namespaces to exclude from code coverage analysis
-dotnet test -r TestResults -l html;LogFileName=SWENG894.TestResults.html --collect:"XPlat Code Coverage" --settings run_settings.xml
+dotnet test -r TestResults -l html;LogFileName=SWENG894.TestResults.html /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Exclude="[*]AspNetCore.*"
 
 rem
 rem	generate an html report from the cobertura xml
