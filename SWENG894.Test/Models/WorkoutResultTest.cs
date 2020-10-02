@@ -33,6 +33,8 @@ namespace SWENG894.Test.Models
             result.Workout = new Workout();
             result.WorkoutId = 1;
             result.UserId = "12";
+            result.WorkoutName = "TestName";
+            result.WorkoutId = 1;
 
             Assert.True(result.User != null);
             Assert.True(result.Score == 55);
@@ -41,6 +43,8 @@ namespace SWENG894.Test.Models
             Assert.True(result.Workout != null);
             Assert.True(result.WorkoutId == 1);
             Assert.True(result.UserId == "12");
+            Assert.True(result.WorkoutName == "TestName");
+            Assert.True(result.WorkoutId == 1);
 
         }
 
@@ -59,6 +63,27 @@ namespace SWENG894.Test.Models
 
             result.Score = 300000;
             Assert.True(result.getTimeDisplayString() == "300000");
+        }
+
+        [Fact]
+        public void getTimeDisplayTest()
+        {
+
+            Workout myWorkout = new Workout();
+            myWorkout.ScoringType = Workout.Scoring.Time;
+            myWorkout.Time = 120;
+            Assert.True(myWorkout.GetTimeDisplayString() == "2:00");
+
+            myWorkout.Time = 0;
+            Assert.True(myWorkout.GetTimeDisplayString() == "0:00");
+
+            myWorkout.Time = 297;
+            Assert.True(myWorkout.GetTimeDisplayString() == "4:57");
+
+            myWorkout.Time = 660;
+            Assert.True(myWorkout.GetTimeDisplayString() == "11:00");
+
+
         }
     }
 }
