@@ -34,6 +34,50 @@ namespace SWENG894.Test.RepositoryTest
             _cut = new MessageRepository(_context);
         }
 
+        [Fact]
+        public async void CreateNewMessageTest()
+        {
+            var user = new ApplicationUser();
+            var user_2 = new ApplicationUser();
+
+            _context.ApplicationUsers.Add(user);
+            _context.ApplicationUsers.Add(user_2);
+            _context.SaveChanges();
+
+            var userList = await _context.ApplicationUsers.ToListAsync();
+
+            user = userList[0];
+            user_2 = userList[1];
+
+            var messageModel = _cut.CreateNewMesage(user.Id);
+
+            Assert.True(messageModel != null);
+
+            var nullMessageModel = _cut.CreateNewMesage("INVALID");
+
+            Assert.True(nullMessageModel == null);
+
+            var request = new FriendRequest();
+            request.RequestedById = user.Id;
+            request.RequestedForId = user_2.Id;
+            request.Status = FriendRequest.FriendRequestStatus.Approved;
+
+            await _context.FriendRequests.AddAsync(request);
+            await _context.SaveChangesAsync();
+
+            request.RequestedById = user_2.Id;
+            request.RequestedForId = user.Id;
+            request.Status = FriendRequest.FriendRequestStatus.Approved;
+
+            await _context.FriendRequests.AddAsync(request);
+            await _context.SaveChangesAsync();
+
+            messageModel = _cut.CreateNewMesage(user.Id);
+
+            Assert.True(messageModel.Friends.Count > 0);
+
+        }
+
         #region Methods Inherited From Repository
 
         [Fact]
