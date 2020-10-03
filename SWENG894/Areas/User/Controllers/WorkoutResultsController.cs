@@ -107,6 +107,7 @@ namespace SWENG894.Areas.User.Controllers
             workoutResults.WorkoutId = Id;
             workoutResults.Id = 0;
 
+            //This will always return null. 
             var workout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);
             workoutResults.ScoringType = workout.ScoringType;
 
