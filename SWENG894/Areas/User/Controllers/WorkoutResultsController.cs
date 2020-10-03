@@ -12,7 +12,7 @@ using SWENG894.Data;
 using SWENG894.Data.Repository.IRepository;
 using SWENG894.Models;
 
-namespace SWENG894.Areas.User.Views
+namespace SWENG894.Areas.User.Controllers
 {
     [Area("User")]
     public class WorkoutResultsController : Controller
