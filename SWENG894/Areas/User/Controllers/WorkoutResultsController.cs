@@ -115,7 +115,7 @@ namespace SWENG894.Areas.User.Controllers
             workoutResults.WorkoutName = workout.Name;
             workoutResults.ScoringType = workout.ScoringType;
 
-            if (workoutResults.ScoringType == Workout.Scoring.Time)
+            if (workoutResults.ScoringType == Workout.Scoring.Reps)
             {
                 workoutResults.Score = workoutResults.Score * 60 + seconds;
             }
@@ -175,7 +175,7 @@ namespace SWENG894.Areas.User.Controllers
 
             workoutResults.ScoringType = workout.ScoringType;
 
-            if (workoutResults.ScoringType == Workout.Scoring.Time)
+            if (workoutResults.ScoringType == Workout.Scoring.Reps)
             {
                 workoutResults.Score = workoutResults.Score * 60 + seconds;
             }

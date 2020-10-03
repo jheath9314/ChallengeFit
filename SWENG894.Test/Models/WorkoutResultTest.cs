@@ -55,7 +55,7 @@ namespace SWENG894.Test.Models
         {
             WorkoutResult result = new WorkoutResult();
 
-            result.ScoringType = Workout.Scoring.Reps;
+            result.ScoringType = Workout.Scoring.Time;
             result.Score = 123;
 
             Assert.True(result.getTimeDisplayString() == "123");
@@ -72,7 +72,7 @@ namespace SWENG894.Test.Models
         {
 
             WorkoutResult myWorkout = new WorkoutResult();
-            myWorkout.ScoringType = Workout.Scoring.Time;
+            myWorkout.ScoringType = Workout.Scoring.Reps;
             myWorkout.Score = 120;
             Assert.True(myWorkout.getTimeDisplayString() == "2:00");
 

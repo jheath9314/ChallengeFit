@@ -33,7 +33,7 @@ namespace SWENG894.Models
 
         public string getTimeDisplayString()
         {
-            if (ScoringType == Workout.Scoring.Time)
+            if (ScoringType == Workout.Scoring.Reps)
             {
                 string minutes = (Score / 60).ToString();
                 string seconds = (Score % 60).ToString();
