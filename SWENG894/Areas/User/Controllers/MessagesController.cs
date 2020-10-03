@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -31,6 +32,7 @@ namespace SWENG894.Areas.User.Controllers
         }
 
         // GET: User/Messages
+        [ExcludeFromCodeCoverage]
         public async Task<IActionResult> Index(string sort, string search, string filter, int? page, string box)
         {
             ViewData["CurrentSort"] = sort;
@@ -75,6 +77,7 @@ namespace SWENG894.Areas.User.Controllers
         }
 
         // GET: User/Messages/Create
+        [ExcludeFromCodeCoverage]
         public IActionResult Create()
         {
 
@@ -121,6 +124,7 @@ namespace SWENG894.Areas.User.Controllers
         }
 
         // GET: User/Messages/Delete/5
+        [ExcludeFromCodeCoverage]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -166,9 +170,9 @@ namespace SWENG894.Areas.User.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool MessageExists(int id)
-        {
-            return _unitOfWork.Message.ObjectExists(id);
-        }
+        //private bool MessageExists(int id)
+        //{
+        //    return _unitOfWork.Message.ObjectExists(id);
+        //}
     }
 }

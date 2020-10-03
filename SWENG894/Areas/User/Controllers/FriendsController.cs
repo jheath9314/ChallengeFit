@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -28,6 +29,7 @@ namespace SWENG894.Areas.User.Controllers
         }
 
         // GET: User/Friends
+        [ExcludeFromCodeCoverage]
         public async Task<IActionResult> Index(string sort, string search, string filter, int? page)
         {
             ViewData["CurrentSort"] = sort;
@@ -49,6 +51,7 @@ namespace SWENG894.Areas.User.Controllers
         }
 
         // GET: User/Friends/Find
+        [ExcludeFromCodeCoverage]
         public async Task<IActionResult> Find(string sort, string search, string filter, int? page)
         {
             ViewData["CurrentSort"] = sort;
@@ -71,6 +74,7 @@ namespace SWENG894.Areas.User.Controllers
         }
 
         // GET: User/Friends/SendRequest/5
+        [ExcludeFromCodeCoverage]
         public async Task<IActionResult> SendRequest(string id)
         {
             if (id == null)
@@ -195,6 +199,7 @@ namespace SWENG894.Areas.User.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost, ActionName("ViewRequest")]
         [ValidateAntiForgeryToken]
+        [ExcludeFromCodeCoverage]
         public async Task<IActionResult> ViewRequestPost(string sender, string receiver, FriendRequestStatus status)
         {
             var friendRequest = await _unitOfWork.FriendRequest
