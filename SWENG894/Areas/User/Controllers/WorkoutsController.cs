@@ -10,6 +10,7 @@ using SWENG894.Data;
 using SWENG894.Models;
 using SWENG894.Utility;
 using SWENG894.Data.Repository.IRepository;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SWENG894.Areas.User.Controllers
 {
@@ -28,6 +29,7 @@ namespace SWENG894.Areas.User.Controllers
         }
 
         // GET: User/Workouts
+        [ExcludeFromCodeCoverage]
         public async Task<IActionResult> Index(string sort, string search, string filter, int? page)
         {
             ViewData["CurrentSort"] = sort;
@@ -54,6 +56,7 @@ namespace SWENG894.Areas.User.Controllers
         }
 
         // GET: User/Workouts/Details/5
+        [ExcludeFromCodeCoverage]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -72,6 +75,7 @@ namespace SWENG894.Areas.User.Controllers
         }
 
         // GET: User/Workouts/Create
+        [ExcludeFromCodeCoverage]
         public IActionResult Create()
         {
             return View();
@@ -108,6 +112,7 @@ namespace SWENG894.Areas.User.Controllers
         }
 
         // GET: User/Workouts/Edit/5
+        [ExcludeFromCodeCoverage]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -159,6 +164,7 @@ namespace SWENG894.Areas.User.Controllers
         }
 
         // GET: User/Workouts/Delete/5
+        [ExcludeFromCodeCoverage]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

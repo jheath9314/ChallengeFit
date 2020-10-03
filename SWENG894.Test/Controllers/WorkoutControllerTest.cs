@@ -32,7 +32,7 @@ namespace SWENG894.Test.Controllers
         }
 
         [Fact]
-        public async void WorkoutControllerAddTest()
+        public async void WorkoutControllerOpTest()
         {
             var unit = new UnitOfWork(_context);
             var cont = new WorkoutsController(unit);
@@ -43,6 +43,19 @@ namespace SWENG894.Test.Controllers
 
             Assert.True(data != null);
 
+            data.Name = "Updated";
+
+            await cont.Edit(data.Id, data);
+
+            data = await _context.Workouts.FirstOrDefaultAsync();
+
+            Assert.True(data.Name == "Updated");
+
+            await cont.DeleteConfirmed(data.Id);
+
+            data = await _context.Workouts.FirstOrDefaultAsync();
+
+            Assert.True(data == null);
         }
     }
 }
