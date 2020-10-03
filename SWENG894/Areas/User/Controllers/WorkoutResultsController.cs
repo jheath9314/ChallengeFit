@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -27,6 +28,7 @@ namespace SWENG894.Areas.User.Views
         }
 
         // GET: User/WorkoutResults
+        [ExcludeFromCodeCoverage]
         public async Task<IActionResult> Index()
         {
             //We should consider filtering by username here or this could get very slow
@@ -35,7 +37,7 @@ namespace SWENG894.Areas.User.Views
             //You can skip the first query and filter directly by ClaimTypes.NameIdentifier
             var workoutResults = await _unitOfWork.WorkoutResult.GetAllAsync(w => w.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier), includeProperties: "Workout,User");
             var workoutResultList = workoutResults.ToList();
-            //Workout results alreay include Workout and User
+            //Workout results already include Workout and User
             for(int i = 0; i < workoutResults.Count(); i++)
             {
                 var user = await _unitOfWork.ApplicationUser.GetFirstOrDefaultAsync(u => u.Id == workoutResultList[i].UserId);
@@ -50,6 +52,7 @@ namespace SWENG894.Areas.User.Views
         }
 
         // GET: User/WorkoutResults/Details/5
+        [ExcludeFromCodeCoverage]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -75,6 +78,7 @@ namespace SWENG894.Areas.User.Views
         }
 
         // GET: User/WorkoutResults/Create
+        [ExcludeFromCodeCoverage]
         public async Task<IActionResult> CreateAsync(int Id)
         {
             //When you create a new result from Index view, there's no workout id and this errors out. Not sure what the desired action is.
@@ -93,6 +97,7 @@ namespace SWENG894.Areas.User.Views
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        //Vladimir, need help with this one
         public async Task<IActionResult> Create([Bind("Id,WorkoutId,UserId,Score")] int Id, WorkoutResult workoutResults, int seconds)
         {
 
@@ -128,6 +133,8 @@ namespace SWENG894.Areas.User.Views
         }
 
         // GET: User/WorkoutResults/Edit/5
+        [ExcludeFromCodeCoverage]
+        //Vladimir, need help with this one
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -155,6 +162,7 @@ namespace SWENG894.Areas.User.Views
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        //Vladimir, need help with this one
         public async Task<IActionResult> Edit(int id, [Bind("Id,WorkoutId,UserId,Score")] WorkoutResult workoutResults, int seconds)
         {
             if (id != workoutResults.Id)
@@ -197,6 +205,7 @@ namespace SWENG894.Areas.User.Views
         }
 
         // GET: User/WorkoutResults/Delete/5
+        [ExcludeFromCodeCoverage]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -220,6 +229,7 @@ namespace SWENG894.Areas.User.Views
         }
 
         // POST: User/WorkoutResults/Delete/5
+        //Vladimir, need help with this one
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

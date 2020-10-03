@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -29,12 +30,14 @@ namespace SWENG894.Areas.User.Controllers
         }
 
         // GET: User/Exercises
+        [ExcludeFromCodeCoverage]
         public async Task<IActionResult> Index()
         {
             return View(await _unitOfWork.Exercise.GetAllAsync());
         }
 
         // GET: User/Exercises/Details/5
+        [ExcludeFromCodeCoverage]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -53,6 +56,7 @@ namespace SWENG894.Areas.User.Controllers
         }
 
         // GET: User/Exercises/Create
+        [ExcludeFromCodeCoverage]
         public async Task<IActionResult> Create(int id)
         {
             var workout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(x => x.Id == id);
@@ -97,6 +101,7 @@ namespace SWENG894.Areas.User.Controllers
         }
 
         // GET: User/Exercises/Edit/5
+        [ExcludeFromCodeCoverage]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -149,6 +154,7 @@ namespace SWENG894.Areas.User.Controllers
         }
 
         // GET: User/Exercises/Delete/5
+        [ExcludeFromCodeCoverage]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -180,6 +186,8 @@ namespace SWENG894.Areas.User.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [ExcludeFromCodeCoverage]
+        //Not covered, private function
         private bool ExerciseExists(int id)
         {
             return _unitOfWork.Exercise.ObjectExists(id);
