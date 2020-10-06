@@ -30,10 +30,15 @@ namespace SWENG894.Areas.User.Controllers
 
         // GET: User/Friends
         [ExcludeFromCodeCoverage]
-        public async Task<IActionResult> Index(string sort, string search, string filter, int? page)
+        public async Task<IActionResult> Index(string sort, string search, string filter, string list, string currentList, int? page)
         {
             ViewData["CurrentSort"] = sort;
             ViewData["SortOrder"] = String.IsNullOrEmpty(sort) ? "desc" : "";
+            if(list == null)
+            {
+                list = currentList;
+            }
+            ViewData["CurrentList"] = list;
 
             if (search == null)
             {
@@ -45,7 +50,9 @@ namespace SWENG894.Areas.User.Controllers
             }
 
             ViewData["CurrentFilter"] = search;
-            var personList = await PaginatedList<ApplicationUser>.Create(_unitOfWork.FriendRequest.GetUserFriends(sort, search, User.FindFirstValue(ClaimTypes.NameIdentifier)).ToList(), page ?? 1, _pageSize);
+
+            var matchingUsers = _unitOfWork.FriendRequest.GetUserFriends(sort, search, User.FindFirstValue(ClaimTypes.NameIdentifier), !string.IsNullOrEmpty(list)).ToList();
+            var personList = await PaginatedList<ApplicationUser>.Create(matchingUsers, page ?? 1, _pageSize);
 
             return View(personList);
         }
@@ -121,7 +128,9 @@ namespace SWENG894.Areas.User.Controllers
                     RequestedById = User.FindFirstValue(ClaimTypes.NameIdentifier),
                     RequestedForId = userToFriend.Id,
                     RequestTime = DateTime.Now,
-                    Status = FriendRequestStatus.New
+                    RequestStatus = FriendRequestStatus.New,
+                    ReceiverStatus = FriendRequestStatus.New,
+                    RequesterStatus = FriendRequestStatus.Approved
                 };
                 await _unitOfWork.FriendRequest.AddAsync(request);
 
@@ -131,7 +140,7 @@ namespace SWENG894.Areas.User.Controllers
                     SentById = request.RequestedById,
                     SentToId = request.RequestedForId,
                     Subject = "New friend request.",
-                    Body = "Click here to view the request.",
+                    Body = "Someone wants to be friends with you.",
                     SentTime = DateTime.Now,
                     MessageType = Message.MessageTypes.FriendRequest,
                     SendStatus = Message.MessageSendStatud.New,
@@ -178,15 +187,10 @@ namespace SWENG894.Areas.User.Controllers
             }
 
             var friendRequest = await _unitOfWork.FriendRequest
-                .GetFirstOrDefaultAsync(m => m.RequestedById == sender && m.RequestedForId == receiver,
+                .GetFirstOrDefaultAsync(m => m.RequestedById == sender && m.RequestedForId == receiver || m.RequestedById == receiver && m.RequestedForId == sender,
                 includeProperties: "RequestedBy,RequestedFor");
 
-            if (friendRequest == null)
-            {
-                return NotFound();
-            }
-
-            if (friendRequest.RequestedForId != User.FindFirstValue(ClaimTypes.NameIdentifier) && friendRequest.RequestedById != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            if (friendRequest == null || (friendRequest.RequestedForId != User.FindFirstValue(ClaimTypes.NameIdentifier) && friendRequest.RequestedById != User.FindFirstValue(ClaimTypes.NameIdentifier)))
             {
                 return NotFound();
             }
@@ -203,21 +207,93 @@ namespace SWENG894.Areas.User.Controllers
         public async Task<IActionResult> ViewRequestPost(string sender, string receiver, FriendRequestStatus status)
         {
             var friendRequest = await _unitOfWork.FriendRequest
-                .GetFirstOrDefaultAsync(m => m.RequestedById == sender && m.RequestedForId == receiver,
+                .GetFirstOrDefaultAsync(m => m.RequestedById == sender && m.RequestedForId == receiver || m.RequestedById == receiver && m.RequestedForId == sender,
                 includeProperties: "RequestedBy,RequestedFor");
 
-            if (friendRequest == null || friendRequest.RequestedForId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            if (friendRequest == null || (friendRequest.RequestedForId != User.FindFirstValue(ClaimTypes.NameIdentifier) && friendRequest.RequestedById != User.FindFirstValue(ClaimTypes.NameIdentifier)))
             {
                 return NotFound();
             }
 
-            friendRequest.Status = status;
+            if(friendRequest.RequestedForId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {          
+                switch(friendRequest.RequestStatus)
+                {
+                    case FriendRequestStatus.New:
+                        
+                        if(status == FriendRequestStatus.Approved)
+                        {
+                            friendRequest.RequestStatus = FriendRequestStatus.Approved;
+                            friendRequest.ReceiverStatus = FriendRequestStatus.Approved;
+                            friendRequest.BecameFriendsTime = DateTime.Now;
+                        }
+                        else if (status == FriendRequestStatus.Rejected)
+                        {
+                            friendRequest.RequestStatus = FriendRequestStatus.Rejected;
+                            friendRequest.ReceiverStatus = FriendRequestStatus.Rejected;
+                        }
+                        break;
+                    case FriendRequestStatus.Approved:
 
-            if(status == FriendRequestStatus.Approved)
+                        if (status == FriendRequestStatus.Rejected)
+                        {
+                            friendRequest.RequestStatus = FriendRequestStatus.Rejected;
+                            friendRequest.ReceiverStatus = FriendRequestStatus.Rejected;
+                        }
+                        else if(status == FriendRequestStatus.Approved)
+                        {
+                            friendRequest.RequestStatus = SetFriendRequestStatus(friendRequest.RequesterStatus, FriendRequestStatus.Approved);
+                            friendRequest.ReceiverStatus = FriendRequestStatus.Approved;
+                        }
+                        break;
+                    case FriendRequestStatus.Rejected:
+
+                        if (status == FriendRequestStatus.Approved)
+                        {
+                            friendRequest.RequestStatus = SetFriendRequestStatus(friendRequest.RequesterStatus, FriendRequestStatus.Approved);
+                            friendRequest.ReceiverStatus = FriendRequestStatus.Approved;
+                        }
+                        else if(status == FriendRequestStatus.Rejected)
+                        {
+                            friendRequest.RequestStatus = FriendRequestStatus.Rejected;
+                            friendRequest.ReceiverStatus = FriendRequestStatus.Rejected;
+                        }
+                        break;
+                }
+            }
+            else
             {
-                friendRequest.BecameFriendsTime = DateTime.Now;
+                switch (friendRequest.RequestStatus)
+                {
+                    case FriendRequestStatus.Approved:
+                        if (status == FriendRequestStatus.Rejected)
+                        {
+                            friendRequest.RequestStatus = FriendRequestStatus.Rejected;
+                            friendRequest.RequesterStatus = FriendRequestStatus.Rejected;
+                        }
+                        else if(status == FriendRequestStatus.Approved)
+                        {
+                            friendRequest.RequestStatus = SetFriendRequestStatus(FriendRequestStatus.Approved, friendRequest.ReceiverStatus);
+                            friendRequest.RequesterStatus = FriendRequestStatus.Approved;
+                        }
+                        break;
+                    case FriendRequestStatus.Rejected:
+
+                        if (status == FriendRequestStatus.Approved)
+                        {
+                            friendRequest.RequestStatus = SetFriendRequestStatus(FriendRequestStatus.Approved, friendRequest.ReceiverStatus);
+                            friendRequest.RequesterStatus = FriendRequestStatus.Approved;
+                        }
+                        if (status == FriendRequestStatus.Rejected)
+                        {
+                            friendRequest.RequestStatus = FriendRequestStatus.Rejected;
+                            friendRequest.RequesterStatus = FriendRequestStatus.Rejected;
+                        }
+                        break;
+                }
             }
 
+            _unitOfWork.FriendRequest.UpdateAsync(friendRequest);
             await _unitOfWork.Save();
             return View(friendRequest);
         }
@@ -248,6 +324,16 @@ namespace SWENG894.Areas.User.Controllers
             };
 
             return View(userView);
+        }
+
+        private FriendRequestStatus SetFriendRequestStatus(FriendRequestStatus senderStatus, FriendRequestStatus receiverStatus)
+        {
+            if(senderStatus == FriendRequestStatus.Rejected || receiverStatus == FriendRequestStatus.Rejected)
+            {
+                return FriendRequestStatus.Rejected;
+            }
+
+            return FriendRequestStatus.Approved;
         }
     }
 }

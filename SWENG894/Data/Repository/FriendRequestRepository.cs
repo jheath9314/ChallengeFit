@@ -56,7 +56,7 @@ namespace SWENG894.Data.Repository
             return matchingUsers;
         }
 
-        public IEnumerable<ApplicationUser> GetUserFriends(string sort, string search, string userId)
+        public IEnumerable<ApplicationUser> GetUserFriends(string sort, string search, string userId, bool getBlocked)
         {
             var user = _context.ApplicationUsers
                 .Include(u => u.SentFriendRequests)
@@ -66,16 +66,32 @@ namespace SWENG894.Data.Repository
                 .FirstOrDefaultAsync(u => u.Id == userId).Result;
 
             var matchingUsers = new List<ApplicationUser>();
-
-            foreach(var friendRequest in user.Friends)
-            {
-                if(friendRequest.RequestedById == userId)
+            
+            if(!getBlocked) { 
+                foreach(var friendRequest in user.Friends)
                 {
-                    matchingUsers.Add(friendRequest.RequestedFor);
+                    if(friendRequest.RequestedById == userId)
+                    {
+                        matchingUsers.Add(friendRequest.RequestedFor);
+                    }
+                    else
+                    {
+                        matchingUsers.Add(friendRequest.RequestedBy);
+                    }
                 }
-                else
+            }
+            else
+            {
+                foreach (var friendRequest in user.BlockedFriends)
                 {
-                    matchingUsers.Add(friendRequest.RequestedBy);
+                    if (friendRequest.RequestedById == userId)
+                    {
+                        matchingUsers.Add(friendRequest.RequestedFor);
+                    }
+                    else
+                    {
+                        matchingUsers.Add(friendRequest.RequestedBy);
+                    }
                 }
             }
 
@@ -106,7 +122,7 @@ namespace SWENG894.Data.Repository
 
         public void UpdateAsync(FriendRequest request)
         {
-            throw new NotImplementedException();
+            _context.FriendRequests.Update(request);
         }
 
         public override Task<FriendRequest> GetAsync(int id)

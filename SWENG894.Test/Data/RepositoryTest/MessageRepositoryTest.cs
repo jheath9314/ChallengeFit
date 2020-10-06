@@ -60,14 +60,14 @@ namespace SWENG894.Test.RepositoryTest
             var request = new FriendRequest();
             request.RequestedById = user.Id;
             request.RequestedForId = user_2.Id;
-            request.Status = FriendRequest.FriendRequestStatus.Approved;
+            request.RequestStatus = FriendRequest.FriendRequestStatus.Approved;
 
             await _context.FriendRequests.AddAsync(request);
             await _context.SaveChangesAsync();
 
             request.RequestedById = user_2.Id;
             request.RequestedForId = user.Id;
-            request.Status = FriendRequest.FriendRequestStatus.Approved;
+            request.RequestStatus = FriendRequest.FriendRequestStatus.Approved;
 
             await _context.FriendRequests.AddAsync(request);
             await _context.SaveChangesAsync();
@@ -817,28 +817,28 @@ namespace SWENG894.Test.RepositoryTest
             {
                 RequestedById = "guid-user1",
                 RequestedForId = "guid-user2",
-                Status = FriendRequest.FriendRequestStatus.New
+                RequestStatus = FriendRequest.FriendRequestStatus.New
             };
 
             var fr2 = new FriendRequest
             {
                 RequestedById = "guid-user2",
                 RequestedForId = "guid-user3",
-                Status = FriendRequest.FriendRequestStatus.Rejected
+                RequestStatus = FriendRequest.FriendRequestStatus.Rejected
             };
 
             var fr3 = new FriendRequest
             {
                 RequestedById = "guid-user4",
                 RequestedForId = "guid-user3",
-                Status = FriendRequest.FriendRequestStatus.Approved
+                RequestStatus = FriendRequest.FriendRequestStatus.Approved
             };
 
             var fr4 = new FriendRequest
             {
                 RequestedById = "guid-user1",
                 RequestedForId = "guid-user4",
-                Status = FriendRequest.FriendRequestStatus.Approved
+                RequestStatus = FriendRequest.FriendRequestStatus.Approved
             };
 
             _context.Users.Add(usr1);

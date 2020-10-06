@@ -8,19 +8,53 @@
         <form asp-action="ViewRequest">
             @if (Model.RequestedForId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value)
             {
-                var canApprove = Model.Status == FriendRequest.FriendRequestStatus.Approved ? "disabled" : "";
-                var canReject = Model.Status == FriendRequest.FriendRequestStatus.Rejected ? "disabled" : "";
+                switch (Model.RequestStatus)
+                {
+                    case FriendRequest.FriendRequestStatus.New:
+                        <input asp-action="ViewRequest" asp-route-sender="@Model.RequestedById" asp-route-receiver="@Model.RequestedForId" asp-route-status="@FriendRequest.FriendRequestStatus.Approved" type="submit" value="Approve" class="btn btn-primary mr-2" />
+                        <input asp-action="ViewRequest" asp-route-sender="@Model.RequestedById" asp-route-receiver="@Model.RequestedForId" asp-route-status="@FriendRequest.FriendRequestStatus.Rejected" type="submit" value="Reject" class="btn btn-danger" />
+                        break;
+                    default:
+                        var canApprove = Model.ReceiverStatus == FriendRequest.FriendRequestStatus.Approved ? "disabled" : "";
+                        var canReject = Model.ReceiverStatus == FriendRequest.FriendRequestStatus.Rejected ? "disabled" : "";
 
-                <input asp-action="ViewRequest" asp-route-sender="@Model.RequestedById" asp-route-receiver="@Model.RequestedForId" asp-route-status="@FriendRequest.FriendRequestStatus.Approved" type="submit" value="Approve" class="btn btn-primary mr-2 @canApprove" />
-                <input asp-action="ViewRequest" asp-route-sender="@Model.RequestedById" asp-route-receiver="@Model.RequestedForId" asp-route-status="@FriendRequest.FriendRequestStatus.Rejected" type="submit" value="Reject" class="btn btn-danger @canReject" />
+                        <input asp-action="ViewRequest" asp-route-sender="@Model.RequestedById" asp-route-receiver="@Model.RequestedForId" asp-route-status="@FriendRequest.FriendRequestStatus.Approved" type="submit" value="Unblock" class="btn btn-primary mr-2 @canApprove" />
+                        <input asp-action="ViewRequest" asp-route-sender="@Model.RequestedById" asp-route-receiver="@Model.RequestedForId" asp-route-status="@FriendRequest.FriendRequestStatus.Rejected" type="submit" value="Block" class="btn btn-danger @canReject" />
+                        break;
+                }
+            }
+            else
+            {
+                switch (Model.RequestStatus)
+                {
+                    case FriendRequest.FriendRequestStatus.New:
+                        <input type="submit" value="Approve" class="btn btn-primary mr-2 disabled" />
+                        <input type="submit" value="Reject" class="btn btn-danger disabled" />
+                        break;
+                    default:
+                        var canApprove = Model.RequesterStatus == FriendRequest.FriendRequestStatus.Approved ? "disabled" : "";
+                        var canReject = Model.RequesterStatus == FriendRequest.FriendRequestStatus.Rejected ? "disabled" : "";
+
+                        <input asp-action="ViewRequest" asp-route-sender="@Model.RequestedById" asp-route-receiver="@Model.RequestedForId" asp-route-status="@FriendRequest.FriendRequestStatus.Approved" type="submit" value="Unblock" class="btn btn-primary mr-2 @canApprove" />
+                        <input asp-action="ViewRequest" asp-route-sender="@Model.RequestedById" asp-route-receiver="@Model.RequestedForId" asp-route-status="@FriendRequest.FriendRequestStatus.Rejected" type="submit" value="Block" class="btn btn-danger @canReject" />
+                        break;
+                }
             }
         </form>
     </div>
 </div>
 
 <div class="mb-3">
-    @Model.RequestedBy.FullName sent you a friend request.<br />
-    Status: @Html.DisplayFor(model => model.Status)
+    @if (Model.RequestedForId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value)
+    {
+        @Model.RequestedBy.FullName @("sent you a friend request.")<br />
+    }
+    else
+    {
+        @("You sent a friend request to ") @Model.RequestedFor.FullName <br />
+    }
+    @("Status:") @Html.DisplayFor(model => model.RequestStatus)
+
 </div>
 
 <div class="btn-toolbar mb-2 mb-md-0">

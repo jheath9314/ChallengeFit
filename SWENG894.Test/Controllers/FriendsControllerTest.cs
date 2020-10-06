@@ -86,7 +86,7 @@ namespace SWENG894.Test.Controllers
             {
                 RequestedById = "guid-user1",
                 RequestedForId = "guid-user2",
-                Status = FriendRequest.FriendRequestStatus.New,
+                RequestStatus = FriendRequest.FriendRequestStatus.New,
             };
 
             var res = await cont.SendRequestPost("guid-user2");

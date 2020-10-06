@@ -39,7 +39,7 @@ namespace SWENG894.Test.RepositoryTest
             {
                 RequestedById = "guid-user1",
                 RequestedForId = "guid-user2",
-                Status = FriendRequest.FriendRequestStatus.New
+                RequestStatus = FriendRequest.FriendRequestStatus.New
             };
 
             _context.FriendRequests.Add(fr1);
@@ -67,7 +67,7 @@ namespace SWENG894.Test.RepositoryTest
             {
                 RequestedById = "guid-user1",
                 RequestedForId = "guid-user2",
-                Status = FriendRequest.FriendRequestStatus.New
+                RequestStatus = FriendRequest.FriendRequestStatus.New
             };
 
             _context.FriendRequests.Add(fr1);
@@ -97,28 +97,28 @@ namespace SWENG894.Test.RepositoryTest
             {
                 RequestedById = "guid-user1",
                 RequestedForId = "guid-user2",
-                Status = FriendRequest.FriendRequestStatus.New
+                RequestStatus = FriendRequest.FriendRequestStatus.New
             };
 
             var fr2 = new FriendRequest
             {
                 RequestedById = "guid-user2",
                 RequestedForId = "guid-user3",
-                Status = FriendRequest.FriendRequestStatus.Rejected
+                RequestStatus = FriendRequest.FriendRequestStatus.Rejected
             };
 
             var fr3 = new FriendRequest
             {
                 RequestedById = "guid-user3",
                 RequestedForId = "guid-user4",
-                Status = FriendRequest.FriendRequestStatus.Approved
+                RequestStatus = FriendRequest.FriendRequestStatus.Approved
             };
 
             var fr4 = new FriendRequest
             {
                 RequestedById = "guid-user1",
                 RequestedForId = "guid-user4",
-                Status = FriendRequest.FriendRequestStatus.Approved
+                RequestStatus = FriendRequest.FriendRequestStatus.Approved
             };
 
             _context.FriendRequests.Add(fr1);
@@ -162,7 +162,7 @@ namespace SWENG894.Test.RepositoryTest
             {
                 RequestedById = "guid-user1",
                 RequestedForId = "guid-user2",
-                Status = FriendRequest.FriendRequestStatus.New
+                RequestStatus = FriendRequest.FriendRequestStatus.New
             };
 
             //Test
@@ -171,7 +171,7 @@ namespace SWENG894.Test.RepositoryTest
 
             var result = _context.FriendRequests.FirstOrDefault(x => x.RequestedById == "guid-user1");
             Assert.NotNull(result);
-            Assert.Equal(FriendRequest.FriendRequestStatus.New, result.Status);
+            Assert.Equal(FriendRequest.FriendRequestStatus.New, result.RequestStatus);
             Assert.Equal(1, _context.FriendRequests.Count());
 
             //Reset
@@ -187,7 +187,7 @@ namespace SWENG894.Test.RepositoryTest
             {
                 RequestedById = "guid-user1",
                 RequestedForId = "guid-user2",
-                Status = FriendRequest.FriendRequestStatus.New
+                RequestStatus = FriendRequest.FriendRequestStatus.New
             };
 
             _context.FriendRequests.Add(fr1);
@@ -215,21 +215,21 @@ namespace SWENG894.Test.RepositoryTest
             {
                 RequestedById = "guid-user1",
                 RequestedForId = "guid-user2",
-                Status = FriendRequest.FriendRequestStatus.New
+                RequestStatus = FriendRequest.FriendRequestStatus.New
             };
 
             var fr2 = new FriendRequest
             {
                 RequestedById = "guid-user2",
                 RequestedForId = "guid-user3",
-                Status = FriendRequest.FriendRequestStatus.Rejected
+                RequestStatus = FriendRequest.FriendRequestStatus.Rejected
             };
 
             var fr3 = new FriendRequest
             {
                 RequestedById = "guid-user3",
                 RequestedForId = "guid-user4",
-                Status = FriendRequest.FriendRequestStatus.Approved
+                RequestStatus = FriendRequest.FriendRequestStatus.Approved
             };
 
             _context.FriendRequests.Add(fr1);
@@ -259,21 +259,21 @@ namespace SWENG894.Test.RepositoryTest
             {
                 RequestedById = "guid-user1",
                 RequestedForId = "guid-user2",
-                Status = FriendRequest.FriendRequestStatus.New
+                RequestStatus = FriendRequest.FriendRequestStatus.New
             };
 
             var fr2 = new FriendRequest
             {
                 RequestedById = "guid-user2",
                 RequestedForId = "guid-user3",
-                Status = FriendRequest.FriendRequestStatus.Rejected
+                RequestStatus = FriendRequest.FriendRequestStatus.Rejected
             };
 
             var fr3 = new FriendRequest
             {
                 RequestedById = "guid-user3",
                 RequestedForId = "guid-user4",
-                Status = FriendRequest.FriendRequestStatus.Approved
+                RequestStatus = FriendRequest.FriendRequestStatus.Approved
             };
 
             _context.FriendRequests.Add(fr1);
@@ -305,7 +305,7 @@ namespace SWENG894.Test.RepositoryTest
             {
                 RequestedById = "guid-user1",
                 RequestedForId = "guid-user2",
-                Status = FriendRequest.FriendRequestStatus.New
+                RequestStatus = FriendRequest.FriendRequestStatus.New
             };
 
             _context.FriendRequests.Add(fr1);
@@ -333,7 +333,7 @@ namespace SWENG894.Test.RepositoryTest
             {
                 RequestedById = "guid-user1",
                 RequestedForId = "guid-user2",
-                Status = FriendRequest.FriendRequestStatus.New
+                RequestStatus = FriendRequest.FriendRequestStatus.New
             };
 
             _context.FriendRequests.Add(fr1);
@@ -401,28 +401,28 @@ namespace SWENG894.Test.RepositoryTest
             {
                 RequestedById = "guid-user1",
                 RequestedForId = "guid-user2",
-                Status = FriendRequest.FriendRequestStatus.New
+                RequestStatus = FriendRequest.FriendRequestStatus.New
             };
 
             var fr2 = new FriendRequest
             {
                 RequestedById = "guid-user2",
                 RequestedForId = "guid-user3",
-                Status = FriendRequest.FriendRequestStatus.Rejected
+                RequestStatus = FriendRequest.FriendRequestStatus.Rejected
             };
 
             var fr3 = new FriendRequest
             {
                 RequestedById = "guid-user3",
                 RequestedForId = "guid-user1",
-                Status = FriendRequest.FriendRequestStatus.Approved
+                RequestStatus = FriendRequest.FriendRequestStatus.Approved
             };
 
             var fr4 = new FriendRequest
             {
                 RequestedById = "guid-user1",
                 RequestedForId = "guid-user4",
-                Status = FriendRequest.FriendRequestStatus.Approved
+                RequestStatus = FriendRequest.FriendRequestStatus.Approved
             };
 
             _context.ApplicationUsers.Add(usr1);
@@ -531,28 +531,28 @@ namespace SWENG894.Test.RepositoryTest
             {
                 RequestedById = "guid-user1",
                 RequestedForId = "guid-user2",
-                Status = FriendRequest.FriendRequestStatus.New
+                RequestStatus = FriendRequest.FriendRequestStatus.New
             };
 
             var fr2 = new FriendRequest
             {
                 RequestedById = "guid-user2",
                 RequestedForId = "guid-user3",
-                Status = FriendRequest.FriendRequestStatus.Rejected
+                RequestStatus = FriendRequest.FriendRequestStatus.Rejected
             };
 
             var fr3 = new FriendRequest
             {
                 RequestedById = "guid-user3",
                 RequestedForId = "guid-user1",
-                Status = FriendRequest.FriendRequestStatus.Approved
+                RequestStatus = FriendRequest.FriendRequestStatus.Approved
             };
 
             var fr4 = new FriendRequest
             {
                 RequestedById = "guid-user2",
                 RequestedForId = "guid-user4",
-                Status = FriendRequest.FriendRequestStatus.Approved
+                RequestStatus = FriendRequest.FriendRequestStatus.Approved
             };
 
             _context.ApplicationUsers.Add(usr1);
@@ -656,28 +656,28 @@ namespace SWENG894.Test.RepositoryTest
             {
                 RequestedById = "guid-user1",
                 RequestedForId = "guid-user2",
-                Status = FriendRequest.FriendRequestStatus.New
+                RequestStatus = FriendRequest.FriendRequestStatus.New
             };
 
             var fr2 = new FriendRequest
             {
                 RequestedById = "guid-user2",
                 RequestedForId = "guid-user3",
-                Status = FriendRequest.FriendRequestStatus.Rejected
+                RequestStatus = FriendRequest.FriendRequestStatus.Rejected
             };
 
             var fr3 = new FriendRequest
             {
                 RequestedById = "guid-user3",
                 RequestedForId = "guid-user1",
-                Status = FriendRequest.FriendRequestStatus.Approved
+                RequestStatus = FriendRequest.FriendRequestStatus.Approved
             };
 
             var fr4 = new FriendRequest
             {
                 RequestedById = "guid-user1",
                 RequestedForId = "guid-user4",
-                Status = FriendRequest.FriendRequestStatus.Approved
+                RequestStatus = FriendRequest.FriendRequestStatus.Approved
             };
 
             _context.ApplicationUsers.Add(usr1);

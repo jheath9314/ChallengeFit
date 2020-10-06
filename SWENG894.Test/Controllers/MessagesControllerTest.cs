@@ -63,7 +63,7 @@ namespace SWENG894.Test.Controllers
             {
                 RequestedById = "guid-user1",
                 RequestedForId = "guid-user2",
-                Status = FriendRequest.FriendRequestStatus.Approved,
+                RequestStatus = FriendRequest.FriendRequestStatus.Approved,
             };
 
             var msg = new Message()

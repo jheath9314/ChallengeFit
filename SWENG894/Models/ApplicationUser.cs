@@ -40,8 +40,19 @@ namespace SWENG894.Models
         {
             get
             {
-                var friends = SentFriendRequests.Where(x => x.Approved).ToList();
-                friends.AddRange(ReceievedFriendRequests.Where(x => x.Approved));
+                var friends = SentFriendRequests.Where(x => x.RequestApproved).ToList();
+                friends.AddRange(ReceievedFriendRequests.Where(x => x.RequestApproved));
+                return friends;
+            }
+        }
+
+        [NotMapped]
+        public ICollection<FriendRequest> BlockedFriends
+        {
+            get
+            {
+                var friends = SentFriendRequests.Where(x => !x.RequestApproved).ToList();
+                friends.AddRange(ReceievedFriendRequests.Where(x => !x.RequestApproved));
                 return friends;
             }
         }

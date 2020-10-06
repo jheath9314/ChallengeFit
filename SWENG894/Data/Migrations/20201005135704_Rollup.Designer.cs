@@ -10,7 +10,7 @@ using SWENG894.Data;
 namespace SWENG894.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201001152736_Rollup")]
+    [Migration("20201005135704_Rollup")]
     partial class Rollup
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -257,10 +257,16 @@ namespace SWENG894.Data.Migrations
                     b.Property<DateTime?>("BecameFriendsTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("ReceiverStatus")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RequestStatus")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("RequestTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Status")
+                    b.Property<int>("RequesterStatus")
                         .HasColumnType("int");
 
                     b.HasKey("RequestedById", "RequestedForId");
@@ -348,7 +354,7 @@ namespace SWENG894.Data.Migrations
                     b.ToTable("Workouts");
                 });
 
-            modelBuilder.Entity("SWENG894.Models.WorkoutResults", b =>
+            modelBuilder.Entity("SWENG894.Models.WorkoutResult", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -477,13 +483,13 @@ namespace SWENG894.Data.Migrations
                         .OnDelete(DeleteBehavior.NoAction);
                 });
 
-            modelBuilder.Entity("SWENG894.Models.WorkoutResults", b =>
+            modelBuilder.Entity("SWENG894.Models.WorkoutResult", b =>
                 {
                     b.HasOne("SWENG894.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 
-                    b.HasOne("SWENG894.Models.Workout", "workout")
+                    b.HasOne("SWENG894.Models.Workout", "Workout")
                         .WithMany()
                         .HasForeignKey("WorkoutId")
                         .OnDelete(DeleteBehavior.Cascade)

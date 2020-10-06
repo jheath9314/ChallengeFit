@@ -19,10 +19,20 @@ namespace SWENG894.Models
 
         public DateTime? BecameFriendsTime { get; set; }
 
-        public FriendRequestStatus Status { get; set; }
+        public FriendRequestStatus RequestStatus { get; set; }
+
+        public FriendRequestStatus RequesterStatus { get; set; }
+
+        public FriendRequestStatus ReceiverStatus { get; set; }
 
         [NotMapped]
-        public bool Approved => Status == FriendRequestStatus.Approved;
+        public bool RequestApproved => RequestStatus == FriendRequestStatus.Approved;
+
+        [NotMapped]
+        public bool RequesterApproved => RequesterStatus == FriendRequestStatus.Approved;
+
+        [NotMapped]
+        public bool ReceiverApproved => ReceiverStatus == FriendRequestStatus.Approved;
 
         public enum FriendRequestStatus
         {

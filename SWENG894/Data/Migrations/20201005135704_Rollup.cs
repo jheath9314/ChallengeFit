@@ -181,7 +181,9 @@ namespace SWENG894.Data.Migrations
                     RequestedForId = table.Column<string>(nullable: false),
                     RequestTime = table.Column<DateTime>(nullable: true),
                     BecameFriendsTime = table.Column<DateTime>(nullable: true),
-                    Status = table.Column<int>(nullable: false)
+                    RequestStatus = table.Column<int>(nullable: false),
+                    RequesterStatus = table.Column<int>(nullable: false),
+                    ReceiverStatus = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {

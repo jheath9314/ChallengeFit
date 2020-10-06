@@ -255,10 +255,16 @@ namespace SWENG894.Data.Migrations
                     b.Property<DateTime?>("BecameFriendsTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("ReceiverStatus")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RequestStatus")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("RequestTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Status")
+                    b.Property<int>("RequesterStatus")
                         .HasColumnType("int");
 
                     b.HasKey("RequestedById", "RequestedForId");
@@ -346,7 +352,7 @@ namespace SWENG894.Data.Migrations
                     b.ToTable("Workouts");
                 });
 
-            modelBuilder.Entity("SWENG894.Models.WorkoutResults", b =>
+            modelBuilder.Entity("SWENG894.Models.WorkoutResult", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -475,13 +481,13 @@ namespace SWENG894.Data.Migrations
                         .OnDelete(DeleteBehavior.NoAction);
                 });
 
-            modelBuilder.Entity("SWENG894.Models.WorkoutResults", b =>
+            modelBuilder.Entity("SWENG894.Models.WorkoutResult", b =>
                 {
                     b.HasOne("SWENG894.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 
-                    b.HasOne("SWENG894.Models.Workout", "workout")
+                    b.HasOne("SWENG894.Models.Workout", "Workout")
                         .WithMany()
                         .HasForeignKey("WorkoutId")
                         .OnDelete(DeleteBehavior.Cascade)

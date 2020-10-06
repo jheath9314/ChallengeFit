@@ -3,9 +3,15 @@
 <h4>Friends List</h4>
 
 <form asp-action="Index" method="get">
-    <div class="btn-group mb-2" role="group" aria-label="InOut Box">
+    <div class="btn-group mb-2" role="group">
+
         <div class="input-group mb-3">
+            <div class="btn-group btn-group-toggle mr-2" role="group">
+                <a asp-action="Index" asp-route-list="" type="button" class="btn btn-outline-secondary" id="friends">Friends</a>
+                <a asp-action="Index" asp-route-list="blocked" type="button" class="btn btn-outline-secondary" id="blocked">Blocked</a>
+            </div>
             <input type="text" class="form-control" placeholder="Search" aria-label="Search" name="search" aria-describedby="button-find" value="@ViewBag.CurrentFilter">
+            <input type="hidden" name="list" value="@ViewBag.CurrentList" />
             <div class="input-group-append">
                 <button class="btn btn-outline-secondary" type="submit" id="button-find">Search</button>
             </div>
@@ -20,7 +26,7 @@
         <thead>
             <tr>
                 <th>
-                    <a asp-action="Index" asp-route-sort="@ViewBag.SortOrder" asp-route-filter="@ViewBag.CurrentFilter">Name</a>
+                    <a asp-action="Index" asp-route-sort="@ViewBag.SortOrder" asp-route-filter="@ViewBag.CurrentFilter" asp-route-list="@ViewBag.CurrentList">Name</a>
                 </th>
                 <th>
                     Options
@@ -35,8 +41,12 @@
                         @Html.DisplayFor(modelItem => item.FullName)
                     </td>
                     <td>
-                        <a asp-action="SendChallenge" asp-route-id="@item.Id"><i class="fas fa-dumbbell" tool-tip-toggle="tooltip" data-original-title="Send Challenge"></i></a> @("|")
-                        <a asp-area="User" asp-controller="Messages" asp-action="Create" asp-route-id="@item.Id"><i class="far fa-comment-dots" tool-tip-toggle="tooltip" data-original-title="Send Message"></i></a>
+                        @if (ViewBag.CurrentList == null || ViewBag.CurrentList == "")
+                        {
+                            <a asp-action="SendChallenge" asp-route-id="@item.Id"><i class="fas fa-dumbbell" tool-tip-toggle="tooltip" data-original-title="Send Challenge"></i></a> @("|")
+                            <a asp-area="User" asp-controller="Messages" asp-action="Create" asp-route-id="@item.Id"><i class="far fa-comment-dots" tool-tip-toggle="tooltip" data-original-title="Send Message"></i></a> @("|")
+                        }
+                        <a asp-action="ViewRequest" asp-route-sender="@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value" asp-route-receiver="@item.Id"><i class="fas fa-tasks" tool-tip-toggle="tooltip" data-original-title="Manage Friend"></i></a>
                     </td>
                 </tr>
             }
@@ -50,6 +60,7 @@
        asp-route-sort="@ViewBag.CurrentSort"
        asp-route-page="@(Model.PageIndex - 1)"
        asp-route-search="@ViewBag.CurrentFilter"
+       asp-route-list="@ViewBag.CurrentList"
        class="btn btn-default @prevDisabled">
         Previous
     </a>
@@ -57,6 +68,7 @@
        asp-route-sort="@ViewBag.CurrentSort"
        asp-route-page="@(Model.PageIndex + 1)"
        asp-route-search="@ViewBag.CurrentFilter"
+       asp-route-list="@ViewBag.CurrentList"
        class="btn btn-default @nextDisabled">
         Next
     </a>
@@ -65,4 +77,15 @@ else
 {
     <i class="far fa-surprise fa-3x"></i>
     <p>No friends found. Change your search parameter or add more friends.</p>
+}
+
+@section Scripts {
+    <script>
+        var tab = GetParameterByName("list");
+        if (tab != null && tab != "") {
+            $("#blocked").button('toggle');
+        } else {
+            $("#friends").button('toggle');
+        }
+    </script>
 }
