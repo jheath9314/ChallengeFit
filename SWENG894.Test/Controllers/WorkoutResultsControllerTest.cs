@@ -1,21 +1,13 @@
-<<<<<<< HEAD
-﻿using Microsoft.EntityFrameworkCore;
-=======
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
->>>>>>> e73bad61ccbb0b0b535b98a4cea180b70f77568b
 using SWENG894.Areas.User.Controllers;
 using SWENG894.Data;
 using SWENG894.Data.Repository;
 using SWENG894.Models;
-<<<<<<< HEAD
-using Xunit;
-=======
 using System.Linq;
 using Xunit;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
->>>>>>> e73bad61ccbb0b0b535b98a4cea180b70f77568b
 
 namespace SWENG894.Test.Controllers
 {

@@ -100,7 +100,7 @@ namespace SWENG894.Test.Controllers
                 HttpContext = new DefaultHttpContext() { User = loggedInUser }
             };
 
-            var res = (ViewResult)cont.Details(1).Result;
+            var res = (ViewResult)cont.Details(1, "sent").Result;
             Message message = (Message)res.Model;
 
             Assert.Equal("Test", message.Subject);
