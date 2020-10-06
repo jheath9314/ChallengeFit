@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -56,13 +57,14 @@ namespace SWENG894.Areas.User.Controllers
         }
 
         // GET: User/Messages/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, string box)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
+            ViewData["Box"] = box;
             var message = await _unitOfWork.Message.GetFirstOrDefaultAsync
                 (m => m.Id == id && (m.SentById == User.FindFirstValue(ClaimTypes.NameIdentifier) || 
                  m.SentToId == User.FindFirstValue(ClaimTypes.NameIdentifier)),
@@ -78,7 +80,7 @@ namespace SWENG894.Areas.User.Controllers
 
         // GET: User/Messages/Create
         [ExcludeFromCodeCoverage]
-        public IActionResult Create()
+        public IActionResult Create(string id)
         {
 
             var message = _unitOfWork.Message.CreateNewMesage(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -86,6 +88,10 @@ namespace SWENG894.Areas.User.Controllers
             if (message == null)
             {
                 return NotFound();
+            }
+            else if (id != null)
+            {
+                message.SentToId = id;
             }
 
             return View(message);
