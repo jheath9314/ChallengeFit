@@ -7,7 +7,7 @@
     <div class="btn-toolbar mb-2 mb-md-0">
         @if (Model.SentById == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value)
         {
-            <a asp-action="Create" asp-route-id="Model.SentToId" class="btn btn-primary disabled mr-2">Reply</a>
+            <a asp-action="Create" asp-route-id="@Model.SentToId" class="btn btn-primary disabled mr-2">Reply</a>
         }
         else if (Model.MessageType == Message.MessageTypes.FriendRequest)
         {
@@ -17,7 +17,15 @@
         {
             <a asp-action="Create" asp-route-id="@Model.SentById" class="btn btn-primary mr-2">Reply</a>
         }
-        <a asp-action="Index" asp-route-box="sent" class="btn btn-secondary">Back to List</a>
+
+        @if (ViewBag.Box == "sent")
+        {
+            <a asp-action="Index" asp-route-box="sent" class="btn btn-secondary">Back to List</a>
+        }
+        else
+        {
+            <a asp-action="Index" asp-route-box="" class="btn btn-secondary">Back to List</a>
+        }
     </div>
 </div>
 

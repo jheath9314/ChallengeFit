@@ -61,7 +61,7 @@
                     @Html.DisplayFor(modelItem => item.SubjectPreview)
                 </td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id"><i class="fab fa-readme" tool-tip-toggle="tooltip" data-original-title="View Message"></i></a> |
+                    <a asp-action="Details" asp-route-id="@item.Id" asp-route-box="@ViewBag.Box"><i class="fab fa-readme" tool-tip-toggle="tooltip" data-original-title="View Message"></i></a> |
                     <a asp-action="Delete" asp-route-id="@item.Id"><i class="fas fa-trash-alt" tool-tip-toggle="tooltip" data-original-title="Delete Message"></i></a>
                 </td>
             </tr>
