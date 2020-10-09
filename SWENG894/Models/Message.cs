@@ -69,7 +69,8 @@ namespace SWENG894.Models
         public enum MessageTypes
         {
             Correspondence,
-            FriendRequest
+            FriendRequest,
+            Challenge
         }
     }
 }

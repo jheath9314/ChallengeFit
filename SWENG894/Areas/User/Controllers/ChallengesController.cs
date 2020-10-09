@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Math.EC.Rfc7748;
 using SWENG894.Data;
 using SWENG894.Data.Repository;
 using SWENG894.Data.Repository.IRepository;
 using SWENG894.Models;
+using SWENG894.Utility;
 using SWENG894.ViewModels;
 
 namespace SWENG894.Areas.User.Controllers
@@ -19,16 +22,40 @@ namespace SWENG894.Areas.User.Controllers
     {
         //private readonly ApplicationDbContext _context;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly int _pageSize;
 
         public ChallengesController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+            _pageSize = 5;
         }
 
         // GET: User/Challenges
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sort, string search, string filter, string list, string currentList, int? page)
         {
-            return View();
+            ViewData["CurrentSort"] = sort;
+            ViewData["SortOrder"] = String.IsNullOrEmpty(sort) ? "desc" : "";
+            if (list == null)
+            {
+                list = currentList;
+            }
+            ViewData["CurrentList"] = list;
+
+            if (search == null)
+            {
+                search = filter;
+            }
+            else
+            {
+                search = search.ToLower();
+            }
+
+            ViewData["CurrentFilter"] = search;
+
+            var challenges = await _unitOfWork.Challenge.GetAllAsync(x => x.ChallengerId == User.FindFirstValue(ClaimTypes.NameIdentifier) || x.ContenderId == User.FindFirstValue(ClaimTypes.NameIdentifier), includeProperties: "Challenger,Contender");
+            var challengeList = await PaginatedList<Challenge>.Create(challenges.ToList(), page ?? 1, _pageSize);
+
+            return View(challengeList);
         }
 
         // GET: User/Challenges/Details/5
@@ -61,10 +88,10 @@ namespace SWENG894.Areas.User.Controllers
             var challengerUser = await _unitOfWork.ApplicationUser.GetUserWithWorkouts(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var contenderUser = await _unitOfWork.ApplicationUser.GetAsync(id);
             
-            if(challengerUser == null || contenderUser == null)
-            {
-                return NotFound();
-            }
+            //if(challengerUser == null || contenderUser == null)
+            //{
+            //    return NotFound();
+            //}
 
             var challengerFriends = _unitOfWork.FriendRequest.GetUserFriends("", "", challengerUser.Id, false);
             if(challengerFriends.Where(x => x.Id == id) == null)
@@ -121,6 +148,36 @@ namespace SWENG894.Areas.User.Controllers
 
                 await _unitOfWork.Challenge.AddAsync(newChallenge);
                 await _unitOfWork.Save();
+
+                var msg = new Message()
+                {
+                    SentById = challengerUser.Id,
+                    SentToId = contenderUser.Id,
+                    Subject = "You've been challenged!",
+                    Body = challengerUser.FullName + " sent you a challenge!",
+                    SentTime = DateTime.Now,
+                    MessageType = Message.MessageTypes.Challenge,
+                    SendStatus = Message.MessageSendStatud.New,
+                    ReadStatus = Message.MessageReadStatud.New,
+                    DeletedByReceiver = false,
+                    DeletedBySender = false
+                };
+
+                var feed = new NewsFeed()
+                {
+                    User = challengerUser,
+                    RelatedUser = contenderUser,
+                    RelatedChallenge = newChallenge,
+                    RelatedWorkout = selectedWorkout,
+                    CreateDate = DateTime.Now,
+                    FeedType = NewsFeed.FeedTypes.SentChallenge,
+                    Description = challengerUser.FullName + " sent a challenge to " + contenderUser.FullName
+                };
+
+                await _unitOfWork.Message.AddAsync(msg);
+                await _unitOfWork.NewsFeed.AddAsync(feed);
+                await _unitOfWork.Save();
+
                 return RedirectToAction(nameof(Index));
             }
 

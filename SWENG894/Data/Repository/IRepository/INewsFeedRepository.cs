@@ -8,6 +8,6 @@ namespace SWENG894.Data.Repository.IRepository
 {
     public interface INewsFeedRepository : IRepository<NewsFeed>
     {
-
+        public IEnumerable<NewsFeed> GetUserFeed(string userId);
     }
 }

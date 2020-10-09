@@ -10,7 +10,7 @@ using SWENG894.Data;
 namespace SWENG894.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201008191422_Rollup")]
+    [Migration("20201009140550_Rollup")]
     partial class Rollup
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

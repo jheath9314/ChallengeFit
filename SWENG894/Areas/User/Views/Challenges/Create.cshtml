@@ -7,13 +7,9 @@
         </h4>
         <div class="btn-toolbar mb-2 mb-md-0">
             <a class="btn btn-secondary mr-2" asp-area="User" asp-controller="Friends" asp-action="Index">Cancel</a>
-            @if (Model.Friends.Count() > 0)
+            @if (Model.Friends.Count() > 0 && Model.WorkoutFavorites.Count > 0)
             {
                 <input type="submit" value="Send" class="btn btn-primary" />
-            }
-            else
-            {
-                <a class="btn btn-primary" asp-area="User" asp-controller="Friends" asp-action="Find">Add Friends</a>
             }
         </div>
     </div>
@@ -30,6 +26,7 @@
     {
         <i class="far fa-sad-tear fa-3x"></i>
         <p>You don't have any friends to challenge.</p>
+        <a class="btn btn-primary" asp-area="User" asp-controller="Friends" asp-action="Find">Add Friends</a>
     }
 
     @if (Model.WorkoutFavorites.Count > 0)
@@ -43,6 +40,7 @@
     {
         <i class="far fa-sad-tear fa-3x"></i>
         <p>You don't have any saved workouts.</p>
+        <a class="btn btn-primary" asp-area="User" asp-controller="Workouts" asp-action="Index">Find Workouts</a>
     }
 </form>
 

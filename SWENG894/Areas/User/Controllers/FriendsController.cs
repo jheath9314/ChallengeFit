@@ -326,6 +326,51 @@ namespace SWENG894.Areas.User.Controllers
             return View(userView);
         }
 
+        // GET: User/Friends/Delete/5
+        [ExcludeFromCodeCoverage]
+        public async Task<IActionResult> Delete(string sender, string receiver)
+        {
+            if (sender == null || receiver == null)
+            {
+                return NotFound();
+            }
+
+            var friendRequest = await _unitOfWork.FriendRequest.GetFirstOrDefaultAsync(x => (x.RequestedById == sender && x.RequestedForId == receiver) || (x.RequestedById == receiver && x.RequestedForId == sender), includeProperties: "RequestedBy,RequestedFor");
+            if (friendRequest == null)
+            {
+                return NotFound();
+            }
+
+            if(friendRequest.RequestedById != User.FindFirstValue(ClaimTypes.NameIdentifier) && friendRequest.RequestedForId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
+                return NotFound();
+            }
+
+            return View(friendRequest);
+        }
+
+        // POST: User/Friends/Delete/5
+        //Vladimir, need help with this one
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string RequestedById, string RequestedForId)
+        {
+            var friendRequest = await _unitOfWork.FriendRequest.GetFirstOrDefaultAsync(x => (x.RequestedById == RequestedById && x.RequestedForId == RequestedForId) || (x.RequestedById == RequestedForId && x.RequestedForId == RequestedById));
+            if (friendRequest == null)
+            {
+                return NotFound();
+            }
+
+            if (friendRequest.RequestedById != User.FindFirstValue(ClaimTypes.NameIdentifier) && friendRequest.RequestedForId != User.FindFirstValue(ClaimTypes.NameIdentifier))
+            {
+                return NotFound();
+            }
+            await _unitOfWork.FriendRequest.RemoveAsync(friendRequest);
+            await _unitOfWork.Save();
+
+            return RedirectToAction(nameof(Index));
+        }
+
         private FriendRequestStatus SetFriendRequestStatus(FriendRequestStatus senderStatus, FriendRequestStatus receiverStatus)
         {
             if(senderStatus == FriendRequestStatus.Rejected || receiverStatus == FriendRequestStatus.Rejected)

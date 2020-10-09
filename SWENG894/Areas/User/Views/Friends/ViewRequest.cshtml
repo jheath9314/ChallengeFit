@@ -28,8 +28,7 @@
                 switch (Model.RequestStatus)
                 {
                     case FriendRequest.FriendRequestStatus.New:
-                        <input type="submit" value="Approve" class="btn btn-primary mr-2 disabled" />
-                        <input type="submit" value="Reject" class="btn btn-danger disabled" />
+                        <a asp-action="Delete" asp-route-sender="@Model.RequestedById" asp-route-receiver="@Model.RequestedForId" type="submit" value="Delete" class="btn btn-danger">Delete</a>
                         break;
                     default:
                         var canApprove = Model.RequesterStatus == FriendRequest.FriendRequestStatus.Approved ? "disabled" : "";
