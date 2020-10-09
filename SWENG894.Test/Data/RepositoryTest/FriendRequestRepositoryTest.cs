@@ -436,21 +436,21 @@ namespace SWENG894.Test.RepositoryTest
             _context.SaveChangesAsync().GetAwaiter();
 
             //Test
-            var result = _cut.GetUserFriends("", "", "guid-user1");
+            var result = _cut.GetUserFriends("", "", "guid-user1", false);
             //Returns only 2 approved requests fr3 and fr4. fr1 is not returned as it's still New.
             Assert.Equal(2, result.Count());
             Assert.Equal(4, _context.FriendRequests.Count());
             Assert.Equal(4, _context.Users.Count());
             Assert.Equal("Four", result.ElementAt(0).LastName);
 
-            result = _cut.GetUserFriends("desc", "", "guid-user1");
+            result = _cut.GetUserFriends("desc", "", "guid-user1", false);
             //Returns only 2 approved requests fr3 and fr4. fr1 is not returned as it's still New.
             Assert.Equal(2, result.Count());
             Assert.Equal(4, _context.FriendRequests.Count());
             Assert.Equal(4, _context.Users.Count());
             Assert.Equal("Three", result.ElementAt(0).LastName);
 
-            result = _cut.GetUserFriends("", "Three", "guid-user1");
+            result = _cut.GetUserFriends("", "Three", "guid-user1", false);
             Assert.Single(result);
             Assert.Equal(4, _context.FriendRequests.Count());
             Assert.Equal(4, _context.Users.Count());

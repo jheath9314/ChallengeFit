@@ -47,7 +47,8 @@ namespace SWENG894.Data.Initializer
                 EmailConfirmed = true,
                 FirstName = "Stephen",
                 LastName = "Cook",
-                ZipCode = "11111"
+                ZipCode = "11111",
+                Rating = 1500.0
             }, "P@ssW0rd").GetAwaiter().GetResult();
 
             _userManager.CreateAsync(new ApplicationUser
@@ -57,7 +58,8 @@ namespace SWENG894.Data.Initializer
                 EmailConfirmed = true,
                 FirstName = "Jarrod",
                 LastName = "Follweiler",
-                ZipCode = "22222"
+                ZipCode = "22222",
+                Rating = 1500.0
             }, "P@ssW0rd").GetAwaiter().GetResult();
 
             _userManager.CreateAsync(new ApplicationUser
@@ -67,7 +69,8 @@ namespace SWENG894.Data.Initializer
                 EmailConfirmed = true,
                 FirstName = "Tina",
                 LastName = "Hang",
-                ZipCode = "33333"
+                ZipCode = "33333",
+                Rating = 1500.0
             }, "P@ssW0rd").GetAwaiter().GetResult();
 
             _userManager.CreateAsync(new ApplicationUser
@@ -77,7 +80,8 @@ namespace SWENG894.Data.Initializer
                 EmailConfirmed = true,
                 FirstName = "Jeremy",
                 LastName = "Heath",
-                ZipCode = "44444"
+                ZipCode = "44444",
+                Rating = 1500.0
             }, "P@ssW0rd").GetAwaiter().GetResult();
 
             _userManager.CreateAsync(new ApplicationUser
@@ -87,7 +91,8 @@ namespace SWENG894.Data.Initializer
                 EmailConfirmed = true,
                 FirstName = "Vladimir",
                 LastName = "Novikov",
-                ZipCode = "17222"
+                ZipCode = "17222",
+                Rating = 1500.0
             }, "P@ssW0rd").GetAwaiter().GetResult();
 
             IList<ApplicationUser> users = _context.ApplicationUsers.ToList();

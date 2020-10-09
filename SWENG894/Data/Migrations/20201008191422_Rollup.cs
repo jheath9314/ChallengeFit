@@ -43,7 +43,8 @@ namespace SWENG894.Data.Migrations
                     Discriminator = table.Column<string>(nullable: false),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
-                    ZipCode = table.Column<string>(nullable: true)
+                    ZipCode = table.Column<string>(nullable: true),
+                    Rating = table.Column<double>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -255,6 +256,30 @@ namespace SWENG894.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "WorkoutFavorites",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(nullable: false),
+                    WorkoutId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WorkoutFavorites", x => new { x.UserId, x.WorkoutId });
+                    table.ForeignKey(
+                        name: "FK_WorkoutFavorites_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_WorkoutFavorites_Workouts_WorkoutId",
+                        column: x => x.WorkoutId,
+                        principalTable: "Workouts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "WorkoutResults",
                 columns: table => new
                 {
@@ -277,6 +302,96 @@ namespace SWENG894.Data.Migrations
                         name: "FK_WorkoutResults_Workouts_WorkoutId",
                         column: x => x.WorkoutId,
                         principalTable: "Workouts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Challenges",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ChallengerId = table.Column<string>(nullable: false),
+                    ContenderId = table.Column<string>(nullable: false),
+                    WorkoutId = table.Column<int>(nullable: false),
+                    ChallengerResultId = table.Column<int>(nullable: true),
+                    ContenderResultId = table.Column<int>(nullable: true),
+                    ChallengeProgress = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Challenges", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Challenges_AspNetUsers_ChallengerId",
+                        column: x => x.ChallengerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Challenges_WorkoutResults_ChallengerResultId",
+                        column: x => x.ChallengerResultId,
+                        principalTable: "WorkoutResults",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Challenges_AspNetUsers_ContenderId",
+                        column: x => x.ContenderId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Challenges_WorkoutResults_ContenderResultId",
+                        column: x => x.ContenderResultId,
+                        principalTable: "WorkoutResults",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Challenges_Workouts_WorkoutId",
+                        column: x => x.WorkoutId,
+                        principalTable: "Workouts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "NewFeed",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Description = table.Column<string>(nullable: true),
+                    UserId = table.Column<string>(nullable: false),
+                    CreateDate = table.Column<DateTime>(nullable: false),
+                    FeedType = table.Column<int>(nullable: false),
+                    RelatedUserId = table.Column<string>(nullable: true),
+                    RelatedWorkoutId = table.Column<int>(nullable: true),
+                    RelatedChallengeId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NewFeed", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_NewFeed_Challenges_RelatedChallengeId",
+                        column: x => x.RelatedChallengeId,
+                        principalTable: "Challenges",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_NewFeed_AspNetUsers_RelatedUserId",
+                        column: x => x.RelatedUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_NewFeed_Workouts_RelatedWorkoutId",
+                        column: x => x.RelatedWorkoutId,
+                        principalTable: "Workouts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_NewFeed_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -321,6 +436,31 @@ namespace SWENG894.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Challenges_ChallengerId",
+                table: "Challenges",
+                column: "ChallengerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Challenges_ChallengerResultId",
+                table: "Challenges",
+                column: "ChallengerResultId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Challenges_ContenderId",
+                table: "Challenges",
+                column: "ContenderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Challenges_ContenderResultId",
+                table: "Challenges",
+                column: "ContenderResultId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Challenges_WorkoutId",
+                table: "Challenges",
+                column: "WorkoutId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Exercises_WorkoutId",
                 table: "Exercises",
                 column: "WorkoutId");
@@ -339,6 +479,31 @@ namespace SWENG894.Data.Migrations
                 name: "IX_Messages_SentToId",
                 table: "Messages",
                 column: "SentToId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NewFeed_RelatedChallengeId",
+                table: "NewFeed",
+                column: "RelatedChallengeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NewFeed_RelatedUserId",
+                table: "NewFeed",
+                column: "RelatedUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NewFeed_RelatedWorkoutId",
+                table: "NewFeed",
+                column: "RelatedWorkoutId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NewFeed_UserId",
+                table: "NewFeed",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WorkoutFavorites_WorkoutId",
+                table: "WorkoutFavorites",
+                column: "WorkoutId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WorkoutResults_UserId",
@@ -378,10 +543,19 @@ namespace SWENG894.Data.Migrations
                 name: "Messages");
 
             migrationBuilder.DropTable(
-                name: "WorkoutResults");
+                name: "NewFeed");
+
+            migrationBuilder.DropTable(
+                name: "WorkoutFavorites");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Challenges");
+
+            migrationBuilder.DropTable(
+                name: "WorkoutResults");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

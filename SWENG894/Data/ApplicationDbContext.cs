@@ -49,9 +49,21 @@ namespace SWENG894.Data
                 .HasForeignKey(c => c.SentToId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            // WorkoutFavorites setup
+            modelBuilder.Entity<WorkoutFavorite>()
+                .HasKey(t => new { t.UserId, t.WorkoutId });
+
+            // Challenges setup
+            modelBuilder.Entity<Challenge>()
+                .HasOne(c => c.Contender)
+                .WithMany()
+                .HasForeignKey(d => d.ContenderId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+
             //workout results
 
-           //modelBuilder.Entity<WorkoutResults>().HasKey(t => new { t.UserId, t.WorkoutId });
+            //modelBuilder.Entity<WorkoutResults>().HasKey(t => new { t.UserId, t.WorkoutId });
 
 
 
@@ -63,5 +75,9 @@ namespace SWENG894.Data
         public DbSet<Exercise> Exercises { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<WorkoutResult> WorkoutResults { get; set; }
+        public DbSet<NewsFeed> NewFeed { get; set; }
+        public DbSet<Challenge> Challenges { get; set; }
+        public DbSet<WorkoutFavorite> WorkoutFavorites { get; set; }
+
     }
 }

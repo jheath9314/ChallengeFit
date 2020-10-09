@@ -10,7 +10,7 @@ using SWENG894.Data;
 namespace SWENG894.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201005135704_Rollup")]
+    [Migration("20201008191422_Rollup")]
     partial class Rollup
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -223,6 +223,48 @@ namespace SWENG894.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("SWENG894.Models.Challenge", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ChallengeProgress")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ChallengerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("ChallengerResultId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ContenderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("ContenderResultId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WorkoutId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChallengerId");
+
+                    b.HasIndex("ChallengerResultId");
+
+                    b.HasIndex("ContenderId");
+
+                    b.HasIndex("ContenderResultId");
+
+                    b.HasIndex("WorkoutId");
+
+                    b.ToTable("Challenges");
+                });
+
             modelBuilder.Entity("SWENG894.Models.Exercise", b =>
                 {
                     b.Property<int>("Id")
@@ -326,6 +368,48 @@ namespace SWENG894.Data.Migrations
                     b.ToTable("Messages");
                 });
 
+            modelBuilder.Entity("SWENG894.Models.NewsFeed", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("FeedType")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RelatedChallengeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RelatedUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("RelatedWorkoutId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RelatedChallengeId");
+
+                    b.HasIndex("RelatedUserId");
+
+                    b.HasIndex("RelatedWorkoutId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("NewFeed");
+                });
+
             modelBuilder.Entity("SWENG894.Models.Workout", b =>
                 {
                     b.Property<int>("Id")
@@ -352,6 +436,21 @@ namespace SWENG894.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Workouts");
+                });
+
+            modelBuilder.Entity("SWENG894.Models.WorkoutFavorite", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("WorkoutId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "WorkoutId");
+
+                    b.HasIndex("WorkoutId");
+
+                    b.ToTable("WorkoutFavorites");
                 });
 
             modelBuilder.Entity("SWENG894.Models.WorkoutResult", b =>
@@ -388,6 +487,9 @@ namespace SWENG894.Data.Migrations
 
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Rating")
+                        .HasColumnType("float");
 
                     b.Property<string>("ZipCode")
                         .HasColumnType("nvarchar(max)");
@@ -446,6 +548,35 @@ namespace SWENG894.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SWENG894.Models.Challenge", b =>
+                {
+                    b.HasOne("SWENG894.Models.ApplicationUser", "Challenger")
+                        .WithMany()
+                        .HasForeignKey("ChallengerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SWENG894.Models.WorkoutResult", "ChallengerResult")
+                        .WithMany()
+                        .HasForeignKey("ChallengerResultId");
+
+                    b.HasOne("SWENG894.Models.ApplicationUser", "Contender")
+                        .WithMany()
+                        .HasForeignKey("ContenderId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SWENG894.Models.WorkoutResult", "ContenderResult")
+                        .WithMany()
+                        .HasForeignKey("ContenderResultId");
+
+                    b.HasOne("SWENG894.Models.Workout", "Workout")
+                        .WithMany()
+                        .HasForeignKey("WorkoutId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("SWENG894.Models.Exercise", b =>
                 {
                     b.HasOne("SWENG894.Models.Workout", "Workout")
@@ -481,6 +612,42 @@ namespace SWENG894.Data.Migrations
                         .WithMany("ReceievedMessages")
                         .HasForeignKey("SentToId")
                         .OnDelete(DeleteBehavior.NoAction);
+                });
+
+            modelBuilder.Entity("SWENG894.Models.NewsFeed", b =>
+                {
+                    b.HasOne("SWENG894.Models.Challenge", "RelatedChallenge")
+                        .WithMany()
+                        .HasForeignKey("RelatedChallengeId");
+
+                    b.HasOne("SWENG894.Models.ApplicationUser", "RelatedUser")
+                        .WithMany()
+                        .HasForeignKey("RelatedUserId");
+
+                    b.HasOne("SWENG894.Models.Workout", "RelatedWorkout")
+                        .WithMany()
+                        .HasForeignKey("RelatedWorkoutId");
+
+                    b.HasOne("SWENG894.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SWENG894.Models.WorkoutFavorite", b =>
+                {
+                    b.HasOne("SWENG894.Models.ApplicationUser", "User")
+                        .WithMany("WorkoutFavorites")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SWENG894.Models.Workout", "Workout")
+                        .WithMany()
+                        .HasForeignKey("WorkoutId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SWENG894.Models.WorkoutResult", b =>

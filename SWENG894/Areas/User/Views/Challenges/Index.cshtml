@@ -1,0 +1,92 @@
+﻿@model SWENG894.Utility.PaginatedList<SWENG894.Models.Challenge>
+
+<h4>Challenges</h4>
+
+<form asp-action="Index" method="get">
+    <div class="btn-group mb-2" role="group">
+
+        <div class="input-group mb-3">
+            <div class="btn-group btn-group-toggle mr-2" role="group">
+                <a asp-action="Index" asp-route-list="" type="button" class="btn btn-outline-secondary" id="active">Active</a>
+                <a asp-action="Index" asp-route-list="old" type="button" class="btn btn-outline-secondary" id="old">Old</a>
+            </div>
+            <input type="text" class="form-control" placeholder="Search" aria-label="Search" name="search" aria-describedby="button-find" value="@ViewBag.CurrentFilter">
+            <input type="hidden" name="list" value="@ViewBag.CurrentList" />
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="submit" id="button-find">Search</button>
+            </div>
+        </div>
+    </div>
+    <a class="btn btn-primary float-right" id="button-find" asp-action="Create">New Challenge</a>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                Status
+            </th>
+            <th>
+                Challenger
+            </th>
+            <th>
+                Contender
+            </th>
+            <th>
+                Options
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ChallengeProgress)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Challenger.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Contender.FullName)
+            </td>
+            <td>
+                
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sort="@ViewBag.CurrentSort"
+   asp-route-page="@(Model.PageIndex - 1)"
+   asp-route-search="@ViewBag.CurrentFilter"
+   asp-route-box="@ViewBag.List"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sort="@ViewBag.CurrentSort"
+   asp-route-page="@(Model.PageIndex + 1)"
+   asp-route-search="@ViewBag.CurrentFilter"
+   asp-route-box="@ViewBag.List"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
+
+@section Scripts {
+    <script>
+        var tab = GetParameterByName("list");
+        if (tab != null) {
+            $("#old").button('toggle');
+        } else {
+            $("#active").button('toggle');
+        }
+    </script>
+}

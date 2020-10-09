@@ -63,6 +63,8 @@ html {
 body {
     /* Margin bottom by footer height */
     margin-bottom: 60px;
+    /* Padding top for sticky navbar */
+    padding-top: 70px;
 }
 
 .footer {

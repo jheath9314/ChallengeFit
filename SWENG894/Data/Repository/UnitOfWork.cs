@@ -17,6 +17,9 @@ namespace SWENG894.Data.Repository
         public IWorkoutRepository Workout { get; private set; }
         public IExerciseRepository Exercise { get; private set; }
         public IWorkoutResultRepository WorkoutResult { get; private set; }
+        public IWorkoutFavoriteRepository WorkoutFavorite { get; private set; }
+        public IChallengeRepository Challenge { get; private set; }
+        public INewsFeedRepository NewsFeed { get; private set; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -27,6 +30,9 @@ namespace SWENG894.Data.Repository
             Workout = new WorkoutRepository(context);
             Exercise = new ExerciseRepository(context);
             WorkoutResult = new WorkoutResultRepository(context);
+            WorkoutFavorite = new WorkoutFavoriteRepository(context);
+            Challenge = new ChallengeRepository(context);
+            NewsFeed = new NewsFeedRepository(context);
         }
 
         public void Dispose()

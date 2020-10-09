@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Org.BouncyCastle.Math.EC.Rfc7748;
 using SWENG894.Data.Repository.IRepository;
 using SWENG894.Models;
 using System;
@@ -54,6 +56,11 @@ namespace SWENG894.Data.Repository
         public void UpdateAsync(ApplicationUser user)
         {
             throw new NotImplementedException();
+        }
+
+        public Task<ApplicationUser> GetUserWithWorkouts(string id)
+        {
+            return _context.ApplicationUsers.Include(x => x.WorkoutFavorites).ThenInclude(x => x.Workout).SingleOrDefaultAsync(x => x.Id == id);
         }
     }
 }

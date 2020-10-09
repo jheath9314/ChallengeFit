@@ -23,6 +23,8 @@ namespace SWENG894.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string ZipCode { get; set; }
+        public double Rating { get; set; }
+
 
         [NotMapped]
         [Display(Name = "Name")]
@@ -69,6 +71,9 @@ namespace SWENG894.Models
         // Messages
         public ICollection<Message> SentMessages { get; set; }
         public ICollection<Message> ReceievedMessages { get; set; }
+
+        // Workout favorites
+        public ICollection<WorkoutFavorite> WorkoutFavorites { get; set; }
 
     }
 }

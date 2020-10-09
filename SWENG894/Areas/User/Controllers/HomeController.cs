@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SWENG894.Models;
@@ -11,6 +12,7 @@ using SWENG894.Models;
 namespace SWENG894.Areas.User.Controllers
 {
     [Area("User")]
+    [Authorize(Roles = "Admin, User")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

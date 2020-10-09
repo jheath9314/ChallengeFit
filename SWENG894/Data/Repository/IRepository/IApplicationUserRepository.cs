@@ -15,5 +15,7 @@ namespace SWENG894.Data.Repository.IRepository
         public Task RemoveAsync(string id);
 
         public bool ObjectExists(string id);
+
+        public Task<ApplicationUser> GetUserWithWorkouts(string id);
     }
 }

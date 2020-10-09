@@ -11,6 +11,7 @@ using SWENG894.Models;
 using SWENG894.Utility;
 using SWENG894.Data.Repository.IRepository;
 using System.Diagnostics.CodeAnalysis;
+using System.Security.Claims;
 
 namespace SWENG894.Areas.User.Controllers
 {
@@ -106,6 +107,17 @@ namespace SWENG894.Areas.User.Controllers
             {
                 await _unitOfWork.Workout.AddAsync(workout);
                 await _unitOfWork.Save();
+
+                var user = await _unitOfWork.ApplicationUser.GetAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+                var fave = new WorkoutFavorite()
+                {
+                    User = user,
+                    Workout = workout
+                };
+                await _unitOfWork.WorkoutFavorite.AddAsync(fave);
+                await _unitOfWork.Save();
+
                 return RedirectToAction(nameof(Index));
             }
             return View(workout);
