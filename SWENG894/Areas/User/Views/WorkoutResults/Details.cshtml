@@ -10,23 +10,29 @@
     <h4>WorkoutResults</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             Workout Name
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Workout.Name)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             Athlete Name
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.User.UserName)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Score)
         </dt>
         <dd class="col-sm-10">
             @Model.getTimeDisplayString()
+        </dd>
+        <dt class="col-sm-2">
+            Result Notes
+        </dt>
+        <dd class="col-sm-10">
+            @Model.ResultNotes
         </dd>
     </dl>
 </div>

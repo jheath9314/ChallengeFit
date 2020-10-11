@@ -458,6 +458,9 @@ namespace SWENG894.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("ResultNotes")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Score")
                         .HasColumnType("int");
 
