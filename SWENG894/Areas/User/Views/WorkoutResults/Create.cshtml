@@ -23,11 +23,13 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <select asp-for="ScoringType" id="scoringType" asp-items="@Html.GetEnumSelectList<SWENG894.Models.Workout.Scoring>()"></select> 
+                <select asp-for="ScoringType" id="scoringType" asp-items="@Html.GetEnumSelectList<SWENG894.Models.Workout.Scoring>()"></select>
                 <label asp-for="Score" id="timeLabel" class="control-label"></label>
                 <input asp-for="Score" id="scoreField" class="form-control" />
                 <input type="number" id="timeSeconds" name="seconds" min="0" max="59" class="form-control" />
-                <span asp-validation-for="Score" class="text-danger"></span>
+                <label asp-for="ResultNotes" class="control-label">Result Notes</label> <br />
+                <input asp-for="ResultNotes" id="resultNotes" class="form-control" />
+                <span asp-validation-for="ResultNotes" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

@@ -20,6 +20,8 @@ namespace SWENG894.Models
 
         public int Score { get; set; }
 
+        public string ResultNotes { get; set; }
+
         //These properties can be pulled out of User and Workout
 
         [NotMapped]
@@ -35,19 +37,32 @@ namespace SWENG894.Models
         {
             if (ScoringType == Workout.Scoring.Reps)
             {
-                string minutes = (Score / 60).ToString();
-                string seconds = (Score % 60).ToString();
-                if ((Score % 60) < 10)
-                {
-                    seconds = "0" + seconds;
-                }
-                string displayValue = minutes + ":" + seconds;
+                
+                string displayValue = getMinutesString() + ":" + getSecondsString();
                 return displayValue;
             }
             else
             {
                 return Score.ToString();
             }
+        }
+
+        public string getSecondsString()
+        {
+            string seconds = (Score % 60).ToString();
+            if ((Score % 60) < 10)
+            {
+                seconds = "0" + seconds;
+            }
+
+            return seconds;
+            
+        }
+
+        public string getMinutesString()
+        {
+            string minutes = (Score / 60).ToString();
+            return minutes;
         }
     }
 }

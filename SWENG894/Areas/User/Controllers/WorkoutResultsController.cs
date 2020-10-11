@@ -89,7 +89,6 @@ namespace SWENG894.Areas.User.Controllers
             workoutResults.WorkoutName = workout.Name;
             return View(workoutResults);
 
-            //return View();
         }
 
         // POST: User/WorkoutResults/Create
@@ -97,7 +96,6 @@ namespace SWENG894.Areas.User.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //Vladimir, need help with this one
         public async Task<IActionResult> Create([Bind("Id,WorkoutId,UserId,Score")] int Id, WorkoutResult workoutResults, int seconds)
         {
 
@@ -135,7 +133,6 @@ namespace SWENG894.Areas.User.Controllers
 
         // GET: User/WorkoutResults/Edit/5
         [ExcludeFromCodeCoverage]
-        //Vladimir, need help with this one
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -163,8 +160,7 @@ namespace SWENG894.Areas.User.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //Vladimir, need help with this one
-        public async Task<IActionResult> Edit(int id, [Bind("Id,WorkoutId,UserId,Score")] WorkoutResult workoutResults, int seconds)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,WorkoutId,UserId,Score, ResultNotes")] WorkoutResult workoutResults, int seconds)
         {
             if (id != workoutResults.Id)
             {
