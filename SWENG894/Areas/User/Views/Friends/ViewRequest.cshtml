@@ -15,11 +15,15 @@
                         <input asp-action="ViewRequest" asp-route-sender="@Model.RequestedById" asp-route-receiver="@Model.RequestedForId" asp-route-status="@FriendRequest.FriendRequestStatus.Rejected" type="submit" value="Reject" class="btn btn-danger" />
                         break;
                     default:
-                        var canApprove = Model.ReceiverStatus == FriendRequest.FriendRequestStatus.Approved ? "disabled" : "";
-                        var canReject = Model.ReceiverStatus == FriendRequest.FriendRequestStatus.Rejected ? "disabled" : "";
-
-                        <input asp-action="ViewRequest" asp-route-sender="@Model.RequestedById" asp-route-receiver="@Model.RequestedForId" asp-route-status="@FriendRequest.FriendRequestStatus.Approved" type="submit" value="Unblock" class="btn btn-primary mr-2 @canApprove" />
-                        <input asp-action="ViewRequest" asp-route-sender="@Model.RequestedById" asp-route-receiver="@Model.RequestedForId" asp-route-status="@FriendRequest.FriendRequestStatus.Rejected" type="submit" value="Block" class="btn btn-danger @canReject" />
+                        if(Model.ReceiverStatus == FriendRequest.FriendRequestStatus.Approved)
+                        {
+                            <input asp-action="ViewRequest" asp-route-sender="@Model.RequestedById" asp-route-receiver="@Model.RequestedForId" asp-route-status="@FriendRequest.FriendRequestStatus.Rejected" type="submit" value="Block" class="btn btn-danger" />
+                        }
+                        else
+                        {
+                            <input asp-action="ViewRequest" asp-route-sender="@Model.RequestedById" asp-route-receiver="@Model.RequestedForId" asp-route-status="@FriendRequest.FriendRequestStatus.Approved" type="submit" value="Unblock" class="btn btn-primary mr-2" />
+                        }
+                        <a asp-action="Delete" asp-route-sender="@Model.RequestedById" asp-route-receiver="@Model.RequestedForId" type="submit" value="Delete" class="btn btn-danger">Delete</a>                      
                         break;
                 }
             }
@@ -31,11 +35,15 @@
                         <a asp-action="Delete" asp-route-sender="@Model.RequestedById" asp-route-receiver="@Model.RequestedForId" type="submit" value="Delete" class="btn btn-danger">Delete</a>
                         break;
                     default:
-                        var canApprove = Model.RequesterStatus == FriendRequest.FriendRequestStatus.Approved ? "disabled" : "";
-                        var canReject = Model.RequesterStatus == FriendRequest.FriendRequestStatus.Rejected ? "disabled" : "";
-
-                        <input asp-action="ViewRequest" asp-route-sender="@Model.RequestedById" asp-route-receiver="@Model.RequestedForId" asp-route-status="@FriendRequest.FriendRequestStatus.Approved" type="submit" value="Unblock" class="btn btn-primary mr-2 @canApprove" />
-                        <input asp-action="ViewRequest" asp-route-sender="@Model.RequestedById" asp-route-receiver="@Model.RequestedForId" asp-route-status="@FriendRequest.FriendRequestStatus.Rejected" type="submit" value="Block" class="btn btn-danger @canReject" />
+                        if(Model.RequesterStatus == FriendRequest.FriendRequestStatus.Approved)
+                        {
+                            <input asp-action="ViewRequest" asp-route-sender="@Model.RequestedById" asp-route-receiver="@Model.RequestedForId" asp-route-status="@FriendRequest.FriendRequestStatus.Rejected" type="submit" value="Block" class="btn btn-danger" />
+                        }
+                        else
+                        {
+                            <input asp-action="ViewRequest" asp-route-sender="@Model.RequestedById" asp-route-receiver="@Model.RequestedForId" asp-route-status="@FriendRequest.FriendRequestStatus.Approved" type="submit" value="Unblock" class="btn btn-primary mr-2" />
+                        }
+                        <a asp-action="Delete" asp-route-sender="@Model.RequestedById" asp-route-receiver="@Model.RequestedForId" type="submit" value="Delete" class="btn btn-danger">Delete</a>                       
                         break;
                 }
             }

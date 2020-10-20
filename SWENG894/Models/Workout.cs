@@ -36,6 +36,12 @@ namespace SWENG894.Models
 
         public List<Exercise> Exercises { get; set; }
 
+        public bool Published { get; set; }
+
+        public string UserId { get; set; }
+
+        public ApplicationUser User { get; set; }
+
         public string GetTimeDisplayString()
         {
             if(ScoringType == Scoring.Time)

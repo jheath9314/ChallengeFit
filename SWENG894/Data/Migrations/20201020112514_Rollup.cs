@@ -52,23 +52,6 @@ namespace SWENG894.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Workouts",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: false),
-                    Time = table.Column<int>(nullable: false),
-                    Notes = table.Column<string>(nullable: true),
-                    ScoringType = table.Column<int>(nullable: false),
-                    ScalingOptions = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Workouts", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -235,6 +218,31 @@ namespace SWENG894.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Workouts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: false),
+                    Time = table.Column<int>(nullable: false),
+                    Notes = table.Column<string>(nullable: true),
+                    ScoringType = table.Column<int>(nullable: false),
+                    ScalingOptions = table.Column<string>(nullable: true),
+                    Published = table.Column<bool>(nullable: false),
+                    UserId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Workouts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Workouts_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Exercises",
                 columns: table => new
                 {
@@ -287,7 +295,8 @@ namespace SWENG894.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     WorkoutId = table.Column<int>(nullable: false),
                     UserId = table.Column<string>(nullable: true),
-                    Score = table.Column<int>(nullable: false)
+                    Score = table.Column<int>(nullable: false),
+                    ResultNotes = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -514,6 +523,11 @@ namespace SWENG894.Data.Migrations
                 name: "IX_WorkoutResults_WorkoutId",
                 table: "WorkoutResults",
                 column: "WorkoutId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Workouts_UserId",
+                table: "Workouts",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -558,10 +572,10 @@ namespace SWENG894.Data.Migrations
                 name: "WorkoutResults");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Workouts");
 
             migrationBuilder.DropTable(
-                name: "Workouts");
+                name: "AspNetUsers");
         }
     }
 }

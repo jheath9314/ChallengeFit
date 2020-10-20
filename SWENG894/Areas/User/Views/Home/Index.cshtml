@@ -8,7 +8,7 @@
         {
             case NewsFeed.FeedTypes.AcceptedChallenge:
                 <div class="card mb-2">
-                    <h5 class="card-header">Bob accepted a challenge from Joe</h5>
+                    <h5 class="card-header">@feed.User.FullName @(" accepted a challenge from ") @feed.RelatedUser.FullName</h5>
                     <div class="card-body">
                         <h5 class="card-title">Workout Name</h5>
                         <p class="card-text">Workout notes.</p>
@@ -19,7 +19,7 @@
 
             case NewsFeed.FeedTypes.CompletedChallenge:
                 <div class="card mb-2">
-                    <h5 class="card-header">Bob completed a challenge</h5>
+                    <h5 class="card-header">@feed.User.FullName @(" completed a challenge from ") @feed.RelatedUser.FullName</h5>
                     <div class="card-body">
                         <h5 class="card-title">Workout Name</h5>
                         <p class="card-text">Workout notes.</p>
@@ -30,7 +30,7 @@
 
             case NewsFeed.FeedTypes.CompletedWorkout:
                 <div class="card mb-2">
-                    <h5 class="card-header">Bob completed a workout</h5>
+                    <h5 class="card-header">@feed.User.FullName @(" completed a workout!")</h5>
                     <div class="card-body">
                         <h5 class="card-title">Workout Name</h5>
                         <p class="card-text">Workout notes.</p>
@@ -41,7 +41,7 @@
 
             case NewsFeed.FeedTypes.PublishedWorkout:
                 <div class="card mb-2">
-                    <h5 class="card-header">Joe published a new workout</h5>
+                    <h5 class="card-header">@feed.User.FullName @(" published a new workout.")</h5>
                     <div class="card-body">
                         <h5 class="card-title">Workout Name</h5>
                         <p class="card-text">Workout notes.</p>
@@ -51,29 +51,38 @@
                 break;
 
             case NewsFeed.FeedTypes.SentChallenge:
-
-                <div class="card mb-2">
-                    <h5 class="card-header">Joe challeneged Bob</h5>
-                    <div class="card-body">
-                        <h5 class="card-title">Workout Name</h5>
-                        <p class="card-text">Workout notes.</p>
-                        <a href="#" class="btn btn-primary">View Challenge</a>
+                if (feed.RelatedUserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value)
+                {
+                    <div class="card mb-2">
+                        <h5 class="card-header">@("You have been challenged by ") @feed.User.FullName @("!")</h5>
+                        <div class="card-body">
+                            <h5 class="card-title">Workout Name</h5>
+                            <p class="card-text">Workout notes.</p>
+                            <a href="#" class="btn btn-primary">View Challenge</a>
+                        </div>
                     </div>
-                </div>
-
-                <div class="card mb-2">
-                    <h5 class="card-header">You have been challenged!</h5>
-                    <div class="card-body">
-                        <h5 class="card-title">Workout Name</h5>
-                        <p class="card-text">Workout notes.</p>
-                        <a href="#" class="btn btn-primary">View Challenge</a>
+                }
+                else
+                {
+                    <div class="card mb-2">
+                        <h5 class="card-header">@feed.User.FullName @(" challeneged ") @feed.RelatedUser.FullName</h5>
+                        <div class="card-body">
+                            <h5 class="card-title">Workout Name</h5>
+                            <p class="card-text">Workout notes.</p>
+                            <a href="#" class="btn btn-primary">View Challenge</a>
+                        </div>
                     </div>
-                </div>
+                }
                 break;
         }
     }
 }
 else
 {
-    <p>You don't have any news.</p>
+    <div class="card mb-2">
+        <h5 class="card-header">No news to show.</h5>
+        <div class="card-body">
+            <p class="card-text">Add more friends to see additonal feeds.</p>
+        </div>
+    </div>
 }

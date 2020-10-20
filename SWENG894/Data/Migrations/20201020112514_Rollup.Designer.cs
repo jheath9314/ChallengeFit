@@ -10,7 +10,7 @@ using SWENG894.Data;
 namespace SWENG894.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201009140550_Rollup")]
+    [Migration("20201020112514_Rollup")]
     partial class Rollup
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -424,6 +424,9 @@ namespace SWENG894.Data.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Published")
+                        .HasColumnType("bit");
+
                     b.Property<string>("ScalingOptions")
                         .HasColumnType("nvarchar(max)");
 
@@ -433,7 +436,12 @@ namespace SWENG894.Data.Migrations
                     b.Property<int>("Time")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Workouts");
                 });
@@ -459,6 +467,9 @@ namespace SWENG894.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ResultNotes")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Score")
                         .HasColumnType("int");
@@ -633,6 +644,13 @@ namespace SWENG894.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SWENG894.Models.Workout", b =>
+                {
+                    b.HasOne("SWENG894.Models.ApplicationUser", "User")
+                        .WithMany("Workouts")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("SWENG894.Models.WorkoutFavorite", b =>
