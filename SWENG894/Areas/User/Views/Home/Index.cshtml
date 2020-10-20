@@ -10,9 +10,9 @@
                 <div class="card mb-2">
                     <h5 class="card-header">@feed.User.FullName @(" accepted a challenge from ") @feed.RelatedUser.FullName</h5>
                     <div class="card-body">
-                        <h5 class="card-title">Workout Name</h5>
-                        <p class="card-text">Workout notes.</p>
-                        <a href="#" class="btn btn-primary">View Challenge</a>
+                        <h5 class="card-title">@feed.RelatedWorkout.Name</h5>
+                        <p class="card-text">@feed.RelatedWorkout.Notes</p>
+                        <a asp-area="User" asp-controller="Workouts" asp-action="Details" asp-route-id="@feed.RelatedWorkoutId" class="btn btn-primary">View Workout</a>
                     </div>
                 </div>
                 break;
@@ -21,9 +21,9 @@
                 <div class="card mb-2">
                     <h5 class="card-header">@feed.User.FullName @(" completed a challenge from ") @feed.RelatedUser.FullName</h5>
                     <div class="card-body">
-                        <h5 class="card-title">Workout Name</h5>
-                        <p class="card-text">Workout notes.</p>
-                        <a href="#" class="btn btn-primary">View Challenge</a>
+                        <h5 class="card-title">@feed.RelatedWorkout.Name</h5>
+                        <p class="card-text">@feed.RelatedWorkout.Notes</p>
+                        <a asp-area="User" asp-controller="Workouts" asp-action="Details" asp-route-id="@feed.RelatedWorkoutId" class="btn btn-primary">View Workout</a>
                     </div>
                 </div>
                 break;
@@ -32,9 +32,9 @@
                 <div class="card mb-2">
                     <h5 class="card-header">@feed.User.FullName @(" completed a workout!")</h5>
                     <div class="card-body">
-                        <h5 class="card-title">Workout Name</h5>
-                        <p class="card-text">Workout notes.</p>
-                        <a href="#" class="btn btn-primary">View Workout</a>
+                        <h5 class="card-title">@feed.RelatedWorkout.Name</h5>
+                        <p class="card-text">@feed.RelatedWorkout.Notes</p>
+                        <a asp-area="User" asp-controller="Workouts" asp-action="Details" asp-route-id="@feed.RelatedWorkoutId" class="btn btn-primary">View Workout</a>
                     </div>
                 </div>
                 break;
@@ -43,9 +43,9 @@
                 <div class="card mb-2">
                     <h5 class="card-header">@feed.User.FullName @(" published a new workout.")</h5>
                     <div class="card-body">
-                        <h5 class="card-title">Workout Name</h5>
-                        <p class="card-text">Workout notes.</p>
-                        <a href="#" class="btn btn-primary">View Workout</a>
+                        <h5 class="card-title">@feed.RelatedWorkout.Name</h5>
+                        <p class="card-text">@feed.RelatedWorkout.Notes</p>
+                        <a asp-area="User" asp-controller="Workouts" asp-action="Details" asp-route-id="@feed.RelatedWorkoutId" class="btn btn-primary">View Workout</a>
                     </div>
                 </div>
                 break;
@@ -56,9 +56,9 @@
                     <div class="card mb-2">
                         <h5 class="card-header">@("You have been challenged by ") @feed.User.FullName @("!")</h5>
                         <div class="card-body">
-                            <h5 class="card-title">Workout Name</h5>
-                            <p class="card-text">Workout notes.</p>
-                            <a href="#" class="btn btn-primary">View Challenge</a>
+                            <h5 class="card-title">@feed.RelatedWorkout.Name</h5>
+                            <p class="card-text">@feed.RelatedWorkout.Notes</p>
+                            <a asp-area="User" asp-controller="Workouts" asp-action="Details" asp-route-id="@feed.RelatedWorkoutId" class="btn btn-primary">View Workout</a>
                         </div>
                     </div>
                 }
@@ -67,9 +67,9 @@
                     <div class="card mb-2">
                         <h5 class="card-header">@feed.User.FullName @(" challeneged ") @feed.RelatedUser.FullName</h5>
                         <div class="card-body">
-                            <h5 class="card-title">Workout Name</h5>
-                            <p class="card-text">Workout notes.</p>
-                            <a href="#" class="btn btn-primary">View Challenge</a>
+                            <h5 class="card-title">@feed.RelatedWorkout.Name</h5>
+                            <p class="card-text">@feed.RelatedWorkout.Notes</p>
+                            <a asp-area="User" asp-controller="Workouts" asp-action="Details" asp-route-id="@feed.RelatedWorkoutId" class="btn btn-primary">View Workout</a>
                         </div>
                     </div>
                 }
