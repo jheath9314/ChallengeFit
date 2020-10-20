@@ -53,7 +53,6 @@ namespace SWENG894.Areas.User.Controllers
 
             return View(workoutList);
 
-            //return View(await _context.Workouts.ToListAsync());
         }
 
         // GET: User/Workouts/Details/5

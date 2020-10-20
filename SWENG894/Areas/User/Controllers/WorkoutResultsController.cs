@@ -91,6 +91,23 @@ namespace SWENG894.Areas.User.Controllers
 
         }
 
+        [ExcludeFromCodeCoverage]
+        public async Task<IActionResult> ViewWorkoutResults(int? id)
+        {
+            var workout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(m => m.Id == id);
+
+            if (workout == null)
+            {
+                return NotFound();
+            }
+            var user = await _unitOfWork.ApplicationUser.GetAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var workoutResults =  _unitOfWork.WorkoutResult.GetWorkoutResults(user.Id, workout.Id);
+
+
+            return View(workoutResults);
+
+        }
+
         // POST: User/WorkoutResults/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
