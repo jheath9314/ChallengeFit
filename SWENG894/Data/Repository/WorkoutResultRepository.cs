@@ -1,4 +1,5 @@
-﻿using SWENG894.Data.Repository.IRepository;
+﻿using Microsoft.EntityFrameworkCore;
+using SWENG894.Data.Repository.IRepository;
 using SWENG894.Models;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,24 @@ namespace SWENG894.Data.Repository
         public void UpdateAsync(WorkoutResult workoutResult)
         {
             _context.WorkoutResults.Update(workoutResult);
+        }
+
+        public List<WorkoutResult> GetWorkoutResults(string userId, int workoutId)
+        {
+            var workoutResults = _context.WorkoutResults.Where(w => w.UserId == userId && w.WorkoutId == workoutId);
+            var workout = _context.Workouts.FirstOrDefault(w => w.Id == workoutId);
+            var workoutResultsList = workoutResults.ToList();
+
+            //For efficiency, only load the first name
+            //they should all be the same
+            if(workoutResultsList.Count > 0)
+            {
+                workoutResultsList[0].WorkoutName = workout.Name;
+            }
+
+            return workoutResultsList;
+
+
         }
     }
 }
