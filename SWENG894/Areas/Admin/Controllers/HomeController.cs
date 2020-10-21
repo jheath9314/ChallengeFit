@@ -54,6 +54,13 @@ namespace SWENG894.Areas.Admin.Controllers
             return View();
         }
 
+        public void GenerateTestData()
+        {
+            SWENG894.DataGenerationUtility.TestDataGenerator dataGen = new SWENG894.DataGenerationUtility.TestDataGenerator();
+            dataGen.generateTestData(_unitOfWork);
+            //return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

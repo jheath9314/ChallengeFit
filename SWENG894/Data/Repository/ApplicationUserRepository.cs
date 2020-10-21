@@ -19,6 +19,11 @@ namespace SWENG894.Data.Repository
             _context = context;
         }
 
+        public void Save()
+        {
+            _context.SaveChangesAsync();
+        }
+
         public override async Task<ApplicationUser> GetAsync(int id)
         {
             // AppUser key is a guid. Raise exception if search by id uses an int.
