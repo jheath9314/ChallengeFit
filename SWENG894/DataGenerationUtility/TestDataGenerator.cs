@@ -13,20 +13,20 @@ namespace SWENG894.DataGenerationUtility
     [ExcludeFromCodeCoverage]
     public class TestDataGenerator
     {
-        private IUnitOfWork unitOfWork;
+        //private IUnitOfWork unitOfWork;
 
         private List<ApplicationUser> applicationUserList = new List<ApplicationUser>();
 
-        public TestDataGenerator(IUnitOfWork unitOfWork)
-        {
-            this.unitOfWork = unitOfWork;
-        }
+        //public TestDataGenerator(IUnitOfWork unitOfWork)
+        //{
+        //    this.unitOfWork = unitOfWork;
+        //}
 
-        public async void GenerateTestData()
+        public async void GenerateTestData(IUnitOfWork unitOfWork)
         {
             string[] lines = System.IO.File.ReadAllLines(@"DataGenerationUtility/names.txt");
 
-            for(int i = 0; i < lines.Length; i++)
+            for(int i = 0; i < 1; i++)
             {
                 var firstName = lines[i];
                 var lastName = lines[lines.Length - i - 1];
@@ -51,24 +51,28 @@ namespace SWENG894.DataGenerationUtility
 
         }
 
-        public async void RemoveTestData()
+        //At the moment, this function causes a crash.
+        public async void RemoveTestData(IUnitOfWork unitOfWork)
         {
-            
+            return;
+
+            /*
             string[] lines = System.IO.File.ReadAllLines(@"DataGenerationUtility/names.txt");
-            var userList = new List<ApplicationUser>();
+            var userList = new List<string>();
 
             for (int i = 0; i < lines.Length; i++)
             {
                 var firstName = lines[i];
                 var lastName = lines[lines.Length - i - 1];
                 string UserName = firstName + lastName + "@psufakeemail.edu";
-                var appUser = await unitOfWork.ApplicationUser.GetFirstOrDefaultAsync(u => u.UserName == UserName);
-                userList.Add(appUser);
+                var appUser =   unitOfWork.ApplicationUser.GetUserByUsername(UserName);
+                //userList.Add(appUser);
             }
             
 
-            await unitOfWork.ApplicationUser.RemoveRangeAsync(userList);
-            unitOfWork.ApplicationUser.Save();
+            //await unitOfWork.ApplicationUser.RemoveRangeAsync(userList);
+            //unitOfWork.ApplicationUser.Save();
+            */
         }
         
     }

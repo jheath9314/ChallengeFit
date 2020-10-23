@@ -67,5 +67,12 @@ namespace SWENG894.Data.Repository
         {
             return _context.ApplicationUsers.Include(x => x.WorkoutFavorites).ThenInclude(x => x.Workout).SingleOrDefaultAsync(x => x.Id == id);
         }
+
+        public string GetUserByUsername(string userName)
+        {
+            var temp =  _dbSet.FirstOrDefault(u => u.UserName == userName);
+            return temp.Id;
+
+        }
     }
 }

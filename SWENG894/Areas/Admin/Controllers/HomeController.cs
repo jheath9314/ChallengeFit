@@ -56,15 +56,16 @@ namespace SWENG894.Areas.Admin.Controllers
 
         public void GenerateTestData()
         {
-            SWENG894.DataGenerationUtility.TestDataGenerator dataGen = new SWENG894.DataGenerationUtility.TestDataGenerator(_unitOfWork);
-            dataGen.GenerateTestData();
+            SWENG894.DataGenerationUtility.TestDataGenerator dataGen = new SWENG894.DataGenerationUtility.TestDataGenerator();
+            dataGen.GenerateTestData(_unitOfWork);
             //return View();
         }
 
         public void RemoveTestData()
         {
-            SWENG894.DataGenerationUtility.TestDataGenerator dataGen = new SWENG894.DataGenerationUtility.TestDataGenerator(_unitOfWork);
-            dataGen.RemoveTestData();
+            //This function causes a crash and hours of debugging have not determined why
+            //SWENG894.DataGenerationUtility.TestDataGenerator dataGen = new SWENG894.DataGenerationUtility.TestDataGenerator();
+            //dataGen.RemoveTestData(_unitOfWork);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
