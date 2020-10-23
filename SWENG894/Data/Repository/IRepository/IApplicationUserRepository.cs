@@ -17,5 +17,9 @@ namespace SWENG894.Data.Repository.IRepository
         public bool ObjectExists(string id);
 
         public Task<ApplicationUser> GetUserWithWorkouts(string id);
+
+        public string GetUserByUsername(string userName);
+
+        public void Save();
     }
 }

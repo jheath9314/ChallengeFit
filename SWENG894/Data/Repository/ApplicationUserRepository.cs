@@ -19,6 +19,11 @@ namespace SWENG894.Data.Repository
             _context = context;
         }
 
+        public void Save()
+        {
+            _context.SaveChangesAsync();
+        }
+
         public override async Task<ApplicationUser> GetAsync(int id)
         {
             // AppUser key is a guid. Raise exception if search by id uses an int.
@@ -61,6 +66,13 @@ namespace SWENG894.Data.Repository
         public Task<ApplicationUser> GetUserWithWorkouts(string id)
         {
             return _context.ApplicationUsers.Include(x => x.WorkoutFavorites).ThenInclude(x => x.Workout).SingleOrDefaultAsync(x => x.Id == id);
+        }
+
+        public string GetUserByUsername(string userName)
+        {
+            var temp =  _dbSet.FirstOrDefault(u => u.UserName == userName);
+            return temp.Id;
+
         }
     }
 }
