@@ -37,7 +37,8 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.LastName)
                     </td>
-                    <td>                       
+                    <td>
+                        <a asp-action="Profile" asp-route-id="@item.Id"><i class="far fa-address-card" tool-tip-toggle="tooltip" data-original-title="User Profile"></i></a> @("|")
                         <a asp-action="SendRequest" asp-route-id="@item.Id"><i class="fas fa-user-friends" tool-tip-toggle="tooltip" data-original-title="Send Friend Request"></i></a>
                     </td>
                 </tr>

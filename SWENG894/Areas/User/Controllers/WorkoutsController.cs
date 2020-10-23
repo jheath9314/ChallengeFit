@@ -102,12 +102,16 @@ namespace SWENG894.Areas.User.Controllers
             //cause an error if it's not set within the HTML form. We don't always need it
             //set and it's annoying to default it to 0
             ModelState.Remove("seconds");
+
             if (ModelState.IsValid)
             {
+                var user = await _unitOfWork.ApplicationUser.GetAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+                workout.User = user;
+
+                // Add to favorites when the exercise is published. This block is just for testing.
+
                 await _unitOfWork.Workout.AddAsync(workout);
                 await _unitOfWork.Save();
-
-                var user = await _unitOfWork.ApplicationUser.GetAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
                 var fave = new WorkoutFavorite()
                 {
@@ -116,6 +120,8 @@ namespace SWENG894.Areas.User.Controllers
                 };
                 await _unitOfWork.WorkoutFavorite.AddAsync(fave);
                 await _unitOfWork.Save();
+
+                // End test
 
                 return RedirectToAction(nameof(Index));
             }

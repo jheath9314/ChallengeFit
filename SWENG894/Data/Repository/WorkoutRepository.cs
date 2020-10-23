@@ -23,7 +23,7 @@ namespace SWENG894.Data.Repository
 
         public IEnumerable<Workout> GetAllWorkouts(string sort, string search)
         {
-            var workouts = _context.Workouts.Where(m => m.Name != null);
+            var workouts = _context.Workouts.Where(m => m.Published);
 
 
             if (!String.IsNullOrEmpty(search))

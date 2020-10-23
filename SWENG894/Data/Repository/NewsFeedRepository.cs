@@ -21,9 +21,14 @@ namespace SWENG894.Data.Repository
         public IEnumerable<NewsFeed> GetUserFeed(string userId)
         {
             var feedList = new List<NewsFeed>();
-            var user = _context.ApplicationUsers.FirstOrDefault(x => x.Id == userId);
+            var user = _context.ApplicationUsers
+                .Include(x => x.SentFriendRequests)
+                .ThenInclude(x => x.RequestedFor)
+                .Include(x => x.ReceievedFriendRequests)
+                .ThenInclude(x => x.RequestedBy)
+                .FirstOrDefault(x => x.Id == userId);
 
-            if(user == null)
+            if (user == null)
             {
                 return feedList;
             }
@@ -32,11 +37,19 @@ namespace SWENG894.Data.Repository
             {
                 if(friend.RequestedById == user.Id)
                 {
-                    feedList.AddRange(_context.NewFeed.Where(x => x.UserId == friend.RequestedForId && x.CreateDate > DateTime.Now.AddDays(-1)).ToList());
+                    feedList.AddRange(_context.NewFeed.Where(x => x.UserId == friend.RequestedForId && x.CreateDate > DateTime.Now.AddDays(-1))
+                        .Include(x => x.User)
+                        .Include(x => x.RelatedUser)
+                        .Include(x => x.RelatedChallenge)
+                        .Include(x => x.RelatedWorkout).ToList());
                 }
                 else
                 {
-                    feedList.AddRange(_context.NewFeed.Where(x => x.UserId == friend.RequestedById && x.CreateDate > DateTime.Now.AddDays(-1)).ToList());
+                    feedList.AddRange(_context.NewFeed.Where(x => x.UserId == friend.RequestedById && x.CreateDate > DateTime.Now.AddDays(-1))
+                        .Include(x => x.User)
+                        .Include(x => x.RelatedUser)
+                        .Include(x => x.RelatedChallenge)
+                        .Include(x => x.RelatedWorkout).ToList());
                 }
             }
 

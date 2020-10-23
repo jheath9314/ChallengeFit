@@ -75,5 +75,8 @@ namespace SWENG894.Models
         // Workout favorites
         public ICollection<WorkoutFavorite> WorkoutFavorites { get; set; }
 
+        // Created workouts
+        public ICollection<Workout> Workouts { get; set; }
+
     }
 }
