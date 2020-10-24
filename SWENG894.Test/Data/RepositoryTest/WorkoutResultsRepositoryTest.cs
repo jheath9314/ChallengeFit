@@ -60,5 +60,51 @@ namespace SWENG894.Test.Data.RepositoryTest
             Assert.True(w.Score == 3);
         }
 
+        [Fact]
+        public async void GetWorkoutResultsTest()
+        {
+            var workoutResult = new WorkoutResult();
+            workoutResult.Id = 0;
+            workoutResult.Score = 2;
+            workoutResult.ScoringType = Workout.Scoring.Reps;
+            workoutResult.WorkoutId = 2;
+            workoutResult.UserId = "TESTID";
+
+            await _cut.AddAsync(workoutResult);
+            await _context.SaveChangesAsync();
+
+            workoutResult.Id = 0;
+            workoutResult.Score = 2;
+            workoutResult.ScoringType = Workout.Scoring.Reps;
+            workoutResult.WorkoutId = 2;
+            workoutResult.UserId = "TESTID";
+
+            await _cut.AddAsync(workoutResult);
+            await _context.SaveChangesAsync();
+
+
+            workoutResult.Id = 0;
+            workoutResult.Score = 2;
+            workoutResult.ScoringType = Workout.Scoring.Reps;
+            workoutResult.WorkoutId = 1;
+            workoutResult.UserId = "TESTID";
+
+            await _cut.AddAsync(workoutResult);
+            await _context.SaveChangesAsync();
+
+            workoutResult.Id = 0;
+            workoutResult.Score = 2;
+            workoutResult.ScoringType = Workout.Scoring.Reps;
+            workoutResult.WorkoutId = 1;
+            workoutResult.UserId = "NOTREALID";
+
+            await _cut.AddAsync(workoutResult);
+            await _context.SaveChangesAsync();
+
+            var ws = _cut.GetWorkoutResults("TESTID", 2);
+
+            Assert.True(ws.Count == 2);
+        }
+
     }
 }
