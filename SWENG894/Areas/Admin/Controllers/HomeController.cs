@@ -49,9 +49,23 @@ namespace SWENG894.Areas.Admin.Controllers
             ViewData["CurrentFilter"] = search;
 
             //var matchingUsers = _unitOfWork.FriendRequest.GetUserFriends(sort, search, User.FindFirstValue(ClaimTypes.NameIdentifier), !string.IsNullOrEmpty(list)).ToList();
-            //var personList = await PaginatedList<ApplicationUser>.Create(matchingUsers, page ?? 1, _pageSize);
+           // var personList = await PaginatedList<ApplicationUser>.Create(matchingUsers, page ?? 1, _pageSize);
 
             return View();
+        }
+
+        public void GenerateTestData()
+        {
+            SWENG894.DataGenerationUtility.TestDataGenerator dataGen = new SWENG894.DataGenerationUtility.TestDataGenerator();
+            dataGen.GenerateTestData(_unitOfWork);
+            //return View();
+        }
+
+        public void RemoveTestData()
+        {
+            //This function causes a crash and hours of debugging have not determined why
+            //SWENG894.DataGenerationUtility.TestDataGenerator dataGen = new SWENG894.DataGenerationUtility.TestDataGenerator();
+            //dataGen.RemoveTestData(_unitOfWork);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

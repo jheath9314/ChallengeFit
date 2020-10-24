@@ -80,7 +80,7 @@ namespace SWENG894.Areas.User.Controllers
 
         // GET: User/Messages/Create
         [ExcludeFromCodeCoverage]
-        public IActionResult Create(string id)
+        public IActionResult Create(string id, string origin)
         {
 
             var message = _unitOfWork.Message.CreateNewMesage(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -93,6 +93,9 @@ namespace SWENG894.Areas.User.Controllers
             {
                 message.SentToId = id;
             }
+
+            ViewData["Origin"] = origin;
+
 
             return View(message);
         }
