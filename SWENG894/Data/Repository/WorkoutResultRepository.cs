@@ -32,12 +32,16 @@ namespace SWENG894.Data.Repository
             //they should all be the same
             if(workoutResultsList.Count > 0)
             {
-                workoutResultsList[0].WorkoutName = workout.Name;
+                if(workoutResultsList[0].WorkoutName == null)
+                {
+                    workoutResultsList[0].WorkoutName = "Error retrieving name";
+                }
+                else
+                {
+                    workoutResultsList[0].WorkoutName = workout.Name;
+                }
             }
-
             return workoutResultsList;
-
-
         }
     }
 }
