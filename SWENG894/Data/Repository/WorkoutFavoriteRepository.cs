@@ -15,5 +15,20 @@ namespace SWENG894.Data.Repository
         {
             _context = context;
         }
+
+        public override bool ObjectExists(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<WorkoutFavorite> GetAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task RemoveAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

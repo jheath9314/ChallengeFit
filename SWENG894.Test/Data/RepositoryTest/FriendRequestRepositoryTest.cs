@@ -194,7 +194,7 @@ namespace SWENG894.Test.RepositoryTest
             _context.SaveChangesAsync().GetAwaiter();
 
             //Test
-            //GetAsync not impelemented.
+            //RemoveAsync not impelemented.
             await Assert.ThrowsAsync<NotImplementedException>(() => _cut.RemoveAsync(1));
             Assert.Equal(1, _context.FriendRequests.Count());
 

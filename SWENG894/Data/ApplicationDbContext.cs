@@ -75,7 +75,7 @@ namespace SWENG894.Data
         public DbSet<Exercise> Exercises { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<WorkoutResult> WorkoutResults { get; set; }
-        public DbSet<NewsFeed> NewFeed { get; set; }
+        public DbSet<NewsFeed> NewsFeed { get; set; }
         public DbSet<Challenge> Challenges { get; set; }
         public DbSet<WorkoutFavorite> WorkoutFavorites { get; set; }
 

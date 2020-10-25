@@ -48,5 +48,10 @@ namespace SWENG894.Data.Repository
 
             return challenges;
         }
+
+        public void UpdateAsync(Challenge challenge)
+        {
+            _context.Challenges.Update(challenge);
+        }
     }
 }

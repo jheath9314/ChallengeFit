@@ -37,7 +37,7 @@ namespace SWENG894.Data.Repository
             {
                 if(friend.RequestedById == user.Id)
                 {
-                    feedList.AddRange(_context.NewFeed.Where(x => x.UserId == friend.RequestedForId && x.CreateDate > DateTime.Now.AddDays(-1))
+                    feedList.AddRange(_context.NewsFeed.Where(x => x.UserId == friend.RequestedForId && x.CreateDate > DateTime.Now.AddDays(-1))
                         .Include(x => x.User)
                         .Include(x => x.RelatedUser)
                         .Include(x => x.RelatedChallenge)
@@ -45,7 +45,7 @@ namespace SWENG894.Data.Repository
                 }
                 else
                 {
-                    feedList.AddRange(_context.NewFeed.Where(x => x.UserId == friend.RequestedById && x.CreateDate > DateTime.Now.AddDays(-1))
+                    feedList.AddRange(_context.NewsFeed.Where(x => x.UserId == friend.RequestedById && x.CreateDate > DateTime.Now.AddDays(-1))
                         .Include(x => x.User)
                         .Include(x => x.RelatedUser)
                         .Include(x => x.RelatedChallenge)
