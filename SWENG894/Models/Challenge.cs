@@ -18,19 +18,28 @@ namespace SWENG894.Models
         public int WorkoutId { get; set; }
         public Workout Workout { get; set; }
         public int? ChallengerResultId { get; set; }
+
+        [Display(Name = "Challenger Result")]
         public WorkoutResult ChallengerResult { get; set; }
         public int? ContenderResultId { get; set; }
+
+        [Display(Name = "Contender Result")]
         public WorkoutResult ContenderResult { get; set; }
+
+        [Display(Name = "Challenge Status")]
         public ChallengeStatus ChallengeProgress { get; set; }
+        [Required]
+        public DateTime CreateDate { get; set; }
 
         public enum ChallengeStatus
         {
             New,
-            Accepted,
-            Rejected,
+            Accepted,          
             CompletedByChallenger,
             CompletedByContender,
-            Completed
+            Rejected,
+            Completed,
+            Canceled
         }
     }
 }

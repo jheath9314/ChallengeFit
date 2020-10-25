@@ -340,8 +340,6 @@ namespace SWENG894.Test.RepositoryTest
             _context.SaveChangesAsync().GetAwaiter();
 
             //Test
-            //GetAsync not impelemented.
-            Assert.Throws<NotImplementedException>(() => _cut.UpdateAsync(fr1));
             Assert.Equal(1, _context.FriendRequests.Count());
 
             //Reset

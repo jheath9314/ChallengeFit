@@ -8,6 +8,6 @@ namespace SWENG894.Data.Repository.IRepository
 {
     public interface IChallengeRepository : IRepository<Challenge>
     {
-
+        public IEnumerable<Challenge> GetUserChallenges(string sort, string search, string userId, bool getOld);
     }
 }

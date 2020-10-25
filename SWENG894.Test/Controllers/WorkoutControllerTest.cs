@@ -13,7 +13,8 @@ using SWENG894.Models;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
-
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace SWENG894.Test.Controllers
 {
@@ -34,10 +35,38 @@ namespace SWENG894.Test.Controllers
         [Fact]
         public async void WorkoutControllerOpTest()
         {
+            var usr1 = new ApplicationUser
+            {
+                Id = "guid-user1",
+                UserName = "user1@psu.edu",
+                Email = "user1@psu.edu",
+                EmailConfirmed = true,
+                FirstName = "User",
+                LastName = "One",
+                ZipCode = "11111"
+            };
+            _context.ApplicationUsers.Add(usr1);
+            _context.SaveChangesAsync().GetAwaiter();
+
             var unit = new UnitOfWork(_context);
             var cont = new WorkoutsController(unit);
+
+            var loggedInUser = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.Name, "user1@psu.edu"),
+                new Claim(ClaimTypes.NameIdentifier, "guid-user1"),
+            }, "mock"));
+
+            cont.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() { User = loggedInUser }
+            };
+
+            
             Workout workout = new Workout();
             workout.Name = "Test";
+
+
             var res = await cont.Create(workout, 22);
             var data = await _context.Workouts.FirstOrDefaultAsync();
 

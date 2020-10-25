@@ -245,6 +245,9 @@ namespace SWENG894.Data.Migrations
                     b.Property<int?>("ContenderResultId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("WorkoutId")
                         .HasColumnType("int");
 

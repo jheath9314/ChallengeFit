@@ -51,7 +51,7 @@
                 @Html.DisplayFor(modelItem => item.Contender.FullName)
             </td>
             <td>
-                
+                <a asp-action="Details" asp-route-id="@item.Id"><i class="far fa-address-card" tool-tip-toggle="tooltip" data-original-title="Challenge Details"></i></a>
             </td>
         </tr>
         }
@@ -83,7 +83,7 @@
 @section Scripts {
     <script>
         var tab = GetParameterByName("list");
-        if (tab != null) {
+        if (tab != null && tab != "") {
             $("#old").button('toggle');
         } else {
             $("#active").button('toggle');

@@ -52,7 +52,7 @@ namespace SWENG894.Areas.User.Controllers
 
             ViewData["CurrentFilter"] = search;
 
-            var challenges = await _unitOfWork.Challenge.GetAllAsync(x => x.ChallengerId == User.FindFirstValue(ClaimTypes.NameIdentifier) || x.ContenderId == User.FindFirstValue(ClaimTypes.NameIdentifier), includeProperties: "Challenger,Contender");
+            var challenges = _unitOfWork.Challenge.GetUserChallenges(sort, search, User.FindFirstValue(ClaimTypes.NameIdentifier), !string.IsNullOrEmpty(list));
             var challengeList = await PaginatedList<Challenge>.Create(challenges.ToList(), page ?? 1, _pageSize);
 
             return View(challengeList);
@@ -143,7 +143,8 @@ namespace SWENG894.Areas.User.Controllers
                     Challenger = challengerUser,
                     Contender = contenderUser,
                     Workout = selectedWorkout,
-                    ChallengeProgress = Models.Challenge.ChallengeStatus.New
+                    ChallengeProgress = Models.Challenge.ChallengeStatus.New,
+                    CreateDate = DateTime.Now
                 };
 
                 await _unitOfWork.Challenge.AddAsync(newChallenge);

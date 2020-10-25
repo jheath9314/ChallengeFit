@@ -63,10 +63,12 @@ namespace SWENG894.Test.Data.RepositoryTest
             var work = new Workout();
             work.Id = 0;
             work.Name = "First";
+            work.Published = true;
 
             var work_2 = new Workout();
             work_2.Id = 0;
             work_2.Name = "Second";
+            work_2.Published = true;
 
             await _cut.AddAsync(work);
             await _cut.AddAsync(work_2);

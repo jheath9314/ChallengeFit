@@ -326,7 +326,8 @@ namespace SWENG894.Data.Migrations
                     WorkoutId = table.Column<int>(nullable: false),
                     ChallengerResultId = table.Column<int>(nullable: true),
                     ContenderResultId = table.Column<int>(nullable: true),
-                    ChallengeProgress = table.Column<int>(nullable: false)
+                    ChallengeProgress = table.Column<int>(nullable: false),
+                    CreateDate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
