@@ -18,6 +18,7 @@ using SWENG894.Data.Initializer;
 using SWENG894.Data.Repository.IRepository;
 using SWENG894.Data.Repository;
 using SWENG894.Hubs;
+using SWENG894.DataGenerationUtility;
 
 namespace SWENG894
 {
@@ -44,6 +45,7 @@ namespace SWENG894
             services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<EmailOptions>(Configuration.GetSection("EmailOptions"));
             services.AddScoped<IDbInitializer, DbInitializer>();
+            services.AddScoped<ITestDataGenerator, TestDataGenerator>();
             services.AddControllersWithViews();
             services.AddRazorPages();
 

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SWENG894.Data.Repository.IRepository;
+using SWENG894.DataGenerationUtility;
 using SWENG894.Models;
 using SWENG894.Utility;
 
@@ -19,12 +20,14 @@ namespace SWENG894.Areas.Admin.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IUnitOfWork _unitOfWork;
         private readonly int _pageSize;
+        private readonly ITestDataGenerator _testGenerator;
 
-        public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork)
+        public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork, ITestDataGenerator testGeneratot)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
             _pageSize = 10;
+            _testGenerator = testGeneratot;
         }
 
         public async Task<IActionResult> Index(string sort, string search, string filter, string list, string currentList, int? page)
@@ -56,13 +59,15 @@ namespace SWENG894.Areas.Admin.Controllers
 
         public void GenerateTestData()
         {
-            SWENG894.DataGenerationUtility.TestDataGenerator dataGen = new SWENG894.DataGenerationUtility.TestDataGenerator();
-            dataGen.GenerateTestData(_unitOfWork);
+            _testGenerator.GenerateTestData();
+            //SWENG894.DataGenerationUtility.TestDataGenerator dataGen = new SWENG894.DataGenerationUtility.TestDataGenerator();
+            //dataGen.GenerateTestData(_unitOfWork);
             //return View();
         }
 
         public void RemoveTestData()
         {
+            _testGenerator.RemoveTestData();
             //This function causes a crash and hours of debugging have not determined why
             //SWENG894.DataGenerationUtility.TestDataGenerator dataGen = new SWENG894.DataGenerationUtility.TestDataGenerator();
             //dataGen.RemoveTestData(_unitOfWork);
