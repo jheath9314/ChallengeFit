@@ -34,6 +34,7 @@ namespace SWENG894.Areas.User.Controllers
         {
             ViewData["CurrentSort"] = sort;
             ViewData["SortOrder"] = String.IsNullOrEmpty(sort) ? "desc" : "";
+
             if(list == null)
             {
                 list = currentList;

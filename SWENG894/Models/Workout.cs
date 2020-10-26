@@ -60,5 +60,9 @@ namespace SWENG894.Models
                 return Time.ToString();
             }
         }
+
+        [NotMapped]
+        public bool IsFavorite { get; set; }
+
     }
 }

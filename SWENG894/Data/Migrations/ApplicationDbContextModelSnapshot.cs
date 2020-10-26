@@ -408,7 +408,7 @@ namespace SWENG894.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("NewFeed");
+                    b.ToTable("NewsFeed");
                 });
 
             modelBuilder.Entity("SWENG894.Models.Workout", b =>

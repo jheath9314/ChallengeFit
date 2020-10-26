@@ -12,6 +12,8 @@ using SWENG894.Utility;
 using SWENG894.Data.Repository.IRepository;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
+using SWENG894.ViewModels;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace SWENG894.Areas.User.Controllers
 {
@@ -31,8 +33,66 @@ namespace SWENG894.Areas.User.Controllers
 
         // GET: User/Workouts
         [ExcludeFromCodeCoverage]
-        public async Task<IActionResult> Index(string sort, string search, string filter, int? page)
+        public async Task<IActionResult> Index(string sort, string search, string filter, string list, string currentList, int? page)
         {
+            ViewData["CurrentSort"] = sort;
+            ViewData["SortOrder"] = String.IsNullOrEmpty(sort) ? "desc" : "";
+
+            if (list == null)
+            {
+                list = currentList;
+            }
+            ViewData["CurrentList"] = list;
+
+            if (search == null)
+            {
+                search = filter;
+            }
+            else
+            {
+                search = search.ToLower();
+            }
+
+            ViewData["CurrentFilter"] = search;
+
+            var workouts = _unitOfWork.Workout.GetUserWorkouts(sort, search, User.FindFirstValue(ClaimTypes.NameIdentifier), string.IsNullOrEmpty(list));
+
+            var workoutList = await PaginatedList<Workout>.Create(workouts.ToList(), page ?? 1, _pageSize);
+
+            return View(workoutList);
+
+        }
+
+        // GET: User/Workouts/Find
+        [ExcludeFromCodeCoverage]
+        public async Task<IActionResult> Find(string sort, string search, string filter, int? page, int? fave)
+        {
+            if(fave != null)
+            {
+                var favorite = await _unitOfWork.WorkoutFavorite.GetFirstOrDefaultAsync(x => x.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) && x.WorkoutId == fave);
+
+                if(favorite != null)
+                {
+                    await _unitOfWork.WorkoutFavorite.RemoveAsync(favorite);
+                }
+                else
+                {
+                    var user = await _unitOfWork.ApplicationUser.GetFirstOrDefaultAsync(x => x.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+                    var workout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(x => x.Id == fave);
+
+                    if(user != null && workout != null)
+                    {
+                        var newFave = new WorkoutFavorite
+                        {
+                            User = user,
+                            Workout = workout
+                        };
+                        await _unitOfWork.WorkoutFavorite.AddAsync(newFave);
+                    }                   
+                }
+                await _unitOfWork.Save();
+            }
+
             ViewData["CurrentSort"] = sort;
             ViewData["SortOrder"] = String.IsNullOrEmpty(sort) ? "desc" : "";
 
@@ -47,12 +107,9 @@ namespace SWENG894.Areas.User.Controllers
 
             ViewData["CurrentFilter"] = search;
 
-            var workouts = _unitOfWork.Workout.GetAllWorkouts(sort, search);
+            var resultList = await PaginatedList<Workout>.Create(_unitOfWork.Workout.FindNewWorkouts(sort, search, User.FindFirstValue(ClaimTypes.NameIdentifier)).ToList(), page ?? 1, _pageSize);
 
-            var workoutList = await PaginatedList<Workout>.Create(workouts.ToList(), page ?? 1, _pageSize);
-
-            return View(workoutList);
-
+            return View(resultList);
         }
 
         // GET: User/Workouts/Details/5

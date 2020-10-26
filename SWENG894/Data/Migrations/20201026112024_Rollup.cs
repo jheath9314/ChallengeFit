@@ -364,7 +364,7 @@ namespace SWENG894.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "NewFeed",
+                name: "NewsFeed",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -379,27 +379,27 @@ namespace SWENG894.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_NewFeed", x => x.Id);
+                    table.PrimaryKey("PK_NewsFeed", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_NewFeed_Challenges_RelatedChallengeId",
+                        name: "FK_NewsFeed_Challenges_RelatedChallengeId",
                         column: x => x.RelatedChallengeId,
                         principalTable: "Challenges",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_NewFeed_AspNetUsers_RelatedUserId",
+                        name: "FK_NewsFeed_AspNetUsers_RelatedUserId",
                         column: x => x.RelatedUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_NewFeed_Workouts_RelatedWorkoutId",
+                        name: "FK_NewsFeed_Workouts_RelatedWorkoutId",
                         column: x => x.RelatedWorkoutId,
                         principalTable: "Workouts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_NewFeed_AspNetUsers_UserId",
+                        name: "FK_NewsFeed_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -491,23 +491,23 @@ namespace SWENG894.Data.Migrations
                 column: "SentToId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_NewFeed_RelatedChallengeId",
-                table: "NewFeed",
+                name: "IX_NewsFeed_RelatedChallengeId",
+                table: "NewsFeed",
                 column: "RelatedChallengeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_NewFeed_RelatedUserId",
-                table: "NewFeed",
+                name: "IX_NewsFeed_RelatedUserId",
+                table: "NewsFeed",
                 column: "RelatedUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_NewFeed_RelatedWorkoutId",
-                table: "NewFeed",
+                name: "IX_NewsFeed_RelatedWorkoutId",
+                table: "NewsFeed",
                 column: "RelatedWorkoutId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_NewFeed_UserId",
-                table: "NewFeed",
+                name: "IX_NewsFeed_UserId",
+                table: "NewsFeed",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -558,7 +558,7 @@ namespace SWENG894.Data.Migrations
                 name: "Messages");
 
             migrationBuilder.DropTable(
-                name: "NewFeed");
+                name: "NewsFeed");
 
             migrationBuilder.DropTable(
                 name: "WorkoutFavorites");

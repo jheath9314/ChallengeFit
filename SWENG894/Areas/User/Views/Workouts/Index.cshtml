@@ -1,22 +1,26 @@
 ﻿@model SWENG894.Utility.PaginatedList<SWENG894.Models.Workout>
 
-<h4>Workouts</h4>
+<h4>My Workouts</h4>
 
 <form asp-action="Index" method="get">
     <div class="btn-group mb-2" role="group">
+
         <div class="input-group mb-3">
+            <div class="btn-group btn-group-toggle mr-2" role="group">
+                <a asp-action="Index" asp-route-list="" type="button" class="btn btn-outline-secondary" id="published">Published</a>
+                <a asp-action="Index" asp-route-list="unpublished" type="button" class="btn btn-outline-secondary" id="unpublished">Unpublished</a>
+            </div>
             <input type="text" class="form-control" placeholder="Search" aria-label="Search" name="search" aria-describedby="button-find" value="@ViewBag.CurrentFilter">
+            <input type="hidden" name="list" value="@ViewBag.CurrentList" />
             <div class="input-group-append">
                 <button class="btn btn-outline-secondary" type="submit" id="button-find">Search</button>
             </div>
-
         </div>
     </div>
+    <a class="btn btn-primary float-right" id="button-find" asp-action="Find">Find Workouts</a>
+    <a class="btn btn-primary float-right mr-2" id="button-create" asp-action="Create">Create New</a>
 </form>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table table-striped">
     <thead>
         <tr>
@@ -58,7 +62,7 @@
                     @Html.DisplayFor(modelItem => item.ScalingOptions)
                 </td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> | 
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                     <a asp-area="User" asp-controller="WorkoutResults" asp-action="ViewWorkoutResults" asp-route-id="@item.Id">Previous Results</a>
                 </td>
             </tr>
@@ -75,6 +79,7 @@
    asp-route-sort="@ViewBag.CurrentSort"
    asp-route-page="@(Model.PageIndex - 1)"
    asp-route-search="@ViewBag.CurrentFilter"
+   asp-route-list="@ViewBag.CurrentList"
    class="btn btn-default @prevDisabled">
     Previous
 </a>
@@ -82,6 +87,18 @@
    asp-route-sort="@ViewBag.CurrentSort"
    asp-route-page="@(Model.PageIndex + 1)"
    asp-route-search="@ViewBag.CurrentFilter"
+   asp-route-list="@ViewBag.CurrentList"
    class="btn btn-default @nextDisabled">
     Next
 </a>
+
+@section Scripts {
+    <script>
+        var tab = GetParameterByName("list");
+        if (tab != null && tab != "") {
+            $("#unpublished").button('toggle');
+        } else {
+            $("#published").button('toggle');
+        }
+    </script>
+}

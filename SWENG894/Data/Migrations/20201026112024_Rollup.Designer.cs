@@ -10,7 +10,7 @@ using SWENG894.Data;
 namespace SWENG894.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201023154358_Rollup")]
+    [Migration("20201026112024_Rollup")]
     partial class Rollup
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -410,7 +410,7 @@ namespace SWENG894.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("NewFeed");
+                    b.ToTable("NewsFeed");
                 });
 
             modelBuilder.Entity("SWENG894.Models.Workout", b =>

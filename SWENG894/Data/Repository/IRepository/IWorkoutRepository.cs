@@ -12,5 +12,9 @@ namespace SWENG894.Data.Repository.IRepository
 
         public IEnumerable<Workout> GetAllWorkouts(string sort, string search);
 
+        public IEnumerable<Workout> GetUserWorkouts(string sort, string search, string userId, bool published);
+
+        public IEnumerable<Workout> FindNewWorkouts(string sort, string search, string userId);
+
     }
 }
