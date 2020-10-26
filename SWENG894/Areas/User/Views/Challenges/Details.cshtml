@@ -17,8 +17,8 @@
                     case Challenge.ChallengeStatus.Accepted:
                         <input asp-area="User" asp-controller="WorkoutResults" asp-action="Create" asp-route-id="@Model.WorkoutId" asp-route-challenge="@Model.Id" asp-route-status="@Challenge.ChallengeStatus.CompletedByContender" type="submit" value="Record Results" class="btn btn-secondary" />
                         break;
-                    default:
-
+                    case Challenge.ChallengeStatus.CompletedByChallenger:
+                        <input asp-area="User" asp-controller="WorkoutResults" asp-action="Create" asp-route-id="@Model.WorkoutId" asp-route-challenge="@Model.Id" asp-route-status="@Challenge.ChallengeStatus.CompletedByContender" type="submit" value="Record Results" class="btn btn-secondary" />
                         break;
                 }
             }
@@ -29,8 +29,8 @@
                     case Challenge.ChallengeStatus.Accepted:
                         <input asp-area="User" asp-controller="WorkoutResults" asp-action="Create" asp-route-id="@Model.WorkoutId" asp-route-challenge="@Model.Id" asp-route-status="@Challenge.ChallengeStatus.CompletedByChallenger" type="submit" value="Record Results" class="btn btn-secondary" />
                         break;
-                    default:
-
+                    case Challenge.ChallengeStatus.CompletedByContender:
+                        <input asp-area="User" asp-controller="WorkoutResults" asp-action="Create" asp-route-id="@Model.WorkoutId" asp-route-challenge="@Model.Id" asp-route-status="@Challenge.ChallengeStatus.CompletedByChallenger" type="submit" value="Record Results" class="btn btn-secondary" />
                         break;
                 }
             }

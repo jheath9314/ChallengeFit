@@ -39,7 +39,9 @@
             <th>
                 Scaling Options
             </th>
-            <th></th>
+            <th>
+                Options
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -62,8 +64,14 @@
                     @Html.DisplayFor(modelItem => item.ScalingOptions)
                 </td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-area="User" asp-controller="WorkoutResults" asp-action="ViewWorkoutResults" asp-route-id="@item.Id">Previous Results</a>
+                    <a asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-info-circle" tool-tip-toggle="tooltip" data-original-title="Details"></i></a>
+                    @if (item.Published)
+                    {
+                        @("|")
+                        <a asp-area="User" asp-controller="WorkoutResults" asp-action="ViewWorkoutResults" asp-route-id="@item.Id"><i class="fas fa-poll" tool-tip-toggle="tooltip" data-original-title="Previous Results"></i></a> @("|")
+                        <a asp-area="User" asp-controller="WorkoutResults" asp-action="ViewWorkoutResults" asp-route-id="@item.Id"><i class="far fa-share-square" tool-tip-toggle="tooltip" data-original-title="Share Workout"></i></a>
+                    }
+
                 </td>
             </tr>
         }

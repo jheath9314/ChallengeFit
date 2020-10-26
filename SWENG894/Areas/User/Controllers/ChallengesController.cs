@@ -14,6 +14,7 @@ using SWENG894.Data.Repository.IRepository;
 using SWENG894.Models;
 using SWENG894.Utility;
 using SWENG894.ViewModels;
+using static SWENG894.Models.Challenge;
 
 namespace SWENG894.Areas.User.Controllers
 {
@@ -59,24 +60,37 @@ namespace SWENG894.Areas.User.Controllers
         }
 
         // GET: User/Challenges/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, ChallengeStatus? status)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            //var challenge = await _context.Challenges
-            //    .Include(c => c.Challenger)
-            //    .Include(c => c.ChallengerResult)
-            //    .Include(c => c.Contender)
-            //    .Include(c => c.ContenderResult)
-            //    .Include(c => c.Workout)
-            //    .FirstOrDefaultAsync(m => m.Id == id);
             var challenge = await _unitOfWork.Challenge.GetFirstOrDefaultAsync(c => c.Id == id, includeProperties: "Challenger,ChallengerResult,Contender,ContenderResult,Workout");
+
             if (challenge == null)
             {
                 return NotFound();
+            }
+
+            // Could be simplified. Not sure how this will function yet.
+            if(status != null && status >= ChallengeStatus.New && status <= ChallengeStatus.Canceled)
+            {
+                if(challenge.ContenderId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                {
+                    switch(challenge.ChallengeProgress)
+                    {
+                        case ChallengeStatus.New:
+                            if (status == ChallengeStatus.Accepted || status == ChallengeStatus.Rejected)
+                            {
+                                challenge.ChallengeProgress = (ChallengeStatus)status;
+                                _unitOfWork.Challenge.UpdateAsync(challenge);
+                                await _unitOfWork.Save();
+                            }
+                            break;
+                    }
+                }
             }
 
             return View(challenge);
