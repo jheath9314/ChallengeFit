@@ -86,6 +86,30 @@ namespace SWENG894.Areas.User.Controllers
                             {
                                 challenge.ChallengeProgress = (ChallengeStatus)status;
                                 _unitOfWork.Challenge.UpdateAsync(challenge);
+                                if(status == ChallengeStatus.Rejected)
+                                {
+                                    var news = await _unitOfWork.NewsFeed.GetFirstOrDefaultAsync(x => x.RelatedChallengeId == challenge.Id);
+                                    if(news != null)
+                                    {
+                                        news.Dismissed = true;
+                                    }
+                                    _unitOfWork.NewsFeed.Update(news);
+                                }
+                                if(status == ChallengeStatus.Accepted)
+                                {
+                                    var feed = new NewsFeed()
+                                    {
+                                        User = challenge.Challenger,
+                                        RelatedUser = challenge.Contender,
+                                        RelatedChallenge = challenge,
+                                        RelatedWorkout = challenge.Workout,
+                                        CreateDate = DateTime.Now,
+                                        FeedType = NewsFeed.FeedTypes.AcceptedChallenge,
+                                        Description = challenge.Contender.FullName + " accepted a challenge from " + challenge.Challenger.FullName,
+                                        Dismissed = false
+                                    };
+                                    await _unitOfWork.NewsFeed.AddAsync(feed);
+                                }
                                 await _unitOfWork.Save();
                             }
                             break;
@@ -186,7 +210,8 @@ namespace SWENG894.Areas.User.Controllers
                     RelatedWorkout = selectedWorkout,
                     CreateDate = DateTime.Now,
                     FeedType = NewsFeed.FeedTypes.SentChallenge,
-                    Description = challengerUser.FullName + " sent a challenge to " + contenderUser.FullName
+                    Description = challengerUser.FullName + " sent a challenge to " + contenderUser.FullName,
+                    Dismissed = false
                 };
 
                 await _unitOfWork.Message.AddAsync(msg);

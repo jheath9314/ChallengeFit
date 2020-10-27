@@ -21,6 +21,7 @@ namespace SWENG894.Models
         public Workout RelatedWorkout { get; set; }
         public int? RelatedChallengeId { get; set; }
         public Challenge RelatedChallenge { get; set; }
+        public bool Dismissed { get; set; }
 
         public enum FeedTypes
         {

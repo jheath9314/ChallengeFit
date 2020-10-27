@@ -33,6 +33,9 @@ namespace SWENG894.Models
         [NotMapped]
         public Workout.Scoring ScoringType { get; set; }
 
+        [NotMapped]
+        public int? RelatedChallenge { get; set; }
+
         public string getTimeDisplayString()
         {
             if (ScoringType == Workout.Scoring.Reps)

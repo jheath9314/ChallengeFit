@@ -85,10 +85,11 @@ namespace SWENG894.Test.Controllers
                 Id = 1,
                 UserId = "guid-user1",
                 WorkoutId = 1,
+                Score = 600
             };
 
             //Not sure if this is a bug. I pass in 600 for seconds, but it saves a 0 for create.
-            await cont.Create(1, res, 600);
+            await cont.Create(res);
 
             var data = _context.WorkoutResults.FirstOrDefault(x => x.Id == 1);
             Assert.Single(_context.WorkoutResults);

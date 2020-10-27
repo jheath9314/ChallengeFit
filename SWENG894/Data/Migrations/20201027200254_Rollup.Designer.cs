@@ -10,7 +10,7 @@ using SWENG894.Data;
 namespace SWENG894.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201026112024_Rollup")]
+    [Migration("20201027200254_Rollup")]
     partial class Rollup
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -383,6 +383,9 @@ namespace SWENG894.Data.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Dismissed")
+                        .HasColumnType("bit");
 
                     b.Property<int>("FeedType")
                         .HasColumnType("int");
