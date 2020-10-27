@@ -31,10 +31,6 @@ namespace SWENG894.Areas.User.Controllers
         [ExcludeFromCodeCoverage]
         public async Task<IActionResult> Index()
         {
-            //We should consider filtering by username here or this could get very slow
-            //var loggedInUser = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-            //You can skip the first query and filter directly by ClaimTypes.NameIdentifier
             var workoutResults = await _unitOfWork.WorkoutResult.GetAllAsync(w => w.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier), includeProperties: "Workout,User");
             var workoutResultList = workoutResults.ToList();
             //Workout results already include Workout and User
@@ -124,6 +120,12 @@ namespace SWENG894.Areas.User.Controllers
 
             //This will always return null. 
             var workout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);
+
+            if(!workout.Published)
+            {
+                return Forbid();
+            }
+
             workoutResults.ScoringType = workout.ScoringType;
 
 

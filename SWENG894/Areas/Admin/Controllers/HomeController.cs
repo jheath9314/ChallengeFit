@@ -57,20 +57,16 @@ namespace SWENG894.Areas.Admin.Controllers
             return View();
         }
 
-        public void GenerateTestData()
+        public async Task<IActionResult> GenerateTestData()
         {
             _testGenerator.GenerateTestData();
-            //SWENG894.DataGenerationUtility.TestDataGenerator dataGen = new SWENG894.DataGenerationUtility.TestDataGenerator();
-            //dataGen.GenerateTestData(_unitOfWork);
-            //return View();
+            return RedirectToAction(nameof(Index));
         }
 
-        public void RemoveTestData()
+        public async Task<IActionResult> RemoveTestData()
         {
             _testGenerator.RemoveTestData();
-            //This function causes a crash and hours of debugging have not determined why
-            //SWENG894.DataGenerationUtility.TestDataGenerator dataGen = new SWENG894.DataGenerationUtility.TestDataGenerator();
-            //dataGen.RemoveTestData(_unitOfWork);
+            return RedirectToAction(nameof(Index));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
