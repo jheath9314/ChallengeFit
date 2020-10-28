@@ -11,14 +11,15 @@
                 switch (Model.ChallengeProgress)
                 {
                     case Challenge.ChallengeStatus.New:
+
                         <input asp-action="Details" asp-route-id="@Model.Id" asp-route-status="@Challenge.ChallengeStatus.Accepted" type="submit" value="Accept" class="btn btn-primary mr-2" />
                         <input asp-action="Details" asp-route-id="@Model.Id" asp-route-status="@Challenge.ChallengeStatus.Rejected" type="submit" value="Reject" class="btn btn-danger" />
                         break;
                     case Challenge.ChallengeStatus.Accepted:
-                        <input asp-area="User" asp-controller="WorkoutResults" asp-action="Create" asp-route-id="@Model.WorkoutId" asp-route-challenge="@Model.Id" asp-route-status="@Challenge.ChallengeStatus.CompletedByContender" type="submit" value="Record Results" class="btn btn-secondary" />
+                        <a asp-area="User" asp-controller="WorkoutResults" asp-action="Create" asp-route-id="@Model.WorkoutId" asp-route-challenge="@Model.Id" class="btn btn-secondary">Record Results</a>
                         break;
                     case Challenge.ChallengeStatus.CompletedByChallenger:
-                        <input asp-area="User" asp-controller="WorkoutResults" asp-action="Create" asp-route-id="@Model.WorkoutId" asp-route-challenge="@Model.Id" asp-route-status="@Challenge.ChallengeStatus.CompletedByContender" type="submit" value="Record Results" class="btn btn-secondary" />
+                        <a asp-area="User" asp-controller="WorkoutResults" asp-action="Create" asp-route-id="@Model.WorkoutId" asp-route-challenge="@Model.Id" class="btn btn-secondary">Record Results</a>
                         break;
                 }
             }
@@ -27,10 +28,10 @@
                 switch (Model.ChallengeProgress)
                 {
                     case Challenge.ChallengeStatus.Accepted:
-                        <input asp-area="User" asp-controller="WorkoutResults" asp-action="Create" asp-route-id="@Model.WorkoutId" asp-route-challenge="@Model.Id" asp-route-status="@Challenge.ChallengeStatus.CompletedByChallenger" type="submit" value="Record Results" class="btn btn-secondary" />
+                        <a asp-area="User" asp-controller="WorkoutResults" asp-action="Create" asp-route-id="@Model.WorkoutId" asp-route-challenge="@Model.Id" class="btn btn-secondary">Record Results</a>
                         break;
                     case Challenge.ChallengeStatus.CompletedByContender:
-                        <input asp-area="User" asp-controller="WorkoutResults" asp-action="Create" asp-route-id="@Model.WorkoutId" asp-route-challenge="@Model.Id" asp-route-status="@Challenge.ChallengeStatus.CompletedByChallenger" type="submit" value="Record Results" class="btn btn-secondary" />
+                        <a asp-area="User" asp-controller="WorkoutResults" asp-action="Create" asp-route-id="@Model.WorkoutId" asp-route-challenge="@Model.Id" class="btn btn-secondary">Record Results</a>
                         break;
                 }
             }

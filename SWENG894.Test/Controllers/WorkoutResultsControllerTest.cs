@@ -53,11 +53,12 @@ namespace SWENG894.Test.Controllers
 
             var w = new Workout()
             {
-                Id = 1,
+                Id = 0,
                 Name = "Name",
                 Notes = "Notes",
-                ScoringType = Workout.Scoring.Reps,
-                Time = 20
+                ScoringType = Workout.Scoring.Time,
+                Time = 20,
+                Published = true
             };
 
             _context.ApplicationUsers.Add(usr1);
@@ -80,19 +81,24 @@ namespace SWENG894.Test.Controllers
                 HttpContext = new DefaultHttpContext() { User = loggedInUser }
             };
 
+            int workoutId = _context.Workouts.FirstOrDefault().Id;
+
             var res = new WorkoutResult()
             {
-                Id = 1,
+                Id = 0,
                 UserId = "guid-user1",
-                WorkoutId = 1,
+                WorkoutId = workoutId,
+                Score = 600,
+                ScoringType = Workout.Scoring.Time
             };
 
             //Not sure if this is a bug. I pass in 600 for seconds, but it saves a 0 for create.
-            await cont.Create(1, res, 600);
+            await cont.Create(workoutId, res, 0);
+            _context.WorkoutResults.Add(res);
 
-            var data = _context.WorkoutResults.FirstOrDefault(x => x.Id == 1);
+            var data = await _context.WorkoutResults.FirstOrDefaultAsync();
             Assert.Single(_context.WorkoutResults);
-            //Assert.Equal(600, data.Score);
+            Assert.Equal(600, data.Score);
 
             //Same for edit. Score doesn't update.
             await cont.Edit(1, res, 900);

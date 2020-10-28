@@ -7,25 +7,53 @@
         switch (feed.FeedType)
         {
             case NewsFeed.FeedTypes.AcceptedChallenge:
-                <div class="card mb-2">
-                    <h5 class="card-header">@feed.User.FullName @(" accepted a challenge from ") @feed.RelatedUser.FullName</h5>
-                    <div class="card-body">
-                        <h5 class="card-title">@feed.RelatedWorkout.Name</h5>
-                        <p class="card-text">@feed.RelatedWorkout.Notes</p>
-                        <a asp-area="User" asp-controller="Workouts" asp-action="Details" asp-route-id="@feed.RelatedWorkoutId" class="btn btn-primary">View Workout</a>
+                if (feed.RelatedUserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value)
+                {
+                    <div class="card mb-2">
+                        <h5 class="card-header">@feed.User.FullName @(" accepted your challenge!")</h5>
+                        <div class="card-body">
+                            <h5 class="card-title">@feed.RelatedWorkout.Name</h5>
+                            <p class="card-text">@feed.RelatedWorkout.Notes</p>
+                            <a asp-area="User" asp-controller="Workouts" asp-action="Details" asp-route-id="@feed.RelatedWorkoutId" class="btn btn-primary">View Workout</a>
+                        </div>
                     </div>
-                </div>
+                }
+                else
+                {
+                    <div class="card mb-2">
+                        <h5 class="card-header">@feed.User.FullName @(" accepted a challenge from ") @feed.RelatedUser.FullName@("!")</h5>
+                        <div class="card-body">
+                            <h5 class="card-title">@feed.RelatedWorkout.Name</h5>
+                            <p class="card-text">@feed.RelatedWorkout.Notes</p>
+                            <a asp-area="User" asp-controller="Workouts" asp-action="Details" asp-route-id="@feed.RelatedWorkoutId" class="btn btn-primary">View Workout</a>
+                        </div>
+                    </div>
+                }
                 break;
 
             case NewsFeed.FeedTypes.CompletedChallenge:
-                <div class="card mb-2">
-                    <h5 class="card-header">@feed.User.FullName @(" completed a challenge from ") @feed.RelatedUser.FullName</h5>
-                    <div class="card-body">
-                        <h5 class="card-title">@feed.RelatedWorkout.Name</h5>
-                        <p class="card-text">@feed.RelatedWorkout.Notes</p>
-                        <a asp-area="User" asp-controller="Workouts" asp-action="Details" asp-route-id="@feed.RelatedWorkoutId" class="btn btn-primary">View Workout</a>
+                if (feed.RelatedUserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value)
+                {
+                    <div class="card mb-2">
+                        <h5 class="card-header">@feed.User.FullName @(" completed your challenge!")</h5>
+                        <div class="card-body">
+                            <h5 class="card-title">@feed.RelatedWorkout.Name</h5>
+                            <p class="card-text">@feed.RelatedWorkout.Notes</p>
+                            <a asp-area="User" asp-controller="Challenges" asp-action="Details" asp-route-id="@feed.RelatedChallengeId" class="btn btn-primary">View Challenge</a>
+                        </div>
                     </div>
-                </div>
+                }
+                else
+                {
+                    <div class="card mb-2">
+                        <h5 class="card-header">@feed.User.FullName @(" completed a challenge from ") @feed.RelatedUser.FullName@("!")</h5>
+                        <div class="card-body">
+                            <h5 class="card-title">@feed.RelatedWorkout.Name</h5>
+                            <p class="card-text">@feed.RelatedWorkout.Notes</p>
+                            <a asp-area="User" asp-controller="Workouts" asp-action="Details" asp-route-id="@feed.RelatedWorkoutId" class="btn btn-primary">View Workout</a>
+                        </div>
+                    </div>
+                }
                 break;
 
             case NewsFeed.FeedTypes.CompletedWorkout:
@@ -54,11 +82,11 @@
                 if (feed.RelatedUserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value)
                 {
                     <div class="card mb-2">
-                        <h5 class="card-header">@("You have been challenged by ") @feed.User.FullName @("!")</h5>
+                        <h5 class="card-header">@("You have been challenged by ") @feed.User.FullName@("!")</h5>
                         <div class="card-body">
                             <h5 class="card-title">@feed.RelatedWorkout.Name</h5>
                             <p class="card-text">@feed.RelatedWorkout.Notes</p>
-                            <a asp-area="User" asp-controller="Workouts" asp-action="Details" asp-route-id="@feed.RelatedWorkoutId" class="btn btn-primary">View Workout</a>
+                            <a asp-area="User" asp-controller="Challenges" asp-action="Details" asp-route-id="@feed.RelatedChallengeId" class="btn btn-primary">View Challenge</a>
                         </div>
                     </div>
                 }

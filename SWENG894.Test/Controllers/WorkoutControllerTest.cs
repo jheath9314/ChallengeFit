@@ -65,6 +65,7 @@ namespace SWENG894.Test.Controllers
             
             Workout workout = new Workout();
             workout.Name = "Test";
+            workout.ScoringType = Workout.Scoring.Time;
 
 
             var res = await cont.Create(workout, 22);

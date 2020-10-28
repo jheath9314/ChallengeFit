@@ -375,7 +375,8 @@ namespace SWENG894.Data.Migrations
                     FeedType = table.Column<int>(nullable: false),
                     RelatedUserId = table.Column<string>(nullable: true),
                     RelatedWorkoutId = table.Column<int>(nullable: true),
-                    RelatedChallengeId = table.Column<int>(nullable: true)
+                    RelatedChallengeId = table.Column<int>(nullable: true),
+                    Dismissed = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {

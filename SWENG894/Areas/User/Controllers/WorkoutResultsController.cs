@@ -31,6 +31,10 @@ namespace SWENG894.Areas.User.Controllers
         [ExcludeFromCodeCoverage]
         public async Task<IActionResult> Index()
         {
+            //We should consider filtering by username here or this could get very slow
+            //var loggedInUser = await _context.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            //You can skip the first query and filter directly by ClaimTypes.NameIdentifier
             var workoutResults = await _unitOfWork.WorkoutResult.GetAllAsync(w => w.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier), includeProperties: "Workout,User");
             var workoutResultList = workoutResults.ToList();
             //Workout results already include Workout and User
@@ -75,16 +79,33 @@ namespace SWENG894.Areas.User.Controllers
 
         // GET: User/WorkoutResults/Create
         [ExcludeFromCodeCoverage]
-        public async Task<IActionResult> CreateAsync(int Id)
+        public async Task<IActionResult> CreateAsync(int id, int? challenge)
         {
-            //When you create a new result from Index view, there's no workout id and this errors out. Not sure what the desired action is.
-            //get the model data needed for determining how to record results
-            var workout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(w => w.Id == Id);
-            var workoutResults = new WorkoutResult();
-            workoutResults.ScoringType = workout.ScoringType;
-            workoutResults.WorkoutName = workout.Name;
-            return View(workoutResults);
+            var workout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(w => w.Id == id);
 
+            if(workout == null)
+            {
+                return NotFound();
+            }
+
+            if(!workout.Published)
+            {
+                return Forbid();
+            }
+
+            var workoutResults = new WorkoutResult()
+            {
+                Workout = workout
+            };
+
+            workoutResults.ScoringType = workout.ScoringType;
+
+            if(challenge != null)
+            {
+                workoutResults.RelatedChallenge = challenge;
+            }
+
+            return View(workoutResults);
         }
 
         [ExcludeFromCodeCoverage]
@@ -111,42 +132,115 @@ namespace SWENG894.Areas.User.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,WorkoutId,UserId,Score")] int Id, WorkoutResult workoutResults, int seconds)
         {
-
-            var user = await _unitOfWork.ApplicationUser.GetFirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-            workoutResults.UserId = user.Id;
-            workoutResults.WorkoutId = Id;
-            workoutResults.Id = 0;
-
-            //This will always return null. 
-            var workout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);
-
-            if(!workout.Published)
-            {
-                return Forbid();
-            }
-
-            workoutResults.ScoringType = workout.ScoringType;
-
-
-            workoutResults.Username = user.FullName;
-            workoutResults.WorkoutName = workout.Name;
-            workoutResults.ScoringType = workout.ScoringType;
-
-            if (workoutResults.ScoringType == Workout.Scoring.Reps)
-            {
-                workoutResults.Score = workoutResults.Score * 60 + seconds;
-            }
-
             ModelState.Remove("seconds");
             if (ModelState.IsValid)
             {
-                await _unitOfWork.WorkoutResult.AddAsync(workoutResults);
+                var user = await _unitOfWork.ApplicationUser.GetFirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+                var workout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(w => w.Id == Id);
+
+                if(user == null || workout == null)
+                {
+                    return NotFound();
+                }
+
+                if(!workout.Published)
+                {
+                    return Forbid();
+                }
+
+
+                var newResult = new WorkoutResult() 
+                { 
+                    User = user,
+                    Workout = workout,
+                    Score = workoutResults.Score,
+                    ResultNotes = workoutResults.ResultNotes,
+                    ScoringType = workoutResults.ScoringType
+                };
+
+                //Reps means that the workout type is a "Reps" workout. Scoring for a "Reps" workout is by time.
+                if (workout.ScoringType == Workout.Scoring.Reps)
+                {
+                    newResult.Score = workoutResults.Score * 60 + seconds;
+                }
+
+            
+                await _unitOfWork.WorkoutResult.AddAsync(newResult);
+
+                if(workoutResults.RelatedChallenge != null)
+                {
+                    var clg = await  _unitOfWork.Challenge.GetFirstOrDefaultAsync(x => x.Id == (int)workoutResults.RelatedChallenge, includeProperties: "Challenger,Contender,Workout");
+
+                    if(clg != null)
+                    {
+                        if(clg.ChallengerId == User.FindFirstValue(ClaimTypes.NameIdentifier) || clg.ContenderId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                        {
+                            var feed = new NewsFeed()
+                            {
+                                RelatedChallenge = clg,
+                                RelatedWorkout = clg.Workout,
+                                CreateDate = DateTime.Now,
+                                FeedType = NewsFeed.FeedTypes.CompletedChallenge,
+                                Dismissed = false
+                            };
+
+                            switch (clg.ChallengeProgress)
+                            {
+                                case Models.Challenge.ChallengeStatus.Accepted:
+                                    if(clg.ChallengerId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                                    {
+                                        clg.ChallengeProgress = Models.Challenge.ChallengeStatus.CompletedByChallenger;
+                                        clg.ChallengerResult = newResult;
+                                        feed.User = clg.Challenger;
+                                        feed.RelatedUser = clg.Contender;
+                                        feed.Description = clg.Challenger.FullName + " completed a challenge!";
+                                    }
+                                    else if(clg.ContenderId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                                    {
+                                        clg.ChallengeProgress = Models.Challenge.ChallengeStatus.CompletedByContender;
+                                        clg.ContenderResult = newResult;
+                                        feed.User = clg.Contender;
+                                        feed.RelatedUser = clg.Challenger;
+                                        feed.Description = clg.Contender.FullName + " completed a challenge!";
+                                    }
+                                    break;
+
+                                case Models.Challenge.ChallengeStatus.CompletedByChallenger:
+                                    if (clg.ContenderId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                                    {
+                                        clg.ChallengeProgress = Models.Challenge.ChallengeStatus.Completed;
+                                        clg.ContenderResult = newResult;
+                                        feed.User = clg.Contender;
+                                        feed.RelatedUser = clg.Challenger;
+                                        feed.Description = clg.Contender.FullName + " completed a challenge!";
+                                    }                                      
+                                    break;
+
+                                case Models.Challenge.ChallengeStatus.CompletedByContender:
+                                    if (clg.ChallengerId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+                                    {
+                                        clg.ChallengeProgress = Models.Challenge.ChallengeStatus.Completed;
+                                        clg.ChallengerResult = newResult;
+                                        feed.User = clg.Challenger;
+                                        feed.RelatedUser = clg.Contender;
+                                        feed.Description = clg.Challenger.FullName + " completed a challenge!";
+                                    }                                      
+                                    break;
+                            }
+                            if(feed.User != null && feed.RelatedUser != null)
+                            {
+                                await _unitOfWork.NewsFeed.AddAsync(feed);
+                            }
+                        }
+                        _unitOfWork.Challenge.UpdateAsync(clg);
+                    }
+                }
+
                 await _unitOfWork.Save();
                 return RedirectToAction(nameof(Index));
             }
-
-            
+         
             return View(workoutResults);
         }
 

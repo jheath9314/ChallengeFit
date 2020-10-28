@@ -382,6 +382,9 @@ namespace SWENG894.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Dismissed")
+                        .HasColumnType("bit");
+
                     b.Property<int>("FeedType")
                         .HasColumnType("int");
 
