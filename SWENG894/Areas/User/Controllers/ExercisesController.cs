@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
@@ -83,6 +84,11 @@ namespace SWENG894.Areas.User.Controllers
                 if (workout == null)
                 {
                     return NotFound();
+                }
+
+                if (workout.Published)
+                {
+                    return Forbid();
                 }
 
                 Exercise exToAdd = new Exercise

@@ -88,10 +88,17 @@ namespace SWENG894.Areas.User.Controllers
                 return NotFound();
             }
 
+            if(!workout.Published)
+            {
+                return Forbid();
+            }
+
             var workoutResults = new WorkoutResult()
             {
                 Workout = workout
             };
+
+            workoutResults.ScoringType = workout.ScoringType;
 
             if(challenge != null)
             {
@@ -123,44 +130,41 @@ namespace SWENG894.Areas.User.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(WorkoutResult workoutResults)
+        public async Task<IActionResult> Create([Bind("Id,WorkoutId,UserId,Score")] int Id, WorkoutResult workoutResults, int seconds)
         {
+            ModelState.Remove("seconds");
             if (ModelState.IsValid)
             {
                 var user = await _unitOfWork.ApplicationUser.GetFirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-                //workoutResults.UserId = user.Id;
-                //workoutResults.WorkoutId = Id;
-                //workoutResults.Id = 0;
-
-                var workout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(w => w.Id == workoutResults.Id);
+                var workout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(w => w.Id == Id);
 
                 if(user == null || workout == null)
                 {
                     return NotFound();
                 }
-                //workoutResults.ScoringType = workout.ScoringType;
 
+                if(!workout.Published)
+                {
+                    return Forbid();
+                }
 
-                //workoutResults.Username = user.FullName;
-                //workoutResults.WorkoutName = workout.Name;
-                //workoutResults.ScoringType = workout.ScoringType;
 
                 var newResult = new WorkoutResult() 
                 { 
                     User = user,
                     Workout = workout,
                     Score = workoutResults.Score,
-                    ResultNotes = workoutResults.ResultNotes
+                    ResultNotes = workoutResults.ResultNotes,
+                    ScoringType = workoutResults.ScoringType
                 };
 
-                //Not sure I follow this logic. If scoring is reps why do we do this calculation?
+                //Reps means that the workout type is a "Reps" workout. Scoring for a "Reps" workout is by time.
                 if (workout.ScoringType == Workout.Scoring.Reps)
                 {
-                    newResult.Score = workoutResults.Score * 60 + workoutResults.Score;
+                    newResult.Score = workoutResults.Score * 60 + seconds;
                 }
 
-                //ModelState.Remove("seconds");
             
                 await _unitOfWork.WorkoutResult.AddAsync(newResult);
 

@@ -52,7 +52,17 @@
     </dl>
 </div>
 <div>
-    <a asp-area="User" asp-controller="Exercises" asp-action="Create" asp-route-id="@Model.Id">Add Exercise</a> |
-    <a asp-area="User" asp-controller="WorkoutResults" asp-action="Create" asp-route-id="@Model.Id">Record Results</a> |
+
+    @if (!Model.Published)
+    {
+        <a asp-area="User" asp-controller="Exercises" asp-action="Create" asp-route-id="@Model.Id">Add Exercise</a> <text> | </text>
+        <a asp-area="User" asp-controller="Workouts" asp-action="Publish" asp-route-id="@Model.Id">Publish</a> <text> | </text>
+
+    }
+    else
+    {
+        <a asp-area="User" asp-controller="WorkoutResults" asp-action="Create" asp-route-id="@Model.Id">Record Results</a> <text> | </text>
+    }
+
     <a asp-action="Index">Back to List</a>
 </div>

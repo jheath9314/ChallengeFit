@@ -271,5 +271,16 @@ namespace SWENG894.Areas.User.Controllers
         {
             return _unitOfWork.Workout.ObjectExists(id);
         }
+
+        public async Task<IActionResult> Publish(int id)
+        {
+            var workout = await _unitOfWork.Workout.GetAsync(id);
+            workout.Published = true;
+            _unitOfWork.Workout.UpdateAsync(workout);
+            await _unitOfWork.Save();
+
+            return RedirectToAction(nameof(Index));
+
+        }
     }
 }
