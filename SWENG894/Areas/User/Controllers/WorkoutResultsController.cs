@@ -275,10 +275,6 @@ namespace SWENG894.Areas.User.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,WorkoutId,UserId,Score, ResultNotes")] WorkoutResult workoutResults, int seconds)
         {
-            if (id != workoutResults.Id)
-            {
-                return NotFound();
-            }
 
             //get the real workout results
             var workout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);
