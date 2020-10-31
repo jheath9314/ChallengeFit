@@ -195,6 +195,12 @@ namespace SWENG894.Areas.User.Controllers
             }
 
             var workout = await _unitOfWork.Workout.GetAsync((int)id);
+
+            if (workout.Published)
+            {
+                return Forbid();
+            }
+
             if (workout == null)
             {
                 return NotFound();
@@ -212,6 +218,17 @@ namespace SWENG894.Areas.User.Controllers
             if (id != workout.Id)
             {
                 return NotFound();
+            }
+
+            if (workout.Published) 
+            {
+                return Forbid();
+            }
+
+            var user = await _unitOfWork.ApplicationUser.GetFirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (workout.UserId != user.Id)
+            {
+                return Forbid();
             }
 
             if (ModelState.IsValid)
@@ -253,6 +270,17 @@ namespace SWENG894.Areas.User.Controllers
                 return NotFound();
             }
 
+            if(workout.Published)
+            {
+                return Forbid();
+            }
+
+            var user = await _unitOfWork.ApplicationUser.GetFirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (workout.UserId != user.Id)
+            {
+                return Forbid();
+            }
+
             return View(workout);
         }
 
@@ -275,6 +303,11 @@ namespace SWENG894.Areas.User.Controllers
         public async Task<IActionResult> Publish(int id)
         {
             var workout = await _unitOfWork.Workout.GetAsync(id);
+
+            if(workout.Exercises.Count < 1)
+            {
+                return Forbid();
+            }
             workout.Published = true;
             _unitOfWork.Workout.UpdateAsync(workout);
             await _unitOfWork.Save();
