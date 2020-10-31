@@ -168,7 +168,22 @@ namespace SWENG894.Areas.User.Controllers
             
                 await _unitOfWork.WorkoutResult.AddAsync(newResult);
 
-                if(workoutResults.RelatedChallenge != null)
+                //Add the workout as a favorite
+                var newFave = new WorkoutFavorite
+                {
+                    User = user,
+                    Workout = workout,
+                };
+
+                var currentFav = await _unitOfWork.WorkoutFavorite.GetFirstOrDefaultAsync(w => w.UserId == user.Id && w.WorkoutId == workout.Id);
+                
+                if(currentFav == null)
+                {
+                    await _unitOfWork.WorkoutFavorite.AddAsync(newFave);
+                    await _unitOfWork.Save();
+                }
+
+                if (workoutResults.RelatedChallenge != null)
                 {
                     var clg = await  _unitOfWork.Challenge.GetFirstOrDefaultAsync(x => x.Id == (int)workoutResults.RelatedChallenge, includeProperties: "Challenger,Contender,Workout");
 
