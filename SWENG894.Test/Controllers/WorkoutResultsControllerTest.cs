@@ -100,14 +100,15 @@ namespace SWENG894.Test.Controllers
             Assert.Single(_context.WorkoutResults);
             Assert.Equal(600, data.Score);
 
+            data = await _context.WorkoutResults.FirstOrDefaultAsync();
+            data.Score = 900;
             //Same for edit. Score doesn't update.
-            await cont.Edit(1, res, 900);
-            data = _context.WorkoutResults.FirstOrDefault(x => x.Id == 1);
-            Assert.Single(_context.WorkoutResults);
-            //Assert.Equal(900, data.Score);
+            await cont.Edit(data.Id, data, 0);
+            data = _context.WorkoutResults.FirstOrDefault(x => x.Id == data.Id);
+            Assert.Equal(900, data.Score);
 
             await cont.DeleteConfirmed(1);
-            data = _context.WorkoutResults.FirstOrDefault(x => x.Id == 1);
+            data = _context.WorkoutResults.FirstOrDefault(x => x.Id == data.Id);
             Assert.Null(data);
 
             _context.Database.EnsureDeleted();
