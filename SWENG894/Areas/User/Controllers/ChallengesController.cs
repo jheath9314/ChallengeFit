@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -31,6 +32,7 @@ namespace SWENG894.Areas.User.Controllers
             _pageSize = 5;
         }
 
+        [ExcludeFromCodeCoverage]
         // GET: User/Challenges
         public async Task<IActionResult> Index(string sort, string search, string filter, string list, string currentList, int? page)
         {
@@ -120,6 +122,7 @@ namespace SWENG894.Areas.User.Controllers
             return View(challenge);
         }
 
+        [ExcludeFromCodeCoverage]
         // GET: User/Challenges/Create
         public async Task<IActionResult> Create(string id)
         {
@@ -224,6 +227,7 @@ namespace SWENG894.Areas.User.Controllers
             return View(challenge);
         }
 
+        [ExcludeFromCodeCoverage]
         private bool ChallengeExists(int id)
         {
             return _unitOfWork.Challenge.ObjectExists(id);
