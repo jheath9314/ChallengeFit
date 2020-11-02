@@ -118,7 +118,26 @@ namespace SWENG894.Areas.User.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                //count the number of records
+                int total = _unitOfWork.Workout.GetAllAsync(x => x.Published).Result.Count();
+
+                //select a random number from the count, that becomes the "id"
+                var random = new Random();
+                int num = random.Next(1, total);
+                
+                //search for the details of the randomly selected 
+                var randomWorkout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(m => m.Id == num, includeProperties: "Exercises");
+
+                //because records may be deleted over time, id numbers will be deleted as well. So, loop through the list for an existing record
+                while (randomWorkout == null)
+                {
+                    num = random.Next(1, total);
+                    randomWorkout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(m => m.Id == num, includeProperties: "Exercises");
+                }
+
+                //return test results
+                return View(randomWorkout);
+
             }
 
             var workout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(m => m.Id == id, includeProperties: "Exercises");
