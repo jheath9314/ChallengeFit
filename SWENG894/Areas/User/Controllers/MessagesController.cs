@@ -132,6 +132,98 @@ namespace SWENG894.Areas.User.Controllers
             return View(message);
         }
 
+        // GET: User/Messages/Share
+        [ExcludeFromCodeCoverage]
+        public async Task<IActionResult> ShareAsync(int id)
+        {
+            var wkout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(x => x.Id == id);
+
+            if(wkout == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _unitOfWork.ApplicationUser.GetUserWithWorkouts(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var friends = _unitOfWork.FriendRequest.GetUserFriends("", "", user.Id, false);
+
+            var share = new ShareViewModel()
+            {
+                User = user,
+                Friends = friends,
+                WorkoutFavorites = user.WorkoutFavorites.ToList(),
+                Workout = wkout,
+                WorkoutId = wkout.Id
+            };
+            return View(share);
+        }
+
+        // POST: User/Messages/Share
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Share(ShareViewModel message)
+        {
+            if (ModelState.IsValid)
+            {
+                var wkout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(x => x.Id == message.WorkoutId);
+
+                if (wkout == null)
+                {
+                    return NotFound();
+                }
+
+                var user = await _unitOfWork.ApplicationUser.GetFirstOrDefaultAsync(x => x.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                var shareUser = await _unitOfWork.ApplicationUser.GetFirstOrDefaultAsync(x => x.Id == message.ShareWithUserId);
+
+                if (shareUser == null)
+                {
+                    return NotFound();
+                }
+
+                Message msg = new Message()
+                {
+                    SentById = user.Id,
+                    SentToId = message.ShareWithUserId,
+                    Subject = user.FullName + " shared a workout.",
+                    Body = user.FullName + " shared a workout.",
+                    SentTime = DateTime.Now,
+                    MessageType = Message.MessageTypes.ShareWorkout,
+                    SendStatus = Message.MessageSendStatud.New,
+                    ReadStatus = Message.MessageReadStatud.New,
+                    DeletedByReceiver = false,
+                    DeletedBySender = false,
+                    RelatedId = wkout.Id
+                };
+
+                var feed = new NewsFeed()
+                {
+                    User = user,
+                    RelatedUser = shareUser,
+                    RelatedWorkout = wkout,
+                    CreateDate = DateTime.Now,
+                    FeedType = NewsFeed.FeedTypes.SharedWorkout,
+                    Description = user.FullName + " shared a workout with " + shareUser.FullName + ".",
+                    Dismissed = false
+                };
+
+                await _unitOfWork.NewsFeed.AddAsync(feed);
+                await _unitOfWork.Message.AddAsync(msg);
+                await _unitOfWork.Save();
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(message);
+        }
+
         // GET: User/Messages/Delete/5
         [ExcludeFromCodeCoverage]
         public async Task<IActionResult> Delete(int? id)

@@ -1,14 +1,25 @@
 ﻿@model SWENG894.Models.Workout
 
-@{
-    ViewData["Title"] = "Details";
-}
-
-<h1>Details</h1>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+    <h4>
+        Workout Details
+    </h4>
+    <div>
+        <form asp-action="Details">
+            @if (Model.IsFavorite)
+            {
+                <a asp-action="Details" asp-route-id="@Model.Id" asp-route-fave="y" type="submit" value="Remove from Favorites" class="btn btn-danger">Remove from Favorites</a>
+                <a asp-area="User" asp-controller="Messages" asp-action="Share" asp-route-id="@Model.Id" type="submit" value="Share" class="btn btn-primary">Share</a>
+            }
+            else
+            {
+                <a asp-action="Details" asp-route-id="@Model.Id" asp-route-fave="y" type="submit" value="Add to Favorites" class="btn btn-primary">Add to Favorites</a>
+            }
+        </form>
+    </div>
+</div>
 
 <div>
-    <h4>Workout</h4>
-    <hr />
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)

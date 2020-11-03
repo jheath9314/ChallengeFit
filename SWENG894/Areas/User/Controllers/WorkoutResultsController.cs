@@ -149,7 +149,6 @@ namespace SWENG894.Areas.User.Controllers
                     return Forbid();
                 }
 
-
                 var newResult = new WorkoutResult() 
                 { 
                     User = user,
@@ -164,8 +163,7 @@ namespace SWENG894.Areas.User.Controllers
                 {
                     newResult.Score = workoutResults.Score * 60 + seconds;
                 }
-
-            
+          
                 await _unitOfWork.WorkoutResult.AddAsync(newResult);
 
                 //Add the workout as a favorite
@@ -250,6 +248,19 @@ namespace SWENG894.Areas.User.Controllers
                         }
                         _unitOfWork.Challenge.UpdateAsync(clg);
                     }
+                }
+                else
+                {
+                    var feed = new NewsFeed()
+                    {
+                        User = user,
+                        RelatedWorkout = workout,
+                        CreateDate = DateTime.Now,
+                        FeedType = NewsFeed.FeedTypes.CompletedWorkout,
+                        Description = user.FullName + " completed a workout!",
+                        Dismissed = false
+                    };
+                    await _unitOfWork.NewsFeed.AddAsync(feed);
                 }
 
                 await _unitOfWork.Save();
