@@ -35,7 +35,7 @@ namespace SWENG894.Test.Controllers
         }
 
         [Fact]
-        public async void FriendsControllerOpTest()
+        public async void MessagesControllerOpTest()
         {
             var usr1 = new ApplicationUser
             {
@@ -124,6 +124,16 @@ namespace SWENG894.Test.Controllers
             data = _context.Messages.Where(x => x.Id == 1);
 
             Assert.Single(data);
+
+            await cont.DeleteConfirmed(1);
+
+            _context.SaveChangesAsync().GetAwaiter();
+
+            data = _context.Messages.Where(x => x.Id == 1);
+
+            var messageData = data.ToList();
+            Assert.True(messageData.ElementAt(0).DeletedByReceiver || messageData.ElementAt(0).DeletedBySender);
+
 
             _context.Database.EnsureDeleted();
         }

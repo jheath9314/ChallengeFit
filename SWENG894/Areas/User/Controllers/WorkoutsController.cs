@@ -322,6 +322,8 @@ namespace SWENG894.Areas.User.Controllers
         public async Task<IActionResult> Publish(int id)
         {
             var workout = await _unitOfWork.Workout.GetAsync(id);
+            var exs = await _unitOfWork.Exercise.GetAllAsync(e => e.WorkoutId == workout.Id);
+            workout.Exercises = exs.ToList();
 
             if(workout.Exercises.Count < 1)
             {

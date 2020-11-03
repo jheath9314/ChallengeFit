@@ -107,6 +107,15 @@ namespace SWENG894.Test.Controllers
             data = _context.WorkoutResults.FirstOrDefault(x => x.Id == data.Id);
             Assert.Equal(900, data.Score);
 
+            w = _context.Workouts.FirstOrDefault(w => w.Id == workoutId);
+            w.ScoringType = Workout.Scoring.Reps;
+            _context.Workouts.Update(w);
+            data.ScoringType = Workout.Scoring.Reps;
+            data.Score = 2;
+            await cont.Edit(data.Id, data, 2);
+            data = _context.WorkoutResults.FirstOrDefault(x => x.Id == data.Id);
+            Assert.True(data.Score == 122);
+
             await cont.DeleteConfirmed(1);
             data = _context.WorkoutResults.FirstOrDefault(x => x.Id == data.Id);
             Assert.Null(data);
