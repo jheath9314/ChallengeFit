@@ -15,6 +15,8 @@ using System.Text;
 using Xunit;
 using System.Threading;
 using Microsoft.CodeAnalysis;
+using System.Security.Claims;
+using System.Security.Principal;
 
 namespace SWENG894.Test.Data.RepositoryTest
 {
@@ -94,5 +96,150 @@ namespace SWENG894.Test.Data.RepositoryTest
 
         }
 
+        [Fact]
+        public async void GetUserWorkoutsTest()
+        {
+            var usr1 = new ApplicationUser
+            {
+                Id = "guid-user1",
+                UserName = "user1@psu.edu",
+                Email = "user1@psu.edu",
+                EmailConfirmed = true,
+                FirstName = "User",
+                LastName = "One",
+                ZipCode = "11111"
+            };
+
+            _context.ApplicationUsers.Add(usr1);
+
+            var work = new Workout();
+            work.Id = 0;
+            work.Name = "First";
+            work.Published = true;
+            work.UserId = "guid-user1";
+
+            var work_2 = new Workout();
+            work_2.Id = 0;
+            work_2.Name = "Second";
+            work_2.Published = true;
+            work_2.UserId = "2";
+
+            var work_3 = new Workout();
+            work_3.Id = 0;
+            work_3.Name = "Second1";
+            work_3.Published = true;
+            work_3.UserId = "guid-user1";
+
+
+            await _cut.AddAsync(work);
+            await _context.SaveChangesAsync();
+            var tempWorkout = await _context.Workouts.FirstOrDefaultAsync();
+            var workoutId = tempWorkout.Id;
+
+            await _cut.AddAsync(work_2);
+            await _cut.AddAsync(work_3);
+            await _context.SaveChangesAsync();
+
+            var workouts = _cut.GetUserWorkouts("desc", "Second", "guid-user1", true);
+            var workoutList = workouts.ToList();
+            Assert.True(workoutList.Count == 1);
+
+            workouts = _cut.GetUserWorkouts("", "", "guid-user1", true);
+            workoutList = workouts.ToList();
+            Assert.True(workoutList.Count == 2);
+
+            bool noUserExceptionCaught = false;
+            try
+            {
+
+                workouts = _cut.GetUserWorkouts("desc", "First", "2", true);
+            }
+            catch (Exception e)
+            {
+                noUserExceptionCaught = true;
+            }
+
+            Assert.True(noUserExceptionCaught);
+
+            var fav = new WorkoutFavorite
+            {
+                UserId = "guid-user1",
+                WorkoutId = 2,
+            };
+
+            _context.WorkoutFavorites.Add(fav);
+            await _context.SaveChangesAsync();
+
+            workouts = _cut.GetUserWorkouts("", "", "guid-user1", true);
+            workoutList = workouts.ToList();
+            Assert.True(workoutList.Count == 3);
+        }
+
+        [Fact]
+        public async void FindNewWorkoutsTest()
+        {
+            var usr1 = new ApplicationUser
+            {
+                Id = "guid-user1",
+                UserName = "user1@psu.edu",
+                Email = "user1@psu.edu",
+                EmailConfirmed = true,
+                FirstName = "User",
+                LastName = "One",
+                ZipCode = "11111"
+            };
+
+            _context.ApplicationUsers.Add(usr1);
+
+
+
+            var work = new Workout();
+            work.Id = 0;
+            work.Name = "First";
+            work.Published = true;
+            work.UserId = "guid-user1";
+
+            var work_2 = new Workout();
+            work_2.Id = 0;
+            work_2.Name = "Second";
+            work_2.Published = true;
+            work_2.UserId = "2";
+
+            var work_3 = new Workout();
+            work_2.Id = 0;
+            work_2.Name = "Second1";
+            work_2.Published = true;
+            work_2.UserId = "guid-user1";
+
+
+            await _cut.AddAsync(work);
+            await _context.SaveChangesAsync();
+            var tempWorkout = await _context.Workouts.FirstOrDefaultAsync();
+            var workoutId = tempWorkout.Id;
+            await _cut.AddAsync(work_2);
+            await _cut.AddAsync(work_3);
+            await _context.SaveChangesAsync();
+
+            var workouts = _cut.FindNewWorkouts("desc", "First", "guid-user1");
+            var workoutList = workouts.ToList();
+
+            Assert.True(workoutList.Count == 1);
+            Assert.False(workoutList.ElementAt(0).IsFavorite);
+
+            var fav = new WorkoutFavorite
+            {
+                UserId = "guid-user1",
+                WorkoutId = workoutId,
+            };
+
+            _context.WorkoutFavorites.Add(fav);
+            await _context.SaveChangesAsync();
+
+            workouts = _cut.FindNewWorkouts("", "", "guid-user1");
+            workoutList = workouts.ToList();
+
+            Assert.True(workoutList.Count == 2);
+            Assert.True(workoutList.ElementAt(0).IsFavorite);
+        }
     }
 }
