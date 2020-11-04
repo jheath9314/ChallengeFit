@@ -114,7 +114,7 @@ namespace SWENG894.Areas.User.Controllers
 
         // GET: User/Workouts/Details/5
         [ExcludeFromCodeCoverage]
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, string fave)
         {
             if (id == null)
             {
@@ -135,6 +135,28 @@ namespace SWENG894.Areas.User.Controllers
                     randomWorkout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(m => m.Id == num, includeProperties: "Exercises");
                 }
 
+                var fave1 = await _unitOfWork.WorkoutFavorite.GetFirstOrDefaultAsync(x => x.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) && x.WorkoutId == randomWorkout.Id);
+                randomWorkout.IsFavorite = fave1 != null;
+
+                if(!string.IsNullOrEmpty(fave))
+                {
+                    if(randomWorkout.IsFavorite)
+                    {
+                        await _unitOfWork.WorkoutFavorite.RemoveAsync(fave1);
+                    }
+                    else
+                    {
+                        var newFave = new WorkoutFavorite() 
+                        {
+                            UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                            WorkoutId = randomWorkout.Id
+                        };
+                        await _unitOfWork.WorkoutFavorite.AddAsync(newFave);
+                    }
+                    randomWorkout.IsFavorite = !randomWorkout.IsFavorite;
+                    await _unitOfWork.Save();
+                }
+
                 //return test results
                 return View(randomWorkout);
 
@@ -145,6 +167,28 @@ namespace SWENG894.Areas.User.Controllers
             if (workout == null)
             {
                 return NotFound();
+            }
+
+            var fave2 = await _unitOfWork.WorkoutFavorite.GetFirstOrDefaultAsync(x => x.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) && x.WorkoutId == workout.Id);
+            workout.IsFavorite = fave2 != null;
+
+            if (!string.IsNullOrEmpty(fave))
+            {
+                if (workout.IsFavorite)
+                {
+                    await _unitOfWork.WorkoutFavorite.RemoveAsync(fave2);                    
+                }
+                else
+                {
+                    var newFave = new WorkoutFavorite()
+                    {
+                        UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                        WorkoutId = workout.Id
+                    };
+                    await _unitOfWork.WorkoutFavorite.AddAsync(newFave);
+                }
+                workout.IsFavorite = !workout.IsFavorite;
+                await _unitOfWork.Save();
             }
 
             return View(workout);

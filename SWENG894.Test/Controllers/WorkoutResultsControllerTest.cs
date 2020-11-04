@@ -8,6 +8,7 @@ using System.Linq;
 using Xunit;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
+using System;
 
 namespace SWENG894.Test.Controllers
 {
@@ -53,7 +54,7 @@ namespace SWENG894.Test.Controllers
 
             var w = new Workout()
             {
-                Id = 0,
+                Id = 1,
                 Name = "Name",
                 Notes = "Notes",
                 ScoringType = Workout.Scoring.Time,
@@ -61,9 +62,20 @@ namespace SWENG894.Test.Controllers
                 Published = true
             };
 
+            var ch = new Challenge()
+            {
+                Id = 1,
+                Challenger = usr1,
+                Contender = usr2,
+                Workout = w,
+                ChallengeProgress = Challenge.ChallengeStatus.New,
+                CreateDate = DateTime.Now
+            };
+
             _context.ApplicationUsers.Add(usr1);
             _context.ApplicationUsers.Add(usr2);
             _context.Workouts.Add(w);
+            _context.Challenges.Add(ch);
             _context.SaveChangesAsync().GetAwaiter();
 
             
@@ -89,7 +101,8 @@ namespace SWENG894.Test.Controllers
                 UserId = "guid-user1",
                 WorkoutId = workoutId,
                 Score = 600,
-                ScoringType = Workout.Scoring.Time
+                ScoringType = Workout.Scoring.Time,
+                RelatedChallenge = (int)ch.Id
             };
 
             //Not sure if this is a bug. I pass in 600 for seconds, but it saves a 0 for create.

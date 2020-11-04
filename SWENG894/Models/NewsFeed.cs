@@ -29,7 +29,8 @@ namespace SWENG894.Models
             CompletedWorkout,
             SentChallenge,
             AcceptedChallenge,
-            CompletedChallenge
+            CompletedChallenge,
+            SharedWorkout
         }
     }
 }

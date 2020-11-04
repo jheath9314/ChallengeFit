@@ -102,6 +102,20 @@
                     </div>
                 }
                 break;
+
+            case NewsFeed.FeedTypes.SharedWorkout:
+                if (feed.RelatedUserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value)
+                {
+                    <div class="card mb-2">
+                        <h5 class="card-header">@feed.User.FullName @(" shared a workout with you!")</h5>
+                        <div class="card-body">
+                            <h5 class="card-title">@feed.RelatedWorkout.Name</h5>
+                            <p class="card-text">@feed.RelatedWorkout.Notes</p>
+                            <a asp-area="User" asp-controller="Workouts" asp-action="Details" asp-route-id="@feed.RelatedWorkoutId" class="btn btn-primary">View Workout</a>
+                        </div>
+                    </div>
+                }
+                break;
         }
     }
 }

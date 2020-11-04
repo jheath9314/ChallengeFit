@@ -64,3 +64,10 @@
     </dl>
 </div>
 
+@if (Model.RelatedId != null)
+{
+    <div>
+         <a asp-area="User" asp-controller="Workouts" asp-action="Details" asp-route-id="@Model.RelatedId" class="btn btn-primary">View Workout</a>
+    </div>
+}
+

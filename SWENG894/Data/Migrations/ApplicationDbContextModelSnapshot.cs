@@ -343,6 +343,9 @@ namespace SWENG894.Data.Migrations
                     b.Property<int>("ReadStatus")
                         .HasColumnType("int");
 
+                    b.Property<int?>("RelatedId")
+                        .HasColumnType("int");
+
                     b.Property<int>("SendStatus")
                         .HasColumnType("int");
 

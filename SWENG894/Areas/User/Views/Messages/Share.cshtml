@@ -1,0 +1,49 @@
+﻿@model SWENG894.ViewModels.ShareViewModel
+
+<form asp-action="Share">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h4>
+            Share Workout
+        </h4>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <a class="btn btn-secondary mr-2" asp-area="User" asp-controller="Workouts" asp-action="Index">Cancel</a>
+            @if (Model.Friends.Count() > 0 && Model.WorkoutFavorites.Count > 0)
+            {
+                <input type="submit" value="Share" class="btn btn-primary" />
+            }
+        </div>
+    </div>
+
+    @if (Model.Friends.Count() > 0)
+    {
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="@Model.UserId" class="control-label"></label>
+            @Html.DropDownListFor(p => p.ShareWithUserId, new SelectList(Model.Friends, "Id", "FullName"), new { @class = "form-control" })
+        </div>
+    }
+    else
+    {
+        <i class="far fa-sad-tear fa-3x"></i>
+        <p>You don't have any friends to share with.</p>
+        <a class="btn btn-primary" asp-area="User" asp-controller="Friends" asp-action="Find">Add Friends</a>
+    }
+
+    @if (Model.WorkoutFavorites.Count > 0)
+    {
+        <div class="form-group">
+            <label asp-for="@Model.WorkoutId" class="control-label"></label>
+            @Html.DropDownListFor(p => p.WorkoutId, new SelectList(Model.WorkoutFavorites, "Workout.Id", "Workout.Name", "WorkoutId"), new { @class = "form-control" })
+        </div>
+    }
+    else
+    {
+        <i class="far fa-sad-tear fa-3x"></i>
+        <p>You don't have any saved workouts.</p>
+        <a class="btn btn-primary" asp-area="User" asp-controller="Workouts" asp-action="Index">Find Workouts</a>
+    }
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

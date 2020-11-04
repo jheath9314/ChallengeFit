@@ -200,7 +200,8 @@ namespace SWENG894.Data.Migrations
                     ReadStatus = table.Column<int>(nullable: false),
                     MessageType = table.Column<int>(nullable: false),
                     DeletedBySender = table.Column<bool>(nullable: false),
-                    DeletedByReceiver = table.Column<bool>(nullable: false)
+                    DeletedByReceiver = table.Column<bool>(nullable: false),
+                    RelatedId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {

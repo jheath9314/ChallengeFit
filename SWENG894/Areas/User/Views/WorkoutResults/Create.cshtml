@@ -30,6 +30,7 @@
                 <label asp-for="ResultNotes" class="control-label">Result Notes</label> <br />
                 <input asp-for="ResultNotes" id="resultNotes" class="form-control" />
                 <span asp-validation-for="ResultNotes" class="text-danger"></span>
+
                 <input type="hidden" asp-for="RelatedChallenge" />
                 <input type="hidden" asp-for="WorkoutId" />
                 <input type="hidden" asp-for="ResultNotes" />
@@ -46,5 +47,5 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}    
 }
