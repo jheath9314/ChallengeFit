@@ -47,7 +47,7 @@ namespace SWENG894.Areas.User.Controllers
                 workoutResultList[i].WorkoutName = workout.Name;
                 workoutResultList[i].ScoringType = workout.ScoringType;
             }
-
+            ViewData["Response"] = TempData["Response"];
             return View(workoutResultList);
         }
 
@@ -264,6 +264,23 @@ namespace SWENG894.Areas.User.Controllers
                 }
 
                 await _unitOfWork.Save();
+
+                int bestscore = 0;
+                var wwrs = await _unitOfWork.WorkoutResult.GetAllAsync(wr => wr.UserId == user.Id && wr.WorkoutId == workout.Id);
+
+                if (workout.ScoringType == Workout.Scoring.Time)
+                {
+                    bestscore = wwrs.Max(wr => wr.Score);
+                }
+                else
+                {
+                    bestscore = wwrs.Min(wr => wr.Score);
+                }
+
+                string response = bestscore == newResult.Score ? "Congratulations, a personal best! Keep up the good work!" : "";
+
+                TempData["Response"] = response;
+
                 return RedirectToAction(nameof(Index));
             }
          
