@@ -63,6 +63,25 @@ namespace SWENG894.Test.Data.RepositoryTest
         [Fact]
         public async void GetWorkoutResultsTest()
         {
+
+            var workout = new Workout
+            {
+                Name = "Temp",
+                UserId = "TESTID"
+            };
+
+            var workout2 = new Workout
+            {
+                Name = "Temp",
+                UserId = "TESTID"
+            };
+
+            await _context.Workouts.AddAsync(workout);
+            await _context.SaveChangesAsync();
+
+            await _context.Workouts.AddAsync(workout2);
+            await _context.SaveChangesAsync();
+
             var workoutResult = new WorkoutResult();
             workoutResult.Id = 0;
             workoutResult.Score = 2;
