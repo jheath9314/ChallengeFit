@@ -90,26 +90,65 @@ namespace SWENG894.Test.Controllers
             };
 
             var res = await cont.SendRequestPost("guid-user2");
+            //
+            //  invalid send request
+            res = await cont.SendRequestPost(null);
+            Assert.IsType<NotFoundResult>(res);
+            res = await cont.SendRequestPost("FakeUser");
+            Assert.IsType<NotFoundResult>(res);
 
             var data = await _context.FriendRequests.FirstOrDefaultAsync();
 
             Assert.True(data != null);
 
             var res2 = await cont.Details("guid-user1");
+            //
+            //  invalid details request
+            res2 = await cont.Details(null);
+            Assert.IsType<NotFoundResult>(res2);
+            res2 = await cont.Details("FakeUser");
+            Assert.IsType<NotFoundResult>(res2);
 
             data = await _context.FriendRequests.FirstOrDefaultAsync(x => x.RequestedById == "guid-user1");
 
             Assert.True(data != null);
 
             var res3 = await cont.ViewRequest("guid-user1", "guid-user2");
+            //
+            //  invalid view request
+            res3 = await cont.ViewRequest(null, "guid-user2");
+            Assert.IsType<NotFoundResult>(res3);
+            res3 = await cont.ViewRequest("guid-user1", null);
+            Assert.IsType<NotFoundResult>(res3);
+            res3 = await cont.ViewRequest("BozoTheClown", "FakeUser");
+            Assert.IsType<NotFoundResult>(res3);
 
             data = await _context.FriendRequests.FirstOrDefaultAsync(x => x.RequestedById == "guid-user1" && x.RequestedForId == "guid-user2");
 
             Assert.True(data != null);
 
             var res4 = await cont.Profile("guid-user2");
+            //
+            //  invalid profile request
+            res4 = await cont.Profile(null);
+            Assert.IsType<NotFoundResult>(res4);
+            res4 = await cont.Profile("FakeUser");
+            Assert.IsType<NotFoundResult>(res4);
 
             data = await _context.FriendRequests.FirstOrDefaultAsync(x =>  x.RequestedForId == "guid-user2");
+
+            //
+            //  delete
+            var res5 = await cont.DeleteConfirmed("BozoTheClown", "FakeUser");
+            Assert.IsType<NotFoundResult>(res5);
+            res5 = await cont.DeleteConfirmed("guid-user1", "FakeUser");
+            Assert.IsType<NotFoundResult>(res5);
+            res5 = await cont.DeleteConfirmed("FakeUser", "guid-user2");
+            Assert.IsType<NotFoundResult>(res5);
+
+            res5 = await cont.DeleteConfirmed("guid-user1", "guid-user2");
+            data = await _context.FriendRequests.FirstOrDefaultAsync(x => x.RequestedById == "guid-user1");
+            Assert.True(data == null);
 
             _context.Database.EnsureDeleted();
         }

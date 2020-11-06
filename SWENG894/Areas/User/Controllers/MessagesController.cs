@@ -218,7 +218,8 @@ namespace SWENG894.Areas.User.Controllers
                 await _unitOfWork.Message.AddAsync(msg);
                 await _unitOfWork.Save();
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Workouts", new { area = "User" });
+                //return RedirectToAction(nameof(Index));
             }
 
             return View(message);

@@ -793,6 +793,14 @@ namespace SWENG894.Test.Data.RepositoryTest
             request = _cut.GetUserChallenges("", "", "user1", true);
             Assert.Equal(2, request.Count());
 
+            //  add search term
+            request = _cut.GetUserChallenges("", "User", "user1", false);
+            Assert.Equal(3, request.Count());
+
+            request = _cut.GetUserChallenges("", "Three", "user1", false);
+            Assert.Equal(1, request.Count());
+
+
             //Reset
             _context.Remove(chlg);
             _context.Remove(chlg2);
