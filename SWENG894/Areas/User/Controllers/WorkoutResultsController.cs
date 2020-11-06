@@ -119,6 +119,10 @@ namespace SWENG894.Areas.User.Controllers
             }
             var user = await _unitOfWork.ApplicationUser.GetAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var workoutResults =  _unitOfWork.WorkoutResult.GetWorkoutResults(user.Id, workout.Id);
+            for(int i = 0; i < workoutResults.Count; i++)
+            {
+                workoutResults.ElementAt(i).ScoringType = workout.ScoringType;
+            }
 
 
             return View(workoutResults);
