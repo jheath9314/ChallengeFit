@@ -358,6 +358,7 @@ namespace SWENG894.Areas.User.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [ExcludeFromCodeCoverage]
         private bool WorkoutExists(int id)
         {
             return _unitOfWork.Workout.ObjectExists(id);

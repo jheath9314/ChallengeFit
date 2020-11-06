@@ -153,6 +153,16 @@ namespace SWENG894.Test.Controllers
             data = await _context.Challenges.FirstOrDefaultAsync();
             Assert.Equal(SWENG894.Models.Challenge.ChallengeStatus.Rejected, data.ChallengeProgress);
 
+            data.ChallengeProgress = SWENG894.Models.Challenge.ChallengeStatus.New;
+            data.Challenger = usr2;
+            data.Contender = usr1;
+            _context.Challenges.Update(data);
+            _context.SaveChangesAsync().GetAwaiter();
+
+            response = _cut.Details(1, SWENG894.Models.Challenge.ChallengeStatus.Accepted).Result;
+            data = await _context.Challenges.FirstOrDefaultAsync();
+            Assert.Equal(SWENG894.Models.Challenge.ChallengeStatus.Accepted, data.ChallengeProgress);
+
             _context.Remove(usr1);
             _context.Remove(usr2);
             _context.Remove(wk);

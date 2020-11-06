@@ -372,6 +372,7 @@ namespace SWENG894.Areas.User.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [ExcludeFromCodeCoverage]
         private FriendRequestStatus SetFriendRequestStatus(FriendRequestStatus senderStatus, FriendRequestStatus receiverStatus)
         {
             if(senderStatus == FriendRequestStatus.Rejected || receiverStatus == FriendRequestStatus.Rejected)

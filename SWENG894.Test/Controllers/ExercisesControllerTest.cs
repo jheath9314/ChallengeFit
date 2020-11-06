@@ -13,6 +13,7 @@ using SWENG894.Models;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
+using SQLitePCL;
 
 namespace SWENG894.Test.Controllers
 {
@@ -48,6 +49,13 @@ namespace SWENG894.Test.Controllers
             ex.Id = 0;
             ex.Exer = Exercise.Exercises.AirSquat;
 
+            //
+            //  attempt to create exercise with invadid workout id
+            var res = await cont.Create(-22, ex);
+            Assert.IsType<NotFoundResult>(res);
+
+            //
+            //  create exercise with valid workout
             await cont.Create(data.Id, ex);
             await _context.SaveChangesAsync();
 
@@ -56,11 +64,25 @@ namespace SWENG894.Test.Controllers
 
             Assert.True(ex != null);
 
+            //
+            //  edit the exercise
             ex.Exer = Exercise.Exercises.Clean;
+            res = await cont.Edit(-22, ex);
+            Assert.IsType<NotFoundResult>(res);
             await cont.Edit(ex.Id, ex);
 
             ex = await unit.Exercise.GetFirstOrDefaultAsync();
             Assert.True(ex.Exer == Exercise.Exercises.Clean);
+
+            //
+            //  add an exercise to a published workout
+            workout.Id = 35;
+            workout.Published = true;
+            await unit.Workout.AddAsync(workout);
+            await _context.SaveChangesAsync();
+            data = await _context.Workouts.FirstOrDefaultAsync(x => x.Id == workout.Id);
+            res = await cont.Create(data.Id, ex);
+            Assert.IsType<ForbidResult>(res);
 
             await cont.DeleteConfirmed(ex.Id);
             await _context.SaveChangesAsync();
