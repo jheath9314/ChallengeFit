@@ -94,8 +94,8 @@ namespace SWENG894.Areas.User.Controllers
                                     if(news != null)
                                     {
                                         news.Dismissed = true;
-                                    }
-                                    _unitOfWork.NewsFeed.Update(news);
+                                        _unitOfWork.NewsFeed.Update(news);
+                                    }                                   
                                 }
                                 if(status == ChallengeStatus.Accepted)
                                 {
