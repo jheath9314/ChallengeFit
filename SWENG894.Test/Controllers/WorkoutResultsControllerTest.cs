@@ -9,6 +9,8 @@ using Xunit;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using System;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Moq;
 
 namespace SWENG894.Test.Controllers
 {
@@ -78,9 +80,13 @@ namespace SWENG894.Test.Controllers
             _context.Challenges.Add(ch);
             _context.SaveChangesAsync().GetAwaiter();
 
-            
+            var httpContext = new DefaultHttpContext();
+            var tempData = new Microsoft.AspNetCore.Mvc.ViewFeatures.TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
+            tempData["Response"] = "";
             var unit = new UnitOfWork(_context);
-            var cont = new WorkoutResultsController(unit);
+            var cont = new WorkoutResultsController(unit) { 
+                TempData = tempData
+            };
 
             var loggedInUser = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
