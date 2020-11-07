@@ -84,7 +84,8 @@ namespace SWENG894.Test.Controllers
             var tempData = new Microsoft.AspNetCore.Mvc.ViewFeatures.TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
             tempData["Response"] = "";
             var unit = new UnitOfWork(_context);
-            var cont = new WorkoutResultsController(unit) { 
+            var cont = new WorkoutResultsController(unit)
+            {
                 TempData = tempData
             };
 
@@ -111,7 +112,6 @@ namespace SWENG894.Test.Controllers
                 RelatedChallenge = (int)ch.Id
             };
 
-            //Not sure if this is a bug. I pass in 600 for seconds, but it saves a 0 for create.
             await cont.Create(workoutId, res, 0);
             _context.WorkoutResults.Add(res);
 
@@ -121,7 +121,7 @@ namespace SWENG894.Test.Controllers
 
             data = await _context.WorkoutResults.FirstOrDefaultAsync();
             data.Score = 900;
-            //Same for edit. Score doesn't update.
+
             await cont.Edit(data.Id, data, 0);
             data = _context.WorkoutResults.FirstOrDefault(x => x.Id == data.Id);
             Assert.Equal(900, data.Score);
@@ -141,5 +141,385 @@ namespace SWENG894.Test.Controllers
 
             _context.Database.EnsureDeleted();
         }
+
+        [Fact]
+        public async void WorkoutResultControllerCreateChallengeAcceptedTest()
+        {
+            var usr1 = new ApplicationUser
+            {
+                Id = "guid-user1",
+                UserName = "user1@psu.edu",
+                Email = "user1@psu.edu",
+                EmailConfirmed = true,
+                FirstName = "User",
+                LastName = "One",
+                ZipCode = "11111"
+            };
+
+            var usr2 = new ApplicationUser
+            {
+                Id = "guid-user2",
+                UserName = "user2@psu.edu",
+                Email = "user2@psu.edu",
+                EmailConfirmed = true,
+                FirstName = "User",
+                LastName = "Two",
+                ZipCode = "22222"
+            };
+
+            var w = new Workout()
+            {
+                Id = 1,
+                Name = "Name",
+                Notes = "Notes",
+                ScoringType = Workout.Scoring.Time,
+                Time = 20,
+                Published = true
+            };
+
+            var ch = new Challenge()
+            {
+                Id = 1,
+                Challenger = usr1,
+                Contender = usr2,
+                Workout = w,
+                ChallengeProgress = Challenge.ChallengeStatus.Accepted,
+                CreateDate = DateTime.Now
+            };
+
+            _context.ApplicationUsers.Add(usr1);
+            _context.ApplicationUsers.Add(usr2);
+            _context.Workouts.Add(w);
+            _context.Challenges.Add(ch);
+            _context.SaveChangesAsync().GetAwaiter();
+
+            var httpContext = new DefaultHttpContext();
+            var tempData = new Microsoft.AspNetCore.Mvc.ViewFeatures.TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
+            tempData["Response"] = "";
+            var unit = new UnitOfWork(_context);
+            var cont = new WorkoutResultsController(unit)
+            {
+                TempData = tempData
+            };
+
+            var loggedInUser = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.Name, "user1@psu.edu"),
+                new Claim(ClaimTypes.NameIdentifier, "guid-user1"),
+            }, "mock"));
+
+            cont.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() { User = loggedInUser }
+            };
+
+            int workoutId = _context.Workouts.FirstOrDefault().Id;
+
+            var res = new WorkoutResult()
+            {
+                Id = 0,
+                UserId = "guid-user1",
+                WorkoutId = workoutId,
+                Score = 600,
+                ScoringType = Workout.Scoring.Time,
+                RelatedChallenge = (int)ch.Id
+            };
+
+            await cont.Create(workoutId, res, 0);
+            Assert.True(_context.NewsFeed.Count() == 1);
+            var feedList = _context.NewsFeed.ToList();
+            var feed = feedList.ElementAt(0);
+            Assert.True(feed.UserId == usr1.Id);
+            Assert.True(feed.RelatedUserId == usr2.Id);
+            Assert.True(feed.FeedType == NewsFeed.FeedTypes.CompletedChallenge);
+
+
+            _context.Database.EnsureDeleted();
+        }
+
+        [Fact]
+        public async void WorkoutResultControllerCreateChallengeCompletedByChallengerTest()
+        {
+            var usr1 = new ApplicationUser
+            {
+                Id = "guid-user2",
+                UserName = "user1@psu.edu",
+                Email = "user1@psu.edu",
+                EmailConfirmed = true,
+                FirstName = "User",
+                LastName = "One",
+                ZipCode = "11111"
+            };
+
+            var usr2 = new ApplicationUser
+            {
+                Id = "guid-user1",
+                UserName = "user2@psu.edu",
+                Email = "user2@psu.edu",
+                EmailConfirmed = true,
+                FirstName = "User",
+                LastName = "Two",
+                ZipCode = "22222"
+            };
+
+            var w = new Workout()
+            {
+                Id = 1,
+                Name = "Name",
+                Notes = "Notes",
+                ScoringType = Workout.Scoring.Time,
+                Time = 20,
+                Published = true
+            };
+
+            var ch = new Challenge()
+            {
+                Id = 1,
+                Challenger = usr1,
+                Contender = usr2,
+                Workout = w,
+                ChallengeProgress = Challenge.ChallengeStatus.CompletedByChallenger,
+                CreateDate = DateTime.Now
+            };
+
+            _context.ApplicationUsers.Add(usr1);
+            _context.ApplicationUsers.Add(usr2);
+            _context.Workouts.Add(w);
+            _context.Challenges.Add(ch);
+            _context.SaveChangesAsync().GetAwaiter();
+
+            var httpContext = new DefaultHttpContext();
+            var tempData = new Microsoft.AspNetCore.Mvc.ViewFeatures.TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
+            tempData["Response"] = "";
+            var unit = new UnitOfWork(_context);
+            var cont = new WorkoutResultsController(unit)
+            {
+                TempData = tempData
+            };
+
+            var loggedInUser = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.Name, "user1@psu.edu"),
+                new Claim(ClaimTypes.NameIdentifier, "guid-user1"),
+            }, "mock"));
+
+            cont.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() { User = loggedInUser }
+            };
+
+            int workoutId = _context.Workouts.FirstOrDefault().Id;
+
+            var res = new WorkoutResult()
+            {
+                Id = 0,
+                UserId = "guid-user1",
+                WorkoutId = workoutId,
+                Score = 600,
+                ScoringType = Workout.Scoring.Time,
+                RelatedChallenge = (int)ch.Id
+            };
+
+            await cont.Create(workoutId, res, 0);
+            Assert.True(_context.NewsFeed.Count() == 1);
+            var feedList = _context.NewsFeed.ToList();
+            var feed = feedList.ElementAt(0);
+            Assert.True(feed.UserId == usr2.Id);
+            Assert.True(feed.RelatedUserId == usr1.Id);
+            Assert.True(feed.FeedType == NewsFeed.FeedTypes.CompletedChallenge);
+
+            _context.Database.EnsureDeleted();
+        }
+
+        [Fact]
+        public async void WorkoutResultControllerCreateChallengeCompletedByContenderTest()
+        {
+            var usr1 = new ApplicationUser
+            {
+                Id = "guid-user1",
+                UserName = "user1@psu.edu",
+                Email = "user1@psu.edu",
+                EmailConfirmed = true,
+                FirstName = "User",
+                LastName = "One",
+                ZipCode = "11111"
+            };
+
+            var usr2 = new ApplicationUser
+            {
+                Id = "guid-user2",
+                UserName = "user2@psu.edu",
+                Email = "user2@psu.edu",
+                EmailConfirmed = true,
+                FirstName = "User",
+                LastName = "Two",
+                ZipCode = "22222"
+            };
+
+            var w = new Workout()
+            {
+                Id = 1,
+                Name = "Name",
+                Notes = "Notes",
+                ScoringType = Workout.Scoring.Time,
+                Time = 20,
+                Published = true
+            };
+
+            var ch = new Challenge()
+            {
+                Id = 1,
+                Challenger = usr1,
+                Contender = usr2,
+                Workout = w,
+                ChallengeProgress = Challenge.ChallengeStatus.CompletedByContender,
+                CreateDate = DateTime.Now
+            };
+
+            _context.ApplicationUsers.Add(usr1);
+            _context.ApplicationUsers.Add(usr2);
+            _context.Workouts.Add(w);
+            _context.Challenges.Add(ch);
+            _context.SaveChangesAsync().GetAwaiter();
+
+            var httpContext = new DefaultHttpContext();
+            var tempData = new Microsoft.AspNetCore.Mvc.ViewFeatures.TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
+            tempData["Response"] = "";
+            var unit = new UnitOfWork(_context);
+            var cont = new WorkoutResultsController(unit)
+            {
+                TempData = tempData
+            };
+
+            var loggedInUser = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.Name, "user1@psu.edu"),
+                new Claim(ClaimTypes.NameIdentifier, "guid-user1"),
+            }, "mock"));
+
+            cont.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() { User = loggedInUser }
+            };
+
+            int workoutId = _context.Workouts.FirstOrDefault().Id;
+
+            var res = new WorkoutResult()
+            {
+                Id = 0,
+                UserId = "guid-user1",
+                WorkoutId = workoutId,
+                Score = 600,
+                ScoringType = Workout.Scoring.Time,
+                RelatedChallenge = (int)ch.Id
+            };
+
+            await cont.Create(workoutId, res, 0);
+            Assert.True(_context.NewsFeed.Count() == 1);
+            var feedList = _context.NewsFeed.ToList();
+            var feed = feedList.ElementAt(0);
+            Assert.True(feed.UserId == usr1.Id);
+            Assert.True(feed.RelatedUserId == usr2.Id);
+            Assert.True(feed.FeedType == NewsFeed.FeedTypes.CompletedChallenge);
+
+
+            _context.Database.EnsureDeleted();
+        }
+
+        [Fact]
+        public async void WorkoutResultControllerCreateNullChallengeTest()
+        {
+            var usr1 = new ApplicationUser
+            {
+                Id = "guid-user1",
+                UserName = "user1@psu.edu",
+                Email = "user1@psu.edu",
+                EmailConfirmed = true,
+                FirstName = "User",
+                LastName = "One",
+                ZipCode = "11111"
+            };
+
+            var usr2 = new ApplicationUser
+            {
+                Id = "guid-user2",
+                UserName = "user2@psu.edu",
+                Email = "user2@psu.edu",
+                EmailConfirmed = true,
+                FirstName = "User",
+                LastName = "Two",
+                ZipCode = "22222"
+            };
+
+            var w = new Workout()
+            {
+                Id = 1,
+                Name = "Name",
+                Notes = "Notes",
+                ScoringType = Workout.Scoring.Reps,
+                Time = 20,
+                Published = true
+            };
+
+            var ch = new Challenge()
+            {
+                Id = 1,
+                Challenger = usr1,
+                Contender = usr2,
+                Workout = w,
+                ChallengeProgress = Challenge.ChallengeStatus.CompletedByContender,
+                CreateDate = DateTime.Now
+            };
+
+            _context.ApplicationUsers.Add(usr1);
+            _context.ApplicationUsers.Add(usr2);
+            _context.Workouts.Add(w);
+            _context.Challenges.Add(ch);
+            _context.SaveChangesAsync().GetAwaiter();
+
+            var httpContext = new DefaultHttpContext();
+            var tempData = new Microsoft.AspNetCore.Mvc.ViewFeatures.TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
+            tempData["Response"] = "";
+            var unit = new UnitOfWork(_context);
+            var cont = new WorkoutResultsController(unit)
+            {
+                TempData = tempData
+            };
+
+            var loggedInUser = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.Name, "user1@psu.edu"),
+                new Claim(ClaimTypes.NameIdentifier, "guid-user1"),
+            }, "mock"));
+
+            cont.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext() { User = loggedInUser }
+            };
+
+            int workoutId = _context.Workouts.FirstOrDefault().Id;
+
+            var res = new WorkoutResult()
+            {
+                Id = 0,
+                UserId = "guid-user1",
+                WorkoutId = workoutId,
+                Score = 600,
+                ScoringType = Workout.Scoring.Reps,
+                RelatedChallenge = null,
+            };
+
+            await cont.Create(workoutId, res, 0);
+            Assert.True(_context.NewsFeed.Count() == 1);
+            var feedList = _context.NewsFeed.ToList();
+            var feed = feedList.ElementAt(0);
+            Assert.True(feed.UserId == usr1.Id);
+            Assert.True(feed.RelatedUserId == null);
+            Assert.True(feed.FeedType == NewsFeed.FeedTypes.CompletedWorkout);
+
+
+            _context.Database.EnsureDeleted();
+        }
+
     }
 }
