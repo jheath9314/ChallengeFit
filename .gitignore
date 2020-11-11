@@ -381,3 +381,11 @@ SWENG894.Test/ TestResults/SWENG894_ExercisesController.html
 SWENG894.Test/ TestResults/SWENG894_FriendsController.html
 SWENG894.Test/ TestResults/SWENG894_MessagesController.html
 SWENG894.Test/ TestResults/SWENG894_WorkoutsController.html
+SWENG894.Test/ TestResults/SWENG894_Challenge.html
+SWENG894.Test/ TestResults/SWENG894_ChallengeRepository.html
+SWENG894.Test/ TestResults/SWENG894_ChallengesController.html
+SWENG894.Test/ TestResults/SWENG894_NewsFeed.html
+SWENG894.Test/ TestResults/SWENG894_NewsFeedRepository.html
+SWENG894.Test/ TestResults/SWENG894_WorkoutFavorite.html
+SWENG894.Test/ TestResults/SWENG894_WorkoutFavoriteRepository.html
+SWENG894.Test/ TestResults/SWENG894_WorkoutResultsController.html

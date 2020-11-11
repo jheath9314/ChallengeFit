@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
@@ -75,12 +75,53 @@ namespace SWENG894.Test.Controllers
 
             data.Name = "Updated";
 
+            //
+            //  edit with invalid id
+            res = await cont.Edit(-22, data);
+            Assert.IsType<NotFoundResult>(res);
+
+            //
+            //  edit with invalid userid
+            var userId = data.UserId;
+            data.UserId = "wrong";
+            res = await cont.Edit(data.Id, data);
+            Assert.IsType<ForbidResult>(res);
+
+            //
+            //  edit the workout
+            data.UserId = userId;
             await cont.Edit(data.Id, data);
 
             data = await _context.Workouts.FirstOrDefaultAsync();
 
             Assert.True(data.Name == "Updated");
+            Assert.True(data.Published == false);
 
+            //
+            //  publish with no exerices
+            res = await cont.Publish(data.Id);
+            Assert.IsType<ForbidResult>(res);
+            Assert.True(data.Published == false);
+
+            //
+            //  add an exercise to the workout and publish
+            Exercise ex = new Exercise();
+            ex.Id = 0;
+            ex.Exer = Exercise.Exercises.AirSquat;
+
+            var exCont = new ExercisesController(unit);
+            await exCont.Create(data.Id, ex);
+            await _context.SaveChangesAsync();
+            res = await cont.Publish(data.Id);
+            Assert.True(data.Published == true);
+
+            //
+            //  try to edit after publishing
+            res = await cont.Edit(data.Id, data);
+            Assert.IsType<ForbidResult>(res);
+
+            //
+            //  delete workout
             await cont.DeleteConfirmed(data.Id);
 
             data = await _context.Workouts.FirstOrDefaultAsync();

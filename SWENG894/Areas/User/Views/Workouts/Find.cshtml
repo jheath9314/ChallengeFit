@@ -33,7 +33,7 @@
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-
+                    <a asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-info-circle" tool-tip-toggle="tooltip" data-original-title="Details"></i></a>
                     @if (item.IsFavorite)
                     {
                         <a asp-action="Find" asp-route-sort="@ViewBag.CurrentSort" asp-route-filter="@ViewBag.CurrentFilter" asp-route-fave="@item.Id"><i class="fas fa-star" tool-tip-toggle="tooltip" data-original-title="Remove from Favorites"></i></a>

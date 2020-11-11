@@ -10,7 +10,7 @@ using SWENG894.Data;
 namespace SWENG894.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201027200254_Rollup")]
+    [Migration("20201104221610_Rollup")]
     partial class Rollup
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -343,6 +343,9 @@ namespace SWENG894.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("ReadStatus")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RelatedId")
                         .HasColumnType("int");
 
                     b.Property<int>("SendStatus")

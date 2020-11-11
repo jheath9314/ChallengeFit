@@ -114,11 +114,52 @@ namespace SWENG894.Areas.User.Controllers
 
         // GET: User/Workouts/Details/5
         [ExcludeFromCodeCoverage]
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, string fave)
         {
             if (id == null)
             {
-                return NotFound();
+                //count the number of records
+                int total = _unitOfWork.Workout.GetAllAsync(x => x.Published).Result.Count();
+
+                //select a random number from the count, that becomes the "id"
+                var random = new Random();
+                int num = random.Next(1, total);
+                
+                //search for the details of the randomly selected 
+                var randomWorkout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(m => m.Id == num, includeProperties: "Exercises");
+
+                //because records may be deleted over time, id numbers will be deleted as well. So, loop through the list for an existing record
+                while (randomWorkout == null)
+                {
+                    num = random.Next(1, total);
+                    randomWorkout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(m => m.Id == num, includeProperties: "Exercises");
+                }
+
+                var fave1 = await _unitOfWork.WorkoutFavorite.GetFirstOrDefaultAsync(x => x.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) && x.WorkoutId == randomWorkout.Id);
+                randomWorkout.IsFavorite = fave1 != null;
+
+                if(!string.IsNullOrEmpty(fave))
+                {
+                    if(randomWorkout.IsFavorite)
+                    {
+                        await _unitOfWork.WorkoutFavorite.RemoveAsync(fave1);
+                    }
+                    else
+                    {
+                        var newFave = new WorkoutFavorite() 
+                        {
+                            UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                            WorkoutId = randomWorkout.Id
+                        };
+                        await _unitOfWork.WorkoutFavorite.AddAsync(newFave);
+                    }
+                    randomWorkout.IsFavorite = !randomWorkout.IsFavorite;
+                    await _unitOfWork.Save();
+                }
+
+                //return test results
+                return View(randomWorkout);
+
             }
 
             var workout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(m => m.Id == id, includeProperties: "Exercises");
@@ -126,6 +167,28 @@ namespace SWENG894.Areas.User.Controllers
             if (workout == null)
             {
                 return NotFound();
+            }
+
+            var fave2 = await _unitOfWork.WorkoutFavorite.GetFirstOrDefaultAsync(x => x.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) && x.WorkoutId == workout.Id);
+            workout.IsFavorite = fave2 != null;
+
+            if (!string.IsNullOrEmpty(fave))
+            {
+                if (workout.IsFavorite)
+                {
+                    await _unitOfWork.WorkoutFavorite.RemoveAsync(fave2);                    
+                }
+                else
+                {
+                    var newFave = new WorkoutFavorite()
+                    {
+                        UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                        WorkoutId = workout.Id
+                    };
+                    await _unitOfWork.WorkoutFavorite.AddAsync(newFave);
+                }
+                workout.IsFavorite = !workout.IsFavorite;
+                await _unitOfWork.Save();
             }
 
             return View(workout);
@@ -195,6 +258,12 @@ namespace SWENG894.Areas.User.Controllers
             }
 
             var workout = await _unitOfWork.Workout.GetAsync((int)id);
+
+            if (workout.Published)
+            {
+                return Forbid();
+            }
+
             if (workout == null)
             {
                 return NotFound();
@@ -212,6 +281,17 @@ namespace SWENG894.Areas.User.Controllers
             if (id != workout.Id)
             {
                 return NotFound();
+            }
+
+            if (workout.Published) 
+            {
+                return Forbid();
+            }
+
+            var user = await _unitOfWork.ApplicationUser.GetFirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (workout.UserId != user.Id)
+            {
+                return Forbid();
             }
 
             if (ModelState.IsValid)
@@ -253,6 +333,17 @@ namespace SWENG894.Areas.User.Controllers
                 return NotFound();
             }
 
+            if(workout.Published)
+            {
+                return Forbid();
+            }
+
+            var user = await _unitOfWork.ApplicationUser.GetFirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (workout.UserId != user.Id)
+            {
+                return Forbid();
+            }
+
             return View(workout);
         }
 
@@ -267,6 +358,7 @@ namespace SWENG894.Areas.User.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [ExcludeFromCodeCoverage]
         private bool WorkoutExists(int id)
         {
             return _unitOfWork.Workout.ObjectExists(id);
@@ -275,6 +367,13 @@ namespace SWENG894.Areas.User.Controllers
         public async Task<IActionResult> Publish(int id)
         {
             var workout = await _unitOfWork.Workout.GetAsync(id);
+            var exs = await _unitOfWork.Exercise.GetAllAsync(e => e.WorkoutId == workout.Id);
+            workout.Exercises = exs.ToList();
+
+            if(workout.Exercises.Count < 1)
+            {
+                return Forbid();
+            }
             workout.Published = true;
             _unitOfWork.Workout.UpdateAsync(workout);
             await _unitOfWork.Save();

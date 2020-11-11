@@ -47,7 +47,7 @@ namespace SWENG894.Areas.User.Controllers
                 workoutResultList[i].WorkoutName = workout.Name;
                 workoutResultList[i].ScoringType = workout.ScoringType;
             }
-
+            ViewData["Response"] = TempData["Response"];
             return View(workoutResultList);
         }
 
@@ -119,6 +119,10 @@ namespace SWENG894.Areas.User.Controllers
             }
             var user = await _unitOfWork.ApplicationUser.GetAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var workoutResults =  _unitOfWork.WorkoutResult.GetWorkoutResults(user.Id, workout.Id);
+            for(int i = 0; i < workoutResults.Count; i++)
+            {
+                workoutResults.ElementAt(i).ScoringType = workout.ScoringType;
+            }
 
 
             return View(workoutResults);
@@ -149,7 +153,6 @@ namespace SWENG894.Areas.User.Controllers
                     return Forbid();
                 }
 
-
                 var newResult = new WorkoutResult() 
                 { 
                     User = user,
@@ -164,11 +167,25 @@ namespace SWENG894.Areas.User.Controllers
                 {
                     newResult.Score = workoutResults.Score * 60 + seconds;
                 }
-
-            
+          
                 await _unitOfWork.WorkoutResult.AddAsync(newResult);
 
-                if(workoutResults.RelatedChallenge != null)
+                //Add the workout as a favorite
+                var newFave = new WorkoutFavorite
+                {
+                    User = user,
+                    Workout = workout,
+                };
+
+                var currentFav = await _unitOfWork.WorkoutFavorite.GetFirstOrDefaultAsync(w => w.UserId == user.Id && w.WorkoutId == workout.Id);
+                
+                if(currentFav == null)
+                {
+                    await _unitOfWork.WorkoutFavorite.AddAsync(newFave);
+                    await _unitOfWork.Save();
+                }
+
+                if (workoutResults.RelatedChallenge != null)
                 {
                     var clg = await  _unitOfWork.Challenge.GetFirstOrDefaultAsync(x => x.Id == (int)workoutResults.RelatedChallenge, includeProperties: "Challenger,Contender,Workout");
 
@@ -236,8 +253,38 @@ namespace SWENG894.Areas.User.Controllers
                         _unitOfWork.Challenge.UpdateAsync(clg);
                     }
                 }
+                else
+                {
+                    var feed = new NewsFeed()
+                    {
+                        User = user,
+                        RelatedWorkout = workout,
+                        CreateDate = DateTime.Now,
+                        FeedType = NewsFeed.FeedTypes.CompletedWorkout,
+                        Description = user.FullName + " completed a workout!",
+                        Dismissed = false
+                    };
+                    await _unitOfWork.NewsFeed.AddAsync(feed);
+                }
 
                 await _unitOfWork.Save();
+
+                int bestscore = 0;
+                var wwrs = await _unitOfWork.WorkoutResult.GetAllAsync(wr => wr.UserId == user.Id && wr.WorkoutId == workout.Id);
+
+                if (workout.ScoringType == Workout.Scoring.Time)
+                {
+                    bestscore = wwrs.Max(wr => wr.Score);
+                }
+                else
+                {
+                    bestscore = wwrs.Min(wr => wr.Score);
+                }
+
+                string response = bestscore == newResult.Score ? "Congratulations, a personal best! Keep up the good work!" : "";
+
+                TempData["Response"] = response;
+
                 return RedirectToAction(nameof(Index));
             }
          
@@ -275,10 +322,6 @@ namespace SWENG894.Areas.User.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,WorkoutId,UserId,Score, ResultNotes")] WorkoutResult workoutResults, int seconds)
         {
-            if (id != workoutResults.Id)
-            {
-                return NotFound();
-            }
 
             //get the real workout results
             var workout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(w => w.Id == workoutResults.WorkoutId);

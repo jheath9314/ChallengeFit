@@ -17,7 +17,8 @@
             </div>
         </div>
     </div>
-    <a class="btn btn-primary float-right" id="button-find" asp-action="Find">Find Workouts</a>
+    <a class="btn btn-primary float-right" asp-action="Details">Random Workout</a>
+    <a class="btn btn-primary float-right mr-2" id="button-find" asp-action="Find">Find Workouts</a>
     <a class="btn btn-primary float-right mr-2" id="button-create" asp-action="Create">Create New</a>
 </form>
 
@@ -69,7 +70,7 @@
                     {
                         @("|")
                         <a asp-area="User" asp-controller="WorkoutResults" asp-action="ViewWorkoutResults" asp-route-id="@item.Id"><i class="fas fa-poll" tool-tip-toggle="tooltip" data-original-title="Previous Results"></i></a> @("|")
-                        <a asp-area="User" asp-controller="WorkoutResults" asp-action="ViewWorkoutResults" asp-route-id="@item.Id"><i class="far fa-share-square" tool-tip-toggle="tooltip" data-original-title="Share Workout"></i></a>
+                        <a asp-area="User" asp-controller="Messages" asp-action="Share" asp-route-id="@item.Id"><i class="far fa-share-square" tool-tip-toggle="tooltip" data-original-title="Share Workout"></i></a>
                     }
 
                 </td>

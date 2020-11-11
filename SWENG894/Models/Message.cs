@@ -54,6 +54,8 @@ namespace SWENG894.Models
 
         public bool DeletedByReceiver { get; set; }
 
+        public int? RelatedId { get; set; }
+
         public enum MessageSendStatud
         {
             New,
@@ -70,7 +72,8 @@ namespace SWENG894.Models
         {
             Correspondence,
             FriendRequest,
-            Challenge
+            Challenge,
+            ShareWorkout
         }
     }
 }

@@ -35,7 +35,7 @@ namespace SWENG894.Test.Controllers
         }
 
         [Fact]
-        public async void FriendsControllerOpTest()
+        public async void MessagesControllerOpTest()
         {
             var usr1 = new ApplicationUser
             {
@@ -76,14 +76,27 @@ namespace SWENG894.Test.Controllers
                 Body = "Test body",
                 SendStatus = Message.MessageSendStatud.New,
                 DeletedByReceiver = false,
-                DeletedBySender = false
-                
+                DeletedBySender = false              
             };
+
+            var wk = new Workout()
+            {
+                Id = 1,
+                Published = true,
+                Name = "test",
+                ScoringType = Workout.Scoring.Time,
+                Notes = "notes",
+                User = usr1,
+                Time = 20,
+                IsFavorite = true
+            };
+
 
             _context.ApplicationUsers.Add(usr1);
             _context.ApplicationUsers.Add(usr2);
             _context.FriendRequests.Add(fr);
             _context.Messages.Add(msg);
+            _context.Workouts.Add(wk);
             _context.SaveChangesAsync().GetAwaiter();
 
             var unit = new UnitOfWork(_context);
@@ -124,6 +137,38 @@ namespace SWENG894.Test.Controllers
             data = _context.Messages.Where(x => x.Id == 1);
 
             Assert.Single(data);
+
+            await cont.DeleteConfirmed(1);
+
+            _context.SaveChangesAsync().GetAwaiter();
+
+            data = _context.Messages.Where(x => x.Id == 1);
+
+            var messageData = data.ToList();
+            Assert.True(messageData.ElementAt(0).DeletedByReceiver || messageData.ElementAt(0).DeletedBySender);
+
+            var response = cont.ShareAsync(10).Result;
+            Assert.IsAssignableFrom<NotFoundResult>(response);
+
+            response = cont.ShareAsync(1).Result;
+            Assert.NotNull(response);
+
+            var view = new ShareViewModel()
+            {
+                WorkoutId = 10,
+                ShareWithUserId = usr2.Id
+            };
+
+            response = cont.Share(view).Result;
+            Assert.IsAssignableFrom<NotFoundResult>(response);
+
+            view.WorkoutId = 1;
+            view.ShareWithUserId = "test";
+            Assert.IsAssignableFrom<NotFoundResult>(response);
+
+            view.ShareWithUserId = "guid-user2";
+            response = cont.Share(view).Result;
+            Assert.NotNull(response);
 
             _context.Database.EnsureDeleted();
         }
