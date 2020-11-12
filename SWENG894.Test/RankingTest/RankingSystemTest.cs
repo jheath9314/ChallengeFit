@@ -47,12 +47,14 @@ namespace SWENG894.Test.RankingTest
         public void GetClosestClusterTest()
         {
             var cut = new RankingSystem();
-            List<int> Clusters = new List<int>();
-            Clusters.Add(1);
-            Clusters.Add(7);
-            Clusters.Add(12);
-            Clusters.Add(55);
-            Clusters.Add(99);
+            List<int> Clusters = new List<int>
+            {
+                1,
+                7,
+                12,
+                55,
+                99
+            };
 
             var closest = cut.GetClosestCluster(88, Clusters);
             Assert.True(closest == 4);
@@ -62,6 +64,46 @@ namespace SWENG894.Test.RankingTest
             Assert.True(closest == 3);
             closest = cut.GetClosestCluster(3, Clusters);
             Assert.True(closest == 0);
+
+
+        }
+
+        [Fact]
+        public void CalculateAverageForClusterCenterTest()
+        {
+            var cut = new RankingSystem();
+            List<int> Clusters = new List<int>
+            {
+                1,
+                7,
+                12,
+                55,
+                99
+            };
+
+            List<RankingSystem.KMeansRating> Ratings = new List<RankingSystem.KMeansRating>();
+            RankingSystem.KMeansRating rating = new RankingSystem.KMeansRating();
+            rating.ClosestCluster = 1;
+            rating.Rating = 33;
+            RankingSystem.KMeansRating rating2 = new RankingSystem.KMeansRating();
+            rating2.ClosestCluster = 0;
+            rating2.Rating = 10;
+            RankingSystem.KMeansRating rating3 = new RankingSystem.KMeansRating();
+            rating3.ClosestCluster = 0;
+            rating3.Rating = 20;
+
+            Ratings.Add(rating);
+            Ratings.Add(rating2);
+            Ratings.Add(rating3);
+
+            int avg = cut.CalculateAverageForClusterCenter(Ratings, Clusters, 0);
+            Assert.True(avg == 15);
+
+            avg = cut.CalculateAverageForClusterCenter(Ratings, Clusters, 1);
+            Assert.True(avg == 33);
+
+            avg = cut.CalculateAverageForClusterCenter(Ratings, Clusters, 3);
+            Assert.True(avg == 55);
 
 
         }
