@@ -1,0 +1,84 @@
+﻿@model SWENG894.Utility.PaginatedList<SWENG894.Models.ApplicationUser>
+
+<h4>Leaderboard</h4>
+
+<form asp-action="Index" method="get">
+    <div class="btn-group mb-2" role="group">
+
+        <div class="input-group mb-3">
+            <div class="btn-group btn-group-toggle mr-2" role="group">
+                <a asp-action="Index" asp-route-list="" type="button" class="btn btn-outline-secondary" id="friends">Friends</a>
+                <a asp-action="Index" asp-route-list="global" type="button" class="btn btn-outline-secondary" id="global">Global</a>
+            </div>
+            <input type="text" class="form-control" placeholder="Search" aria-label="Search" name="search" aria-describedby="button-find" value="@ViewBag.CurrentFilter">
+            <input type="hidden" name="list" value="@ViewBag.CurrentList" />
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="submit" id="button-find">Search</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+@if (Model.Count > 0)
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    <a>Name</a>
+                </th>
+                <th>
+                    Rating
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FullName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(midelItem => item.Rating)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+
+    <a asp-action="Index"
+       asp-route-sort="@ViewBag.CurrentSort"
+       asp-route-page="@(Model.PageIndex - 1)"
+       asp-route-search="@ViewBag.CurrentFilter"
+       asp-route-list="@ViewBag.CurrentList"
+       class="btn btn-default @prevDisabled">
+        Previous
+    </a>
+    <a asp-action="Index"
+       asp-route-sort="@ViewBag.CurrentSort"
+       asp-route-page="@(Model.PageIndex + 1)"
+       asp-route-search="@ViewBag.CurrentFilter"
+       asp-route-list="@ViewBag.CurrentList"
+       class="btn btn-default @nextDisabled">
+        Next
+    </a>
+}
+else
+{
+    <p>No users found.</p>
+}
+
+@section Scripts {
+    <script>
+        var tab = GetParameterByName("list");
+        if (tab != null && tab != "") {
+            $("#global").button('toggle');
+        } else {
+            $("#friends").button('toggle');
+        }
+    </script>
+}
