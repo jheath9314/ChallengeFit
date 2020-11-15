@@ -13,10 +13,9 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Exer" class="control-label"></label>
-                <select asp-for="Exer" class="form-control"></select>
+                <select asp-for="Exer" asp-items="@Html.GetEnumSelectList<SWENG894.Models.Exercise.Exercises>()" class="form-control"></select>
                 <span asp-validation-for="Exer" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -24,15 +23,18 @@
                 <input asp-for="Reps" min="1" max="1000" class="form-control" />
                 <span asp-validation-for="Reps" class="text-danger"></span>
             </div>
-                <div class="form-group">
-                    <input type="submit" value="Save" class="btn btn-primary" />
-                </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Reps" />
+            <input type="hidden" asp-for="Exer" />
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-area="User" asp-controller="Workouts" asp-action="Details" asp-route-id="@Model.WorkoutId">Back to List</a>
 </div>
 
 @section Scripts {
