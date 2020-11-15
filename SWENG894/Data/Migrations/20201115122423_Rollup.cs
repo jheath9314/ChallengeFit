@@ -251,7 +251,8 @@ namespace SWENG894.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Exer = table.Column<int>(nullable: false),
                     Reps = table.Column<int>(nullable: false),
-                    WorkoutId = table.Column<int>(nullable: false)
+                    WorkoutId = table.Column<int>(nullable: false),
+                    Order = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {

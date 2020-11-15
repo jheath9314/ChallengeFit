@@ -243,7 +243,8 @@ namespace SWENG894.Areas.User.Controllers
 
                 // End test
 
-                return RedirectToAction(nameof(Index));
+                //return RedirectToAction(nameof(Details), workout.Id);
+                return RedirectToAction("Details", "Workouts", new { area = "User", id = workout.Id });
             }
             return View(workout);
         }

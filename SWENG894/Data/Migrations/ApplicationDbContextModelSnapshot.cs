@@ -276,6 +276,9 @@ namespace SWENG894.Data.Migrations
                     b.Property<int>("Exer")
                         .HasColumnType("int");
 
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
                     b.Property<int>("Reps")
                         .HasColumnType("int");
 
