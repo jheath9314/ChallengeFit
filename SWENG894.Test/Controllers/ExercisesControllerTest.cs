@@ -48,6 +48,7 @@ namespace SWENG894.Test.Controllers
             Exercise ex = new Exercise();
             ex.Id = 0;
             ex.Exer = Exercise.Exercises.AirSquat;
+            ex.Reps = 10;
 
             //
             //  attempt to create exercise with invadid workout id
@@ -61,18 +62,21 @@ namespace SWENG894.Test.Controllers
 
 
             ex = await unit.Exercise.GetFirstOrDefaultAsync();
-
             Assert.True(ex != null);
+            Assert.True(ex.Exer == Exercise.Exercises.AirSquat);
+            Assert.True(ex.Reps == 10);
+
 
             //
             //  edit the exercise
-            ex.Exer = Exercise.Exercises.Clean;
-            res = await cont.Edit(-22, ex);
+            Exercise.Exercises exer = Exercise.Exercises.Clean;
+            res = await cont.Edit(-22, 15, exer);
             Assert.IsType<NotFoundResult>(res);
-            await cont.Edit(ex.Id, ex);
+            await cont.Edit(ex.Id, 15, exer);
 
             ex = await unit.Exercise.GetFirstOrDefaultAsync();
             Assert.True(ex.Exer == Exercise.Exercises.Clean);
+            Assert.True(ex.Reps == 15);
 
             //
             //  add an exercise to a published workout
