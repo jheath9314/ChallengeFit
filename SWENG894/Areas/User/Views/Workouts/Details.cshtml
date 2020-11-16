@@ -84,7 +84,9 @@
                         @if (!Model.Published)
                         {
                             <a asp-area="User" asp-controller="Exercises" asp-action="Edit" asp-route-id="@ex.Id"><i class="fas fa-info-circle" tool-tip-toggle="tooltip" data-original-title="Edit"></i></a> @("|")
-                            <a asp-area="User" asp-controller="Exercises" asp-action="Delete" asp-route-id="@ex.Id"><i class="fas fa-trash-alt" tool-tip-toggle="tooltip" data-original-title="Delete"></i></a>
+                            <a asp-area="User" asp-controller="Exercises" asp-action="Delete" asp-route-id="@ex.Id"><i class="fas fa-trash-alt" tool-tip-toggle="tooltip" data-original-title="Delete"></i></a> @("|")
+                            <a asp-action="Details" asp-route-id="@Model.Id" asp-route-ex="@ex.Id"><i class="fas fa-arrow-up" tool-tip-toggle="tooltip" data-original-title="Move Up"></i></a> @("|")
+                            <a asp-action="Details" asp-route-id="@Model.Id" asp-route-ex="@ex.Id" asp-route-s="d"><i class="fas fa-arrow-down" tool-tip-toggle="tooltip" data-original-title="Move Down"></i></a>
                         }
                     </td>
                 </tr>

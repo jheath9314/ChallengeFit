@@ -56,10 +56,14 @@ namespace SWENG894.Areas.User.Controllers
             ViewData["CurrentFilter"] = search;
 
             var workouts = _unitOfWork.Workout.GetUserWorkouts(sort, search, User.FindFirstValue(ClaimTypes.NameIdentifier), string.IsNullOrEmpty(list));
+            if(workouts != null)
+            {
+                var workoutList = await PaginatedList<Workout>.Create(workouts.ToList(), page ?? 1, _pageSize);
+                return View(workoutList);
+            }
 
-            var workoutList = await PaginatedList<Workout>.Create(workouts.ToList(), page ?? 1, _pageSize);
-
-            return View(workoutList);
+            var emptyList = await PaginatedList<Workout>.Create(new List<Workout>(), page ?? 1, _pageSize);
+            return View(emptyList);
 
         }
 
@@ -114,7 +118,7 @@ namespace SWENG894.Areas.User.Controllers
 
         // GET: User/Workouts/Details/5
         [ExcludeFromCodeCoverage]
-        public async Task<IActionResult> Details(int? id, string fave)
+        public async Task<IActionResult> Details(int? id, string fave, int? ex, string s)
         {
             if (id == null)
             {
@@ -169,6 +173,40 @@ namespace SWENG894.Areas.User.Controllers
                 return NotFound();
             }
 
+            workout.Exercises = workout.Exercises.OrderBy(x => x.Order).ToList();
+
+            if (ex != null)
+            {
+                var exToReorder = await _unitOfWork.Exercise.GetFirstOrDefaultAsync(m => m.Id == ex);
+
+                if (exToReorder != null && workout.Exercises.Contains(exToReorder))
+                {
+                    var exOrder = exToReorder.Order;
+                    if (string.IsNullOrEmpty(s))
+                    {
+                        var exIndex = workout.Exercises.IndexOf(exToReorder);
+                        if (exIndex > 0)
+                        {
+                            workout.Exercises.ElementAt(exIndex).Order = workout.Exercises.ElementAt(exIndex - 1).Order;
+                            workout.Exercises.ElementAt(exIndex - 1).Order = exOrder;
+                            _unitOfWork.Workout.UpdateAsync(workout);
+                        }                                           
+                    }
+                    else
+                    {
+                        var exIndex = workout.Exercises.IndexOf(exToReorder);
+                        if (exIndex <= workout.Exercises.Count - 2)
+                        {
+                            workout.Exercises.ElementAt(exIndex).Order = workout.Exercises.ElementAt(exIndex + 1).Order;
+                            workout.Exercises.ElementAt(exIndex + 1).Order = exOrder;
+                            _unitOfWork.Workout.UpdateAsync(workout);
+                        }
+                    }
+                    await _unitOfWork.Save();
+                }
+                workout.Exercises = workout.Exercises.OrderBy(x => x.Order).ToList();
+            }
+
             var fave2 = await _unitOfWork.WorkoutFavorite.GetFirstOrDefaultAsync(x => x.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier) && x.WorkoutId == workout.Id);
             workout.IsFavorite = fave2 != null;
 
@@ -190,6 +228,8 @@ namespace SWENG894.Areas.User.Controllers
                 workout.IsFavorite = !workout.IsFavorite;
                 await _unitOfWork.Save();
             }
+
+            
 
             return View(workout);
         }

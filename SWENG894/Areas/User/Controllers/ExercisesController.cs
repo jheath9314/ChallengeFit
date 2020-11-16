@@ -95,9 +95,10 @@ namespace SWENG894.Areas.User.Controllers
                 {
                     Workout = workout,
                     Exer = e.Exer,
-                    Reps = e.Reps,
-                    Order = workout.Exercises.Count + 1
+                    Reps = e.Reps
                 };
+
+                exToAdd.Order = workout.Exercises.Count > 0 ? exToAdd.Order = workout.Exercises.ElementAt(workout.Exercises.Count - 1).Order + 1 : 1;
 
                 await _unitOfWork.Exercise.AddAsync(exToAdd);
                 await _unitOfWork.Save();
