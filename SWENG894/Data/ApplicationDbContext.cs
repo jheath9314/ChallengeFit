@@ -79,5 +79,7 @@ namespace SWENG894.Data
         public DbSet<Challenge> Challenges { get; set; }
         public DbSet<WorkoutFavorite> WorkoutFavorites { get; set; }
 
+        public DbSet<SWENG894.Models.Ranking> Ranking { get; set; }
+
     }
 }
