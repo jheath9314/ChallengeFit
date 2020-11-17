@@ -1,13 +1,8 @@
-﻿using System;
+﻿using SWENG894.Ranking;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using Xunit;
-using SWENG894.Ranking;
-using Org.BouncyCastle.Asn1.Cmp;
 using System.Linq;
-using System.Runtime.ExceptionServices;
-using System.Security.Cryptography.X509Certificates;
-using Org.BouncyCastle.Crypto.Tls;
+using Xunit;
 
 namespace SWENG894.Test.RankingTest
 {
@@ -40,8 +35,6 @@ namespace SWENG894.Test.RankingTest
             Assert.True(Centers.ElementAt(0) == 0);
             Assert.True(Centers.ElementAt(4) == 32);
 
-
-
         }
         [Fact]
         public void GetClosestClusterTest()
@@ -64,7 +57,6 @@ namespace SWENG894.Test.RankingTest
             Assert.True(closest == 3);
             closest = cut.GetClosestCluster(3, Clusters);
             Assert.True(closest == 0);
-
 
         }
 
@@ -104,8 +96,27 @@ namespace SWENG894.Test.RankingTest
 
             avg = cut.CalculateAverageForClusterCenter(Ratings, Clusters, 3);
             Assert.True(avg == 55);
+        }
 
+        [Fact]
+        public void GenerateRankingsTest()
+        {
 
+            Random r = new Random();
+            List<int> Ratings = new List<int>();
+
+            for(int i = 0; i < 2000; i++)
+            {
+                Ratings.Add(r.Next(0, 3000));
+            }
+
+            var cut = new RankingSystem();
+            //The centers tend to converge after around 40 iterations
+            var Centers = cut.GenerateRankings(5, Ratings, 10000);
+
+            //These values should be visually inspected. The data set is too large to compute by hand
+            //and since they are randomly generated, they may not always be the same. In general, the data set
+            Assert.True(Centers.Count == 5);
         }
     }
 }
