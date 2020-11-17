@@ -20,6 +20,8 @@ namespace SWENG894.Data.Repository.IRepository
 
         public string GetUserByUsername(string userName);
 
+        public IEnumerable<ApplicationUser> GetLeaderboard(string userId);
+
         public void Save();
     }
 }

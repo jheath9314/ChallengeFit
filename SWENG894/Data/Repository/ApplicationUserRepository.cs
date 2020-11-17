@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Org.BouncyCastle.Asn1.Ocsp;
 using Org.BouncyCastle.Math.EC.Rfc7748;
 using SWENG894.Data.Repository.IRepository;
 using SWENG894.Models;
@@ -73,6 +74,41 @@ namespace SWENG894.Data.Repository
             var temp =  _dbSet.FirstOrDefault(u => u.UserName == userName);
             return temp.Id;
 
+        }
+
+        public IEnumerable<ApplicationUser> GetLeaderboard(string userId)
+        {           
+            if(!String.IsNullOrEmpty(userId))
+            {
+                var list = new List<ApplicationUser>();
+                var user = _context.ApplicationUsers
+                    .Include(u => u.SentFriendRequests)
+                    .ThenInclude(u => u.RequestedFor)
+                    .Include(u => u.ReceievedFriendRequests)
+                    .ThenInclude(u => u.RequestedFor)
+                    .FirstOrDefaultAsync(u => u.Id == userId).Result;
+
+                if(user == null)
+                {
+                    return list;
+                }
+
+                foreach(var req in user.Friends)
+                {
+                    if(req.RequestedForId == user.Id)
+                    {
+                        list.Add(req.RequestedBy);
+                    }
+                    else
+                    {
+                        list.Add(req.RequestedFor);
+                    }
+                }
+
+                return list.OrderByDescending(x => x.Rating);
+            }
+
+            return _context.ApplicationUsers.Where(x => x.EmailConfirmed).OrderByDescending(x => x.Rating);
         }
     }
 }

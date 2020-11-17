@@ -39,5 +39,6 @@ namespace SWENG894.Models
         public int WorkoutId { get; set; }
         public Workout Workout { get; set; }
 
+        public int Order { get; set; }
     }
 }

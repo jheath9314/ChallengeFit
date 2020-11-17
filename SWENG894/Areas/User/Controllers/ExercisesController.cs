@@ -98,6 +98,8 @@ namespace SWENG894.Areas.User.Controllers
                     Reps = e.Reps
                 };
 
+                exToAdd.Order = workout.Exercises.Count > 0 ? exToAdd.Order = workout.Exercises.ElementAt(workout.Exercises.Count - 1).Order + 1 : 1;
+
                 await _unitOfWork.Exercise.AddAsync(exToAdd);
                 await _unitOfWork.Save();
 
@@ -129,23 +131,26 @@ namespace SWENG894.Areas.User.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("exercise,reps")] Exercise exercise)
+        public async Task<IActionResult> Edit(int id, int reps, Exercise.Exercises exer)
         {
-            if (id != exercise.Id)
+            var ex = await _unitOfWork.Exercise.GetAsync(id);
+            if (ex == null)
             {
-                return NotFound();
+               return NotFound();
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _unitOfWork.Exercise.UpdateAsync(exercise);
+                    ex.Exer = exer;
+                    ex.Reps = reps;
+                    _unitOfWork.Exercise.UpdateAsync(ex);
                     await _unitOfWork.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ExerciseExists(exercise.Id))
+                    if (!ExerciseExists(id))
                     {
                         return NotFound();
                     }
@@ -154,9 +159,9 @@ namespace SWENG894.Areas.User.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Workouts", new { Id = ex.WorkoutId });
             }
-            return View(exercise);
+            return View(ex);
         }
 
         // GET: User/Exercises/Delete/5
@@ -188,8 +193,9 @@ namespace SWENG894.Areas.User.Controllers
                 await _unitOfWork.Exercise.RemoveAsync(exercise);
                 await _unitOfWork.Save();
             }
-            
-            return RedirectToAction(nameof(Index));
+
+            //return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details", "Workouts", new { Id = exercise.WorkoutId });
         }
 
         [ExcludeFromCodeCoverage]

@@ -51,34 +51,65 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.ScalingOptions)
         </dd>
-        @foreach (var ex in Model.Exercises)
-        {
-            <dt class="col-sm-2">
-                @Html.DisplayFor(model => ex.Exer)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => ex.Reps)
-            </dd>
-        }
     </dl>
 </div>
-<div>
 
-    @if (!Model.Published)
+@if (Model.Exercises.Count > 0)
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    Exersise
+                </th>
+                <th>
+                    Reps/Time
+                </th>
+                <th>
+                    Options
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ex in Model.Exercises)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => ex.Exer)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => ex.Reps)
+                    </td>
+                    <td>
+                        @if (!Model.Published)
+                        {
+                            <a asp-area="User" asp-controller="Exercises" asp-action="Edit" asp-route-id="@ex.Id"><i class="fas fa-info-circle" tool-tip-toggle="tooltip" data-original-title="Edit"></i></a> @("|")
+                            <a asp-area="User" asp-controller="Exercises" asp-action="Delete" asp-route-id="@ex.Id"><i class="fas fa-trash-alt" tool-tip-toggle="tooltip" data-original-title="Delete"></i></a> @("|")
+                            <a asp-action="Details" asp-route-id="@Model.Id" asp-route-ex="@ex.Id"><i class="fas fa-arrow-up" tool-tip-toggle="tooltip" data-original-title="Move Up"></i></a> @("|")
+                            <a asp-action="Details" asp-route-id="@Model.Id" asp-route-ex="@ex.Id" asp-route-s="d"><i class="fas fa-arrow-down" tool-tip-toggle="tooltip" data-original-title="Move Down"></i></a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (!Model.Published)
+{
+    <a asp-area="User" asp-controller="Exercises" asp-action="Create" asp-route-id="@Model.Id">Add Exercise</a> <text> | </text>
+    <a asp-area="User" asp-controller="Workouts" asp-action="Edit" asp-route-id="@Model.Id">Edit</a> <text> | </text>
+    <a asp-area="User" asp-controller="Workouts" asp-action="Delete" asp-route-id="@Model.Id">Delete</a> <text> | </text>
+
+    @if (Model.Exercises.Count > 0)
     {
-        <a asp-area="User" asp-controller="Exercises" asp-action="Create" asp-route-id="@Model.Id">Add Exercise</a> <text> | </text>
-        <a asp-area="User" asp-controller="Workouts" asp-action="Edit" asp-route-id="@Model.Id">Edit</a> <text> | </text>
-        <a asp-area="User" asp-controller="Workouts" asp-action="Delete" asp-route-id="@Model.Id">Delete</a> <text> | </text>
-
-        @if (Model.Exercises.Count > 0)
-        {
-            <a asp-area="User" asp-controller="Workouts" asp-action="Publish" asp-route-id="@Model.Id">Publish</a> <text> | </text>
-        }
+        <a asp-area="User" asp-controller="Workouts" asp-action="Publish" asp-route-id="@Model.Id">Publish</a> <text> | </text>
     }
-    else
-    {
-        <a asp-area="User" asp-controller="WorkoutResults" asp-action="Create" asp-route-id="@Model.Id">Record Results</a> <text> | </text>
-    }
+}
+else
+{
+    <a asp-area="User" asp-controller="WorkoutResults" asp-action="Create" asp-route-id="@Model.Id">Record Results</a> <text> | </text>
+}
 
-    <a asp-action="Index">Back to List</a>
+<a asp-action="Index">Back to List</a>
 </div>
