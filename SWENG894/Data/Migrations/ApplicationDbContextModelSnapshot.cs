@@ -420,6 +420,21 @@ namespace SWENG894.Data.Migrations
                     b.ToTable("NewsFeed");
                 });
 
+            modelBuilder.Entity("SWENG894.Models.Ranking", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Center")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Ranking");
+                });
+
             modelBuilder.Entity("SWENG894.Models.Workout", b =>
                 {
                     b.Property<int>("Id")
