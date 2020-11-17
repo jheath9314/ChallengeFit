@@ -15,20 +15,21 @@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="ScoringType" class="control-label"></label>
+                <select asp-for="ScoringType" id="scoringType" onchange="handleScoringTypeChange()" asp-items="@Html.GetEnumSelectList<SWENG894.Models.Workout.Scoring>()" class="form-control"></select>
+                <span asp-validation-for="ScoringType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Time" id="timeLabel" class="control-label"></label>
                 <input asp-for="Time" min="0" max="1000" class="form-control" />
-                <input type="number" id ="timeSeconds" name="seconds" min="0" max="59" class="form-control" />
+                </br>
+                <input type="number" id="timeSeconds" name="seconds" min="0" max="59" class="form-control" />
                 <span asp-validation-for="Time" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Notes" class="control-label"></label>
                 <input asp-for="Notes" class="form-control" />
                 <span asp-validation-for="Notes" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ScoringType" class="control-label"></label>
-                <select asp-for="ScoringType" id="scoringType" onchange="handleScoringTypeChange()" asp-items="@Html.GetEnumSelectList<SWENG894.Models.Workout.Scoring>()" class="form-control"></select>
-                <span asp-validation-for="ScoringType" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ScalingOptions" class="control-label"></label>
