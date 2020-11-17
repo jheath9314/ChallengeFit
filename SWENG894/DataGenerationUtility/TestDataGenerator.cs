@@ -30,7 +30,7 @@ namespace SWENG894.DataGenerationUtility
         {
             string[] lines = System.IO.File.ReadAllLines(@"DataGenerationUtility/names.txt");
 
-            for(int i = 0; i < 1; i++)
+            for(int i = 0; i < 1000; i++)
             {
                 var firstName = lines[i];
                 var lastName = lines[lines.Length - i - 1];
