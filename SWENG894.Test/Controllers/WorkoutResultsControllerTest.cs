@@ -127,9 +127,9 @@ namespace SWENG894.Test.Controllers
             Assert.Equal(900, data.Score);
 
             w = _context.Workouts.FirstOrDefault(w => w.Id == workoutId);
-            w.ScoringType = Workout.Scoring.Reps;
+            w.ScoringType = Workout.Scoring.Rounds;
             _context.Workouts.Update(w);
-            data.ScoringType = Workout.Scoring.Reps;
+            data.ScoringType = Workout.Scoring.Rounds;
             data.Score = 2;
             await cont.Edit(data.Id, data, 2);
             data = _context.WorkoutResults.FirstOrDefault(x => x.Id == data.Id);
@@ -456,7 +456,7 @@ namespace SWENG894.Test.Controllers
                 Id = 1,
                 Name = "Name",
                 Notes = "Notes",
-                ScoringType = Workout.Scoring.Reps,
+                ScoringType = Workout.Scoring.Rounds,
                 Time = 20,
                 Published = true
             };
@@ -505,7 +505,7 @@ namespace SWENG894.Test.Controllers
                 UserId = "guid-user1",
                 WorkoutId = workoutId,
                 Score = 600,
-                ScoringType = Workout.Scoring.Reps,
+                ScoringType = Workout.Scoring.Rounds,
                 RelatedChallenge = null,
             };
 

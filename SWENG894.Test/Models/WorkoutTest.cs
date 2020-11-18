@@ -50,7 +50,7 @@ namespace SWENG894.Test.Models
         public void getRepsDisplayTest()
         {
             Workout myWorkout = new Workout();
-            myWorkout.ScoringType = Workout.Scoring.Reps;
+            myWorkout.ScoringType = Workout.Scoring.Rounds;
             myWorkout.Time = 123;
 
             Assert.True(myWorkout.GetTimeDisplayString() == "123");
@@ -76,7 +76,7 @@ namespace SWENG894.Test.Models
             string workoutNotes = "note test";
 
             myWorkout.Notes = workoutNotes;
-            myWorkout.ScoringType = Workout.Scoring.Reps;
+            myWorkout.ScoringType = Workout.Scoring.Rounds;
             myWorkout.Time = 123;
             myWorkout.Name = workoutName;
             myWorkout.ScalingOptions = workoutScalingOptions;
@@ -95,7 +95,7 @@ namespace SWENG894.Test.Models
             myWorkout.Exercises.Add(ex_2);
 
             Assert.True(myWorkout.Exercises.Count == 2);
-            Assert.True(myWorkout.ScoringType == Workout.Scoring.Reps);
+            Assert.True(myWorkout.ScoringType == Workout.Scoring.Rounds);
             Assert.True(myWorkout.Name == workoutName);
             Assert.True(myWorkout.ScalingOptions == workoutScalingOptions);
             Assert.True(myWorkout.Notes == workoutNotes);

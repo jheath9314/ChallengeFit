@@ -28,7 +28,7 @@ namespace SWENG894.Test.Models
 
             result.User = new ApplicationUser();
             result.Score = 55;
-            result.ScoringType = Workout.Scoring.Reps;
+            result.ScoringType = Workout.Scoring.Rounds;
             result.Username = "Joe";
             result.Workout = new Workout();
             result.WorkoutId = 1;
@@ -40,7 +40,7 @@ namespace SWENG894.Test.Models
 
             Assert.True(result.User != null);
             Assert.True(result.Score == 55);
-            Assert.True(result.ScoringType == Workout.Scoring.Reps);
+            Assert.True(result.ScoringType == Workout.Scoring.Rounds);
             Assert.True(result.Username == "Joe");
             Assert.True(result.Workout != null);
             Assert.True(result.WorkoutId == 1);
@@ -74,7 +74,7 @@ namespace SWENG894.Test.Models
         {
 
             WorkoutResult myWorkout = new WorkoutResult();
-            myWorkout.ScoringType = Workout.Scoring.Reps;
+            myWorkout.ScoringType = Workout.Scoring.Rounds;
             myWorkout.Score = 120;
             Assert.True(myWorkout.getTimeDisplayString() == "2:00");
 
@@ -94,7 +94,7 @@ namespace SWENG894.Test.Models
         public void getMinutesTest()
         {
             WorkoutResult myWorkout = new WorkoutResult();
-            myWorkout.ScoringType = Workout.Scoring.Reps;
+            myWorkout.ScoringType = Workout.Scoring.Rounds;
             myWorkout.Score = 50;
 
             Assert.True(myWorkout.getMinutesString() == "0");
@@ -104,7 +104,7 @@ namespace SWENG894.Test.Models
         public void getSecondsTest()
         {
             WorkoutResult myWorkout = new WorkoutResult();
-            myWorkout.ScoringType = Workout.Scoring.Reps;
+            myWorkout.ScoringType = Workout.Scoring.Rounds;
             myWorkout.Score = 70;
 
             Assert.True(myWorkout.getSecondsString() == "10");

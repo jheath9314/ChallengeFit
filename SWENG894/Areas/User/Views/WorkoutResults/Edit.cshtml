@@ -40,7 +40,7 @@
             <div class="form-group">
                 <select asp-for="ScoringType" id="scoringType" asp-items="@Html.GetEnumSelectList<SWENG894.Models.Workout.Scoring>()"></select>
                 <label asp-for="Score" id="timeLabel" class="control-label"></label>
-                @if (Model.ScoringType == Workout.Scoring.Reps)
+                @if (Model.ScoringType == Workout.Scoring.Rounds)
                 {
                     <input asp-for="Score" id="scoreField" value="@Model.getMinutesString()" class="form-control" />
                     <input type="number" id="timeSeconds" name="seconds" value="@Model.getSecondsString()" min="0" max="59" class="form-control" />

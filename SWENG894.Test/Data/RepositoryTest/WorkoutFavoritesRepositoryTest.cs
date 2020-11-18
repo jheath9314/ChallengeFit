@@ -52,7 +52,7 @@ namespace SWENG894.Test.Data.RepositoryTest
                 Id = 1,
                 Name = "Workout",
                 Published = true,
-                ScoringType = Workout.Scoring.Reps,
+                ScoringType = Workout.Scoring.Rounds,
                 Time = 20
             };
 
@@ -97,7 +97,7 @@ namespace SWENG894.Test.Data.RepositoryTest
                 Id = 1,
                 Name = "Workout",
                 Published = true,
-                ScoringType = Workout.Scoring.Reps,
+                ScoringType = Workout.Scoring.Rounds,
                 Time = 20
             };
 
@@ -150,7 +150,7 @@ namespace SWENG894.Test.Data.RepositoryTest
                 Id = 1,
                 Name = "Workout",
                 Published = true,
-                ScoringType = Workout.Scoring.Reps,
+                ScoringType = Workout.Scoring.Rounds,
                 Time = 20
             };
 
@@ -159,7 +159,7 @@ namespace SWENG894.Test.Data.RepositoryTest
                 Id = 2,
                 Name = "Workout2",
                 Published = true,
-                ScoringType = Workout.Scoring.Reps,
+                ScoringType = Workout.Scoring.Rounds,
                 Time = 30
             };
 
@@ -168,7 +168,7 @@ namespace SWENG894.Test.Data.RepositoryTest
                 Id = 3,
                 Name = "Workout3",
                 Published = true,
-                ScoringType = Workout.Scoring.Reps,
+                ScoringType = Workout.Scoring.Rounds,
                 Time = 50
             };
 
@@ -250,7 +250,7 @@ namespace SWENG894.Test.Data.RepositoryTest
                 Id = 1,
                 Name = "Workout",
                 Published = true,
-                ScoringType = Workout.Scoring.Reps,
+                ScoringType = Workout.Scoring.Rounds,
                 Time = 20
             };
 
@@ -300,7 +300,7 @@ namespace SWENG894.Test.Data.RepositoryTest
                 Id = 1,
                 Name = "Workout",
                 Published = true,
-                ScoringType = Workout.Scoring.Reps,
+                ScoringType = Workout.Scoring.Rounds,
                 Time = 20
             };
 
@@ -309,7 +309,7 @@ namespace SWENG894.Test.Data.RepositoryTest
                 Id = 2,
                 Name = "Workout2",
                 Published = true,
-                ScoringType = Workout.Scoring.Reps,
+                ScoringType = Workout.Scoring.Rounds,
                 Time = 30
             };
 
@@ -318,7 +318,7 @@ namespace SWENG894.Test.Data.RepositoryTest
                 Id = 3,
                 Name = "Workout3",
                 Published = true,
-                ScoringType = Workout.Scoring.Reps,
+                ScoringType = Workout.Scoring.Rounds,
                 Time = 50
             };
 
@@ -383,7 +383,7 @@ namespace SWENG894.Test.Data.RepositoryTest
                 Id = 1,
                 Name = "Workout",
                 Published = true,
-                ScoringType = Workout.Scoring.Reps,
+                ScoringType = Workout.Scoring.Rounds,
                 Time = 20
             };
 
@@ -392,7 +392,7 @@ namespace SWENG894.Test.Data.RepositoryTest
                 Id = 2,
                 Name = "Workout2",
                 Published = true,
-                ScoringType = Workout.Scoring.Reps,
+                ScoringType = Workout.Scoring.Rounds,
                 Time = 30
             };
 
@@ -401,7 +401,7 @@ namespace SWENG894.Test.Data.RepositoryTest
                 Id = 3,
                 Name = "Workout3",
                 Published = true,
-                ScoringType = Workout.Scoring.Reps,
+                ScoringType = Workout.Scoring.Rounds,
                 Time = 50
             };
 
@@ -470,7 +470,7 @@ namespace SWENG894.Test.Data.RepositoryTest
                 Id = 1,
                 Name = "Workout",
                 Published = true,
-                ScoringType = Workout.Scoring.Reps,
+                ScoringType = Workout.Scoring.Rounds,
                 Time = 20
             };
 
@@ -479,7 +479,7 @@ namespace SWENG894.Test.Data.RepositoryTest
                 Id = 2,
                 Name = "Workout2",
                 Published = true,
-                ScoringType = Workout.Scoring.Reps,
+                ScoringType = Workout.Scoring.Rounds,
                 Time = 30
             };
 
@@ -488,7 +488,7 @@ namespace SWENG894.Test.Data.RepositoryTest
                 Id = 3,
                 Name = "Workout3",
                 Published = true,
-                ScoringType = Workout.Scoring.Reps,
+                ScoringType = Workout.Scoring.Rounds,
                 Time = 50
             };
 
@@ -559,7 +559,7 @@ namespace SWENG894.Test.Data.RepositoryTest
                 Id = 1,
                 Name = "Workout",
                 Published = true,
-                ScoringType = Workout.Scoring.Reps,
+                ScoringType = Workout.Scoring.Rounds,
                 Time = 20
             };
 
@@ -568,7 +568,7 @@ namespace SWENG894.Test.Data.RepositoryTest
                 Id = 2,
                 Name = "Workout2",
                 Published = true,
-                ScoringType = Workout.Scoring.Reps,
+                ScoringType = Workout.Scoring.Rounds,
                 Time = 30
             };
 
@@ -577,7 +577,7 @@ namespace SWENG894.Test.Data.RepositoryTest
                 Id = 3,
                 Name = "Workout3",
                 Published = true,
-                ScoringType = Workout.Scoring.Reps,
+                ScoringType = Workout.Scoring.Rounds,
                 Time = 50
             };
 
