@@ -43,7 +43,7 @@ namespace SWENG894.Test.Data.RepositoryTest
             var workoutResult = new WorkoutResult();
             workoutResult.Id = 0;
             workoutResult.Score = 2;
-            workoutResult.ScoringType = Workout.Scoring.Reps;
+            workoutResult.ScoringType = Workout.Scoring.Rounds;
 
             await _cut.AddAsync(workoutResult);
             await _context.SaveChangesAsync();
@@ -85,7 +85,7 @@ namespace SWENG894.Test.Data.RepositoryTest
             var workoutResult = new WorkoutResult();
             workoutResult.Id = 0;
             workoutResult.Score = 2;
-            workoutResult.ScoringType = Workout.Scoring.Reps;
+            workoutResult.ScoringType = Workout.Scoring.Rounds;
             workoutResult.WorkoutId = 2;
             workoutResult.UserId = "TESTID";
 
@@ -94,7 +94,7 @@ namespace SWENG894.Test.Data.RepositoryTest
 
             workoutResult.Id = 0;
             workoutResult.Score = 2;
-            workoutResult.ScoringType = Workout.Scoring.Reps;
+            workoutResult.ScoringType = Workout.Scoring.Rounds;
             workoutResult.WorkoutId = 2;
             workoutResult.UserId = "TESTID";
 
@@ -104,7 +104,7 @@ namespace SWENG894.Test.Data.RepositoryTest
 
             workoutResult.Id = 0;
             workoutResult.Score = 2;
-            workoutResult.ScoringType = Workout.Scoring.Reps;
+            workoutResult.ScoringType = Workout.Scoring.Rounds;
             workoutResult.WorkoutId = 1;
             workoutResult.UserId = "TESTID";
 
@@ -113,7 +113,7 @@ namespace SWENG894.Test.Data.RepositoryTest
 
             workoutResult.Id = 0;
             workoutResult.Score = 2;
-            workoutResult.ScoringType = Workout.Scoring.Reps;
+            workoutResult.ScoringType = Workout.Scoring.Rounds;
             workoutResult.WorkoutId = 1;
             workoutResult.UserId = "NOTREALID";
 

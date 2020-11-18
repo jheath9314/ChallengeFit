@@ -38,7 +38,7 @@ namespace SWENG894.Models
 
         public string getTimeDisplayString()
         {
-            if (ScoringType == Workout.Scoring.Reps)
+            if (ScoringType == Workout.Scoring.Rounds)
             {
                 
                 string displayValue = getMinutesString() + ":" + getSecondsString();

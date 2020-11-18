@@ -163,7 +163,7 @@ namespace SWENG894.Areas.User.Controllers
                 };
 
                 //Reps means that the workout type is a "Reps" workout. Scoring for a "Reps" workout is by time.
-                if (workout.ScoringType == Workout.Scoring.Reps)
+                if (workout.ScoringType == Workout.Scoring.Rounds)
                 {
                     newResult.Score = workoutResults.Score * 60 + seconds;
                 }
@@ -328,7 +328,7 @@ namespace SWENG894.Areas.User.Controllers
 
             workoutResults.ScoringType = workout.ScoringType;
 
-            if (workoutResults.ScoringType == Workout.Scoring.Reps)
+            if (workoutResults.ScoringType == Workout.Scoring.Rounds)
             {
                 workoutResults.Score = workoutResults.Score * 60 + seconds;
             }

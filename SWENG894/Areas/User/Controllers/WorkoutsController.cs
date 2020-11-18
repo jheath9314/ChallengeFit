@@ -3,17 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using SWENG894.Data;
 using SWENG894.Models;
 using SWENG894.Utility;
 using SWENG894.Data.Repository.IRepository;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
-using SWENG894.ViewModels;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace SWENG894.Areas.User.Controllers
 {
@@ -317,7 +313,7 @@ namespace SWENG894.Areas.User.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,name,time,notes,reps")] Workout workout)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Time,Notes,Rounds, UserId, ScalingOptions")] Workout workout)
         {
             if (id != workout.Id)
             {
@@ -330,7 +326,18 @@ namespace SWENG894.Areas.User.Controllers
             }
 
             var user = await _unitOfWork.ApplicationUser.GetFirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
-            if (workout.UserId != user.Id)
+            var tempWorkout = await _unitOfWork.Workout.GetFirstOrDefaultAsync(w => w.Id == workout.Id);
+            var tempExercises = await _unitOfWork.Exercise.GetAllAsync(e => e.WorkoutId == workout.Id);
+            var tempExerciesList = tempExercises.ToList();
+            tempWorkout.Exercises = tempExerciesList;
+            tempWorkout.User = user;
+            tempWorkout.UserId = user.Id;
+            tempWorkout.Name = workout.Name;
+            tempWorkout.Time = workout.Time;
+            tempWorkout.Notes = workout.Notes;
+            tempWorkout.ScalingOptions = workout.ScalingOptions;
+
+            if (tempWorkout.UserId != user.Id)
             {
                 return Forbid();
             }
@@ -339,7 +346,7 @@ namespace SWENG894.Areas.User.Controllers
             {
                 try
                 {
-                    _unitOfWork.Workout.UpdateAsync(workout);
+                    _unitOfWork.Workout.UpdateAsync(tempWorkout);
                     await _unitOfWork.Save();
                 }
                 catch (DbUpdateConcurrencyException)

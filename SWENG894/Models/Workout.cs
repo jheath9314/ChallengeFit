@@ -12,7 +12,7 @@ namespace SWENG894.Models
         public enum Scoring
         {
             Time,
-            Reps
+            Rounds
         }
 
         public int Id { get; set; }
