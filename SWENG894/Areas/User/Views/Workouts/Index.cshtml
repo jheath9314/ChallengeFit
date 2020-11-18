@@ -29,14 +29,15 @@
                 <a asp-action="Index" asp-route-sort="@ViewBag.SortOrder" asp-route-filter="@ViewBag.CurrentFilter">Name</a>
             </th>
             <th>
+                Scoring Type
+            </th>
+            <th>
                 Reps/Time
             </th>
             <th>
                 Notes
             </th>
-            <th>
-                Scoring Type
-            </th>
+
             <th>
                 Scaling Options
             </th>
@@ -48,33 +49,34 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @item.GetTimeDisplayString()
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Notes)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ScoringType)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ScalingOptions)
-                </td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-info-circle" tool-tip-toggle="tooltip" data-original-title="Details"></i></a>
-                    @if (item.Published)
-                    {
-                        @("|")
-                        <a asp-area="User" asp-controller="WorkoutResults" asp-action="ViewWorkoutResults" asp-route-id="@item.Id"><i class="fas fa-poll" tool-tip-toggle="tooltip" data-original-title="Previous Results"></i></a> @("|")
-                        <a asp-area="User" asp-controller="Messages" asp-action="Share" asp-route-id="@item.Id"><i class="far fa-share-square" tool-tip-toggle="tooltip" data-original-title="Share Workout"></i></a>
-                    }
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ScoringType)
+            </td>
+            <td>
+                @item.GetTimeDisplayString()
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Notes)
+            </td>
 
-                </td>
-            </tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ScalingOptions)
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-info-circle" tool-tip-toggle="tooltip" data-original-title="Details"></i></a>
+                @if (item.Published)
+                {
+                    @("|")
+                    <a asp-area="User" asp-controller="WorkoutResults" asp-action="ViewWorkoutResults" asp-route-id="@item.Id"><i class="fas fa-poll" tool-tip-toggle="tooltip" data-original-title="Previous Results"></i></a> @("|")
+                    <a asp-area="User" asp-controller="Messages" asp-action="Share" asp-route-id="@item.Id"><i class="far fa-share-square" tool-tip-toggle="tooltip" data-original-title="Share Workout"></i></a>
+                }
+
+            </td>
+        </tr>
         }
     </tbody>
 </table>
