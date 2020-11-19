@@ -9,7 +9,7 @@
 <script type="text/javascript">
     window.onload = function () {
         var label = $('#scoringType').find(":selected").text();
-        if (label != "Reps") {
+        if (label != "Rounds") {
             $('#timeSeconds').hide();
         }
 
@@ -43,6 +43,7 @@
                 @if (Model.ScoringType == Workout.Scoring.Rounds)
                 {
                     <input asp-for="Score" id="scoreField" value="@Model.getMinutesString()" class="form-control" />
+                    <br />
                     <input type="number" id="timeSeconds" name="seconds" value="@Model.getSecondsString()" min="0" max="59" class="form-control" />
                 }
                 else

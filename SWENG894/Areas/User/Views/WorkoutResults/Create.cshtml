@@ -8,7 +8,7 @@
 <script type="text/javascript">
     window.onload = function () {
         var label = $('#scoringType').find(":selected").text();
-        if (label != "Reps") {
+        if (label != "Rounds") {
             $('#timeSeconds').hide();
         }
         $('#scoreField').val('');
@@ -26,6 +26,7 @@
                 <select asp-for="ScoringType" id="scoringType" asp-items="@Html.GetEnumSelectList<SWENG894.Models.Workout.Scoring>()"></select>
                 <label asp-for="Score" id="timeLabel" class="control-label"></label>
                 <input asp-for="Score" id="scoreField" class="form-control" />
+                <br />
                 <input type="number" id="timeSeconds" name="seconds" min="0" max="59" class="form-control" />
                 <label asp-for="ResultNotes" class="control-label">Result Notes</label> <br />
                 <input asp-for="ResultNotes" id="resultNotes" class="form-control" />
