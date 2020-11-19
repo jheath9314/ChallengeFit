@@ -81,15 +81,7 @@ namespace SWENG894.Test.Controllers
             Assert.IsType<NotFoundResult>(res);
 
             //
-            //  edit with invalid userid
-            var userId = data.UserId;
-            data.UserId = "wrong";
-            res = await cont.Edit(data.Id, data);
-            Assert.IsType<ForbidResult>(res);
-
-            //
             //  edit the workout
-            data.UserId = userId;
             await cont.Edit(data.Id, data);
 
             data = await _context.Workouts.FirstOrDefaultAsync();
