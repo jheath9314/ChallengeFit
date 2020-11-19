@@ -6,8 +6,17 @@
 
 <h1>Edit</h1>
 <script type="text/javascript">
-
-    window.onload = hideSecondsField();
+    window.onload = function () {
+        var label = $('#scoringType').find(":selected").text();
+        if (label == "Time") {
+            label = label + " (Minutes and Seconds)";
+            showSecondsField();
+        }
+        else {
+            hideSecondsField();
+        }
+        $('#timeLabel').text(label);
+    }
 </script>
 <h4>Workout</h4>
 <hr />

@@ -313,7 +313,7 @@ namespace SWENG894.Areas.User.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Time,Notes,Rounds, UserId, ScalingOptions")] Workout workout)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Time,Notes,Rounds, UserId, ScalingOptions")] Workout workout, int seconds = 0)
         {
             if (id != workout.Id)
             {
@@ -336,6 +336,13 @@ namespace SWENG894.Areas.User.Controllers
             tempWorkout.Time = workout.Time;
             tempWorkout.Notes = workout.Notes;
             tempWorkout.ScalingOptions = workout.ScalingOptions;
+
+            if (tempWorkout.ScoringType == Workout.Scoring.Time)
+            {
+                tempWorkout.Time = tempWorkout.Time * 60 + seconds;
+            }
+
+            ModelState.Remove("seconds");
 
             if (tempWorkout.UserId != user.Id)
             {
