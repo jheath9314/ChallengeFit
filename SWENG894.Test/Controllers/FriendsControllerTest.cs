@@ -66,6 +66,17 @@ namespace SWENG894.Test.Controllers
 
             _context.ApplicationUsers.Add(usr1);
             _context.ApplicationUsers.Add(usr2);
+
+            var ranking = new SWENG894.Models.Ranking();
+            ranking.BronzeValue = 200;
+            ranking.SilverValue = 400;
+            ranking.GoldValue = 600;
+            ranking.PlatinumValue = 800;
+            ranking.DiamondValue = 1000;
+
+            _context.Ranking.Add(ranking);
+
+
             _context.SaveChangesAsync().GetAwaiter();
 
             var unit = new UnitOfWork(_context);
