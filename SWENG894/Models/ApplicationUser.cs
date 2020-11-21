@@ -77,6 +77,5 @@ namespace SWENG894.Models
 
         // Created workouts
         public ICollection<Workout> Workouts { get; set; }
-
     }
 }

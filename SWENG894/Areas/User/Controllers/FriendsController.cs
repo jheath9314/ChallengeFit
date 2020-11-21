@@ -321,8 +321,23 @@ namespace SWENG894.Areas.User.Controllers
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
-                ZipCode = user.ZipCode
+                ZipCode = user.ZipCode,
+
             };
+
+            var RankingSystem = new Ranking.RankingSystem();
+            var Clusters = await _unitOfWork.Ranking.GetFirstOrDefaultAsync();
+            var ClusterIntList = new System.Collections.Generic.List<int>();
+
+            ClusterIntList.Add(Clusters.BronzeValue);
+            ClusterIntList.Add(Clusters.SilverValue);
+            ClusterIntList.Add(Clusters.GoldValue);
+            ClusterIntList.Add(Clusters.PlatinumValue);
+            ClusterIntList.Add(Clusters.DiamondValue);
+            ClusterIntList.Sort();
+
+            var ranking = RankingSystem.GetClosestCluster((int)user.Rating, ClusterIntList);
+            ViewBag.Ranking = ranking;
 
             return View(userView);
         }

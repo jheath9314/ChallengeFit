@@ -51,6 +51,7 @@ namespace SWENG894.Data.Repository
                 .ThenInclude(x => x.Workout)
                 .FirstOrDefault(x => x.Id == userId);
 
+
             var wkList = user.Workouts.ToList();
 
             foreach(var wrkFave in user.WorkoutFavorites)
