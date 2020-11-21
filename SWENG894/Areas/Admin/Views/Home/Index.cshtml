@@ -1,3 +1,78 @@
-﻿<h1>Admin</h1>
-<a asp-action="GenerateTestData">Generate Test Data</a>
-<a asp-action="RemoveTestData">Remove Test Data</a>
+﻿@model SWENG894.Models.Ranking
+
+<h1>Admin</h1>
+
+<div>
+    <a class="btn btn-primary" id="button-find" asp-action="GenerateTestData">Generate Test Data</a>
+    <a class="btn btn-primary" id="button-find" asp-action="RemoveTestData">Remove Test Data</a>
+    <a class="btn btn-primary" id="button-find" asp-action="GenerateRanks">Generate Ranks</a>
+</div>
+
+<br />
+<br />
+
+<div>
+    <h6>@ViewBag.Timestamp</h6>
+
+    @if (Model != null)
+    {
+    <table class="table table-striped" style="width: 50%;">
+        <colgroup>
+            <col span="1" style="width: 50%;" />
+            <col span="1" style="width: 50%;" />
+        </colgroup>
+        <thead>
+            <tr>
+                <th>
+                    Rank
+                </th>
+                <th>
+                    Rating
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <span style="color: dodgerblue"><i class="fas fa-gem fa-3x"></i></span>@("Diamond")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.DiamondValue)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span style="color: lightskyblue"><i class="fas fa-star fa-3x"></i></span>@("Platinum")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.PlatinumValue)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span style="color: gold"><i class="fas fa-medal fa-3x"></i></span>@("Gold")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.GoldValue)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span style="color: silver"><i class="fas fa-medal fa-3x"></i></span>@("Silver")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.SilverValue)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span style="color: #b08d57"><i class="fas fa-medal fa-3x"></i></span>@("Bronze")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.BronzeValue)
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    }
+</div>

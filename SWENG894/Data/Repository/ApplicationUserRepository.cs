@@ -110,5 +110,17 @@ namespace SWENG894.Data.Repository
 
             return _context.ApplicationUsers.Where(x => x.EmailConfirmed).OrderByDescending(x => x.Rating);
         }
+
+        public List<int> GetAllUserRatings()
+        {
+            var ratings = new List<int>();
+            var appUsers = _context.ApplicationUsers.ToList();
+            foreach (var appUser in appUsers)
+            {
+                ratings.Add((int)appUser.Rating);
+            }
+
+            return ratings;
+        }
     }
 }

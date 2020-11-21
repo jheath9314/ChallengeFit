@@ -52,6 +52,24 @@ namespace SWENG894.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Ranking",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BronzeValue = table.Column<int>(nullable: false),
+                    SilverValue = table.Column<int>(nullable: false),
+                    GoldValue = table.Column<int>(nullable: false),
+                    PlatinumValue = table.Column<int>(nullable: false),
+                    DiamondValue = table.Column<int>(nullable: false),
+                    Timestamp = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ranking", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -562,6 +580,9 @@ namespace SWENG894.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "NewsFeed");
+
+            migrationBuilder.DropTable(
+                name: "Ranking");
 
             migrationBuilder.DropTable(
                 name: "WorkoutFavorites");

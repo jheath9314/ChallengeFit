@@ -427,8 +427,23 @@ namespace SWENG894.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Center")
+                    b.Property<int>("BronzeValue")
                         .HasColumnType("int");
+
+                    b.Property<int>("DiamondValue")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GoldValue")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PlatinumValue")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SilverValue")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Timestamp")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

@@ -10,6 +10,7 @@ using SWENG894.Data.Repository.IRepository;
 using SWENG894.DataGenerationUtility;
 using SWENG894.Models;
 using SWENG894.Utility;
+using SWENG894.Ranking;
 
 namespace SWENG894.Areas.Admin.Controllers
 {
@@ -52,9 +53,20 @@ namespace SWENG894.Areas.Admin.Controllers
             ViewData["CurrentFilter"] = search;
 
             //var matchingUsers = _unitOfWork.FriendRequest.GetUserFriends(sort, search, User.FindFirstValue(ClaimTypes.NameIdentifier), !string.IsNullOrEmpty(list)).ToList();
-           // var personList = await PaginatedList<ApplicationUser>.Create(matchingUsers, page ?? 1, _pageSize);
+            // var personList = await PaginatedList<ApplicationUser>.Create(matchingUsers, page ?? 1, _pageSize);
 
-            return View();
+            var ranking = _unitOfWork.Ranking.GetRankings();
+            if (ranking != null)
+            {
+                var timeString = "Rankings generated on " + ranking.Timestamp + " UTC";
+                ViewData["Timestamp"] = timeString;
+            }
+            else
+            {
+                ViewData["Timestamp"] = "";
+            }
+
+            return View(ranking);
         }
 
         public async Task<IActionResult> GenerateTestData()
@@ -66,6 +78,44 @@ namespace SWENG894.Areas.Admin.Controllers
         public async Task<IActionResult> RemoveTestData()
         {
             _testGenerator.RemoveTestData();
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> GenerateRanks()
+        {
+            var ratings = _unitOfWork.ApplicationUser.GetAllUserRatings();
+            var rankSys = new RankingSystem();
+            var rankCenters = rankSys.GenerateRankings(5, ratings, 1000);
+
+            var ranking = _unitOfWork.Ranking.GetRankings();
+            if (ranking != null)
+            {
+                ranking.BronzeValue = rankCenters[0];
+                ranking.SilverValue = rankCenters[1];
+                ranking.GoldValue = rankCenters[2];
+                ranking.PlatinumValue = rankCenters[3];
+                ranking.DiamondValue = rankCenters[4];
+                ranking.Timestamp = DateTime.UtcNow.ToString();
+
+                _unitOfWork.Ranking.UpdateAsync(ranking);
+                await _unitOfWork.Save();
+            }
+            else
+            {
+                var newRanking = new Models.Ranking()
+                {
+                    BronzeValue = rankCenters[0],
+                    SilverValue = rankCenters[1],
+                    GoldValue = rankCenters[2],
+                    PlatinumValue = rankCenters[3],
+                    DiamondValue = rankCenters[4],
+                    Timestamp = DateTime.UtcNow.ToString()
+                };
+
+                await _unitOfWork.Ranking.AddAsync(newRanking);
+                await _unitOfWork.Save();
+            }
+
             return RedirectToAction(nameof(Index));
         }
 

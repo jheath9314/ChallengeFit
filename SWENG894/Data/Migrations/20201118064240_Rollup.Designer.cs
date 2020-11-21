@@ -10,7 +10,7 @@ using SWENG894.Data;
 namespace SWENG894.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201115122423_Rollup")]
+    [Migration("20201118064240_Rollup")]
     partial class Rollup
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -420,6 +420,36 @@ namespace SWENG894.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("NewsFeed");
+                });
+
+            modelBuilder.Entity("SWENG894.Models.Ranking", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BronzeValue")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DiamondValue")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GoldValue")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PlatinumValue")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SilverValue")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Timestamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Ranking");
                 });
 
             modelBuilder.Entity("SWENG894.Models.Workout", b =>

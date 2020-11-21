@@ -101,6 +101,19 @@ namespace SWENG894.Data.Initializer
             {
                 _userManager.AddToRoleAsync(user, "Admin").GetAwaiter().GetResult();
             }
+
+            var initRanking = new Models.Ranking()
+            {
+                BronzeValue = 0,
+                SilverValue = 1,
+                GoldValue = 2,
+                PlatinumValue = 3,
+                DiamondValue = 4,
+                Timestamp = ""
+            };
+
+            _context.Ranking.AddAsync(initRanking);
+            _context.SaveChangesAsync();
         }
     }
 }

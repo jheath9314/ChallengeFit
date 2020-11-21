@@ -17,6 +17,7 @@ namespace SWENG894.Data.Repository.IRepository
         INewsFeedRepository NewsFeed { get; }
         IChallengeRepository Challenge { get; }
         IWorkoutFavoriteRepository WorkoutFavorite { get; }
+        IRankingRepository Ranking { get; }
 
         Task Save();
     }
