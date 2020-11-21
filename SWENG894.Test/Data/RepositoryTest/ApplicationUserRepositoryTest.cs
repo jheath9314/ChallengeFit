@@ -507,6 +507,36 @@ namespace SWENG894.Test.Data.RepositoryTest
             _context.SaveChangesAsync().GetAwaiter();
         }
 
+        [Fact]
+        public void GetAllUserRatingsTest()
+        {
+            var ratings = _cut.GetAllUserRatings();
+            Assert.Empty(ratings);
+
+            var usr1 = new ApplicationUser
+            {
+                Id = "user-guid",
+                UserName = "user1@psu.edu",
+                Email = "user1@psu.edu",
+                EmailConfirmed = true,
+                FirstName = "User",
+                LastName = "One",
+                ZipCode = "11111",
+                Rating = 1500
+            };
+
+            _context.ApplicationUsers.Add(usr1);
+            _context.SaveChangesAsync().GetAwaiter();
+
+            ratings = _cut.GetAllUserRatings();
+            Assert.Single(ratings);
+            Assert.Equal(1500, ratings[0]);
+ 
+            //Reset
+            _context.Remove(usr1);
+            _context.SaveChangesAsync().GetAwaiter();
+        }
+
         #endregion
     }
 }
