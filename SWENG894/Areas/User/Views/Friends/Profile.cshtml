@@ -4,29 +4,58 @@
     <h4>Profile</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.FirstName)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.FirstName)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.LastName)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.LastName)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ZipCode)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.ZipCode)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Email)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dd class="col-sm-2">
+            <b>Rank</b>
+        </dd>
+        <dd class="col-sm-10">
+            @if (ViewBag.Ranking == 0)
+            {
+                <span style="color: #b08d57"><i class="fas fa-medal fa-3x"></i></span>@("Bronze")
+            }
+            else if (ViewBag.Ranking == 1)
+            {
+                <span style="color: silver"><i class="fas fa-medal fa-3x"></i></span>@("Silver")
+            }
+            else if (ViewBag.Ranking == 2)
+            {
+                <span style="color: gold"><i class="fas fa-medal fa-3x"></i></span>@("Gold")
+            }
+            else if (ViewBag.Ranking == 3)
+            {
+                <span style="color: lightskyblue"><i class="fas fa-star fa-3x"></i></span>@("Platinum")
+            }
+            else if (ViewBag.Ranking == 4)
+            {
+                <span style="color: dodgerblue"><i class="fas fa-gem fa-3x"></i></span>@("Diamond")
+            }
+            else
+            {
+                @("Error Computing Rank")
+            }
         </dd>
     </dl>
 </div>
