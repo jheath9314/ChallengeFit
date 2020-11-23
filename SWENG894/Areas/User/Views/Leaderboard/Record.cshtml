@@ -1,0 +1,69 @@
+﻿@model SWENG894.Utility.PaginatedList<SWENG894.Models.Challenge>
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+    <h4>
+        Challenge Record
+    </h4>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a class="btn btn-secondary mr-2" asp-action="Index">Back to List</a>
+    </div>
+</div>
+
+@if (Model.Count > 0)
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    Workout
+                </th>
+                <th>
+                    Challenger Result
+                </th>
+                <th>
+                    Contender Result
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Workout.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(midelItem => item.ChallengerResult.Score) @("(")@Html.DisplayFor(midelItem => item.Challenger.FullName)@(")")
+                </td>
+                <td>
+                    @Html.DisplayFor(midelItem => item.ContenderResult.Score) @("(")@Html.DisplayFor(midelItem => item.Contender.FullName)@(")")
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+
+    <a asp-action="Index"
+       asp-route-sort="@ViewBag.CurrentSort"
+       asp-route-page="@(Model.PageIndex - 1)"
+       asp-route-search="@ViewBag.CurrentFilter"
+       asp-route-list="@ViewBag.CurrentList"
+       class="btn btn-default @prevDisabled">
+        Previous
+    </a>
+    <a asp-action="Index"
+       asp-route-sort="@ViewBag.CurrentSort"
+       asp-route-page="@(Model.PageIndex + 1)"
+       asp-route-search="@ViewBag.CurrentFilter"
+       asp-route-list="@ViewBag.CurrentList"
+       class="btn btn-default @nextDisabled">
+        Next
+    </a>
+}
+else
+{
+    <p>You don't have a challenge record vs. this user.</p>
+}

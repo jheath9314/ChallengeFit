@@ -71,14 +71,14 @@ namespace SWENG894.Data.Repository
 
         public string GetUserByUsername(string userName)
         {
-            var temp =  _dbSet.FirstOrDefault(u => u.UserName == userName);
+            var temp = _dbSet.FirstOrDefault(u => u.UserName == userName);
             return temp.Id;
 
         }
 
         public IEnumerable<ApplicationUser> GetLeaderboard(string userId)
-        {           
-            if(!String.IsNullOrEmpty(userId))
+        {
+            if (!String.IsNullOrEmpty(userId))
             {
                 var list = new List<ApplicationUser>();
                 var user = _context.ApplicationUsers
@@ -88,14 +88,14 @@ namespace SWENG894.Data.Repository
                     .ThenInclude(u => u.RequestedFor)
                     .FirstOrDefaultAsync(u => u.Id == userId).Result;
 
-                if(user == null)
+                if (user == null)
                 {
                     return list;
                 }
 
-                foreach(var req in user.Friends)
+                foreach (var req in user.Friends)
                 {
-                    if(req.RequestedForId == user.Id)
+                    if (req.RequestedForId == user.Id)
                     {
                         list.Add(req.RequestedBy);
                     }
@@ -109,6 +109,17 @@ namespace SWENG894.Data.Repository
             }
 
             return _context.ApplicationUsers.Where(x => x.EmailConfirmed).OrderByDescending(x => x.Rating);
+        }
+
+        public IEnumerable<Challenge> GetRecord(string userId1, string userId2)
+        {
+            return _context.Challenges
+                .Include(x => x.Challenger)
+                .Include(x => x.Contender)
+                .Include(x => x.ChallengerResult)
+                .Include(x => x.ContenderResult)
+                .Include(x => x.Workout)
+                .Where(x => (x.ChallengerId == userId1 && x.ContenderId == userId2 && x.ChallengeProgress == Challenge.ChallengeStatus.Completed) || (x.ChallengerId == userId2 && x.ContenderId == userId1 && x.ChallengeProgress == Challenge.ChallengeStatus.Completed));
         }
 
         public List<int> GetAllUserRatings()

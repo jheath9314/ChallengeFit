@@ -22,6 +22,8 @@ namespace SWENG894.Data.Repository.IRepository
 
         public IEnumerable<ApplicationUser> GetLeaderboard(string userId);
 
+        public IEnumerable<Challenge> GetRecord(string userId1, string userId2);
+
         public List<int> GetAllUserRatings();
 
         public void Save();

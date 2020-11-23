@@ -30,6 +30,9 @@
                 <th>
                     Rating
                 </th>
+                <th>
+                    Options
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -41,6 +44,9 @@
                     </td>
                     <td>
                         @Html.DisplayFor(midelItem => item.Rating)
+                    </td>
+                    <td>
+                        <a asp-action="Record" asp-route-id="@item.Id"><i class="fas fa-info-circle" tool-tip-toggle="tooltip" data-original-title="Challenge Record"></i></a>
                     </td>
                 </tr>
             }

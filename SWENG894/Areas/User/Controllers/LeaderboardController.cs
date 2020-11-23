@@ -55,5 +55,34 @@ namespace SWENG894.Areas.User.Controllers
 
             return View(personList);
         }
+
+        [ExcludeFromCodeCoverage]
+        public async Task<IActionResult> Record(string sort, string search, string filter, string list, string currentList, int? page, string id)
+        {
+            ViewData["CurrentSort"] = sort;
+            ViewData["SortOrder"] = String.IsNullOrEmpty(sort) ? "desc" : "";
+
+            if (list == null)
+            {
+                list = currentList;
+            }
+            ViewData["CurrentList"] = list;
+
+            if (search == null)
+            {
+                search = filter;
+            }
+            else
+            {
+                search = search.ToLower();
+            }
+
+            ViewData["CurrentFilter"] = search;
+
+            var challenges = _unitOfWork.ApplicationUser.GetRecord(User.FindFirstValue(ClaimTypes.NameIdentifier), id);
+            var challengeList = await PaginatedList<Challenge>.Create(challenges.ToList(), page ?? 1, _pageSize);
+
+            return View(challengeList);
+        }
     }
 }
