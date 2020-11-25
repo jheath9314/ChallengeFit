@@ -26,7 +26,6 @@ namespace SWENG894.Areas.User.Controllers
         }
 
         // GET: User/Leaderboard
-        [ExcludeFromCodeCoverage]
         public async Task<IActionResult> IndexAsync(string sort, string search, string filter, string list, string currentList, int? page)
         {
             ViewData["CurrentSort"] = sort;
@@ -56,7 +55,6 @@ namespace SWENG894.Areas.User.Controllers
             return View(personList);
         }
 
-        [ExcludeFromCodeCoverage]
         public async Task<IActionResult> Record(string sort, string search, string filter, string list, string currentList, int? page, string id)
         {
             ViewData["CurrentSort"] = sort;
