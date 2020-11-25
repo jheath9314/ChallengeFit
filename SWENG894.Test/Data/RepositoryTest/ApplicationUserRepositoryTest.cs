@@ -537,6 +537,186 @@ namespace SWENG894.Test.Data.RepositoryTest
             _context.SaveChangesAsync().GetAwaiter();
         }
 
+        [Fact]
+        public void GetRecordTest()
+        {
+            //Setup
+            var usr1 = new ApplicationUser
+            {
+                Id = "user1",
+                UserName = "user1@psu.edu",
+                Email = "user1@psu.edu",
+                EmailConfirmed = true,
+                FirstName = "User",
+                LastName = "One",
+                ZipCode = "11111"
+            };
+
+            var usr2 = new ApplicationUser
+            {
+                Id = "user2",
+                UserName = "user2@psu.edu",
+                Email = "user2@psu.edu",
+                EmailConfirmed = true,
+                FirstName = "User",
+                LastName = "Two",
+                ZipCode = "22222"
+            };
+
+            var usr3 = new ApplicationUser
+            {
+                Id = "user3",
+                UserName = "user3@psu.edu",
+                Email = "user3@psu.edu",
+                EmailConfirmed = true,
+                FirstName = "User",
+                LastName = "Three",
+                ZipCode = "33333"
+            };
+
+            var wk = new Workout()
+            {
+                Id = 1,
+                Name = "First",
+                Published = true,
+                ScoringType = Workout.Scoring.Rounds,
+                User = usr1
+            };
+
+            var res = new WorkoutResult()
+            {
+                Id = 1,
+                User = usr1,
+                Workout = wk,
+                Score = 10
+            };
+
+            var res2 = new WorkoutResult()
+            {
+                Id = 2,
+                User = usr1,
+                Workout = wk,
+                Score = 20
+            };
+
+            var res3 = new WorkoutResult()
+            {
+                Id = 3,
+                User = usr2,
+                Workout = wk,
+                Score = 30
+            };
+
+            var res4 = new WorkoutResult()
+            {
+                Id = 4,
+                User = usr2,
+                Workout = wk,
+                Score = 40
+            };
+
+            var chlg = new Challenge
+            {
+                Id = 1,
+                ChallengeProgress = Challenge.ChallengeStatus.New,
+                Challenger = usr1,
+                Contender = usr2,
+                CreateDate = DateTime.Now
+            };
+
+            var chlg2 = new Challenge
+            {
+                Id = 2,
+                ChallengeProgress = Challenge.ChallengeStatus.CompletedByChallenger,
+                Challenger = usr1,
+                Contender = usr3,
+                CreateDate = DateTime.Now
+            };
+
+            var chlg3 = new Challenge
+            {
+                Id = 3,
+                ChallengeProgress = Challenge.ChallengeStatus.New,
+                Challenger = usr2,
+                Contender = usr3,
+                CreateDate = DateTime.Now
+            };
+
+            var chlg4 = new Challenge
+            {
+                Id = 4,
+                ChallengeProgress = Challenge.ChallengeStatus.Completed,
+                Challenger = usr1,
+                Contender = usr2,
+                CreateDate = DateTime.Now,
+                Workout = wk,
+                ChallengerResult = res,
+                ContenderResult = res3
+            };
+
+            var chlg5 = new Challenge
+            {
+                Id = 5,
+                ChallengeProgress = Challenge.ChallengeStatus.Rejected,
+                Challenger = usr1,
+                Contender = usr2,
+                CreateDate = DateTime.Now
+            };
+
+            var chlg6 = new Challenge
+            {
+                Id = 6,
+                ChallengeProgress = Challenge.ChallengeStatus.Completed,
+                Challenger = usr1,
+                Contender = usr2,
+                CreateDate = DateTime.Now,
+                Workout = wk,
+                ContenderResult = res2,
+                ChallengerResult = res4
+            };
+
+            _context.ApplicationUsers.Add(usr1);
+            _context.ApplicationUsers.Add(usr2);
+            _context.ApplicationUsers.Add(usr3);
+            _context.Workouts.Add(wk);
+            _context.WorkoutResults.Add(res);
+            _context.WorkoutResults.Add(res2);
+            _context.WorkoutResults.Add(res3);
+            _context.WorkoutResults.Add(res4);
+            _context.Challenges.Add(chlg);
+            _context.Challenges.Add(chlg2);
+            _context.Challenges.Add(chlg3);
+            _context.Challenges.Add(chlg4);
+            _context.Challenges.Add(chlg5);
+            _context.Challenges.Add(chlg6);
+            
+            _context.SaveChangesAsync().GetAwaiter();
+
+            //Test
+            var data = _cut.GetRecord(usr1.Id, usr2.Id);
+            Assert.Equal(2, data.Count());
+
+            data = _cut.GetRecord(usr1.Id, usr3.Id);
+            Assert.Empty(data);
+
+            //Reset
+            _context.Remove(chlg);
+            _context.Remove(chlg2);
+            _context.Remove(chlg3);
+            _context.Remove(chlg4);
+            _context.Remove(chlg5);
+            _context.Remove(chlg6);
+            _context.Remove(res);
+            _context.Remove(res2);
+            _context.Remove(res3);
+            _context.Remove(res4);
+            _context.Remove(wk);
+            _context.Remove(usr1);
+            _context.Remove(usr2);
+            _context.Remove(usr3);           
+            _context.SaveChangesAsync().GetAwaiter();
+        }
+
         #endregion
     }
 }
