@@ -11,6 +11,14 @@
         if (label == "Time") {
             label = label + " (Minutes and Seconds)";
             showSecondsField();
+            var minutes = $("#Time").val();
+            minutes = minutes / 60;
+            minutes = Math.floor(minutes);
+            var seconds = $("#Time").val();
+            seconds = seconds % 60;
+
+            $("#Time").val(minutes)
+            $("#timeSeconds").val(seconds)
         }
         else {
             hideSecondsField();
