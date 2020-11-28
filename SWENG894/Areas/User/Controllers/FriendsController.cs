@@ -365,6 +365,12 @@ namespace SWENG894.Areas.User.Controllers
             return View(friendRequest);
         }
 
+        [ExcludeFromCodeCoverage]
+        public async Task<IActionResult>Rankings()
+        {
+            return View();
+        }
+
         // POST: User/Friends/Delete/5
         //Vladimir, need help with this one
         [HttpPost, ActionName("Delete")]
