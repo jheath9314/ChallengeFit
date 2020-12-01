@@ -66,48 +66,52 @@ namespace SWENG894.Data.Repository
                 .FirstOrDefaultAsync(u => u.Id == userId).Result;
 
             var matchingUsers = new List<ApplicationUser>();
-            
-            if(!getBlocked) { 
-                foreach(var friendRequest in user.Friends)
+
+            if (user != null)
+            {
+                if (!getBlocked)
                 {
-                    if(friendRequest.RequestedById == userId)
+                    foreach (var friendRequest in user.Friends)
                     {
-                        matchingUsers.Add(friendRequest.RequestedFor);
-                    }
-                    else
-                    {
-                        matchingUsers.Add(friendRequest.RequestedBy);
+                        if (friendRequest.RequestedById == userId)
+                        {
+                            matchingUsers.Add(friendRequest.RequestedFor);
+                        }
+                        else
+                        {
+                            matchingUsers.Add(friendRequest.RequestedBy);
+                        }
                     }
                 }
-            }
-            else
-            {
-                foreach (var friendRequest in user.BlockedFriends)
+                else
                 {
-                    if (friendRequest.RequestedById == userId)
+                    foreach (var friendRequest in user.BlockedFriends)
                     {
-                        matchingUsers.Add(friendRequest.RequestedFor);
-                    }
-                    else
-                    {
-                        matchingUsers.Add(friendRequest.RequestedBy);
+                        if (friendRequest.RequestedById == userId)
+                        {
+                            matchingUsers.Add(friendRequest.RequestedFor);
+                        }
+                        else
+                        {
+                            matchingUsers.Add(friendRequest.RequestedBy);
+                        }
                     }
                 }
-            }
 
-            if (!String.IsNullOrEmpty(search))
-            {
-                search = search.ToLower();
-                matchingUsers = matchingUsers.Where(u => u.LastName.ToLower().Contains(search) ||
-                    u.FirstName.ToLower().Contains(search) ||
-                    u.Email.ToLower().Contains(search)).ToList();
-            }
+                if (!String.IsNullOrEmpty(search))
+                {
+                    search = search.ToLower();
+                    matchingUsers = matchingUsers.Where(u => u.LastName.ToLower().Contains(search) ||
+                        u.FirstName.ToLower().Contains(search) ||
+                        u.Email.ToLower().Contains(search)).ToList();
+                }
 
-            matchingUsers = sort switch
-            {
-                "desc" => matchingUsers.OrderByDescending(s => s.LastName).ToList(),
-                _ => matchingUsers.OrderBy(s => s.LastName).ToList(),
-            };
+                matchingUsers = sort switch
+                {
+                    "desc" => matchingUsers.OrderByDescending(s => s.LastName).ToList(),
+                    _ => matchingUsers.OrderBy(s => s.LastName).ToList(),
+                };
+            }
 
             return matchingUsers;
         }

@@ -50,34 +50,38 @@ namespace SWENG894.Data.Repository
                 .Include(x => x.WorkoutFavorites)
                 .ThenInclude(x => x.Workout)
                 .FirstOrDefault(x => x.Id == userId);
+            
+            var wkList = new List<Workout>();
 
-
-            var wkList = user.Workouts.ToList();
-
-            foreach(var wrkFave in user.WorkoutFavorites)
+            if (user != null)
             {
-                if(!user.Workouts.Contains(wrkFave.Workout))
+                wkList = user.Workouts.ToList();
+
+                foreach (var wrkFave in user.WorkoutFavorites)
                 {
-                    wkList.Add(wrkFave.Workout);
+                    if (!user.Workouts.Contains(wrkFave.Workout))
+                    {
+                        wkList.Add(wrkFave.Workout);
+                    }
                 }
+
+                if (!String.IsNullOrEmpty(search))
+                {
+                    wkList = wkList.Where(m => m.Name.ToLower().Contains(search.ToLower())).ToList();
+                }
+
+                wkList = sort switch
+                {
+                    "desc" => wkList.OrderByDescending(m => m.Name).ToList(),
+                    _ => wkList.OrderBy(m => m.Name).ToList()
+                };
+
+                wkList = published switch
+                {
+                    true => wkList.Where(w => w.Published).ToList(),
+                    _ => wkList.Where(w => !w.Published).ToList()
+                };
             }
-
-            if (!String.IsNullOrEmpty(search))
-            {
-                wkList = wkList.Where(m => m.Name.ToLower().Contains(search.ToLower())).ToList();
-            }
-
-            wkList = sort switch
-            {
-                "desc" => wkList.OrderByDescending(m => m.Name).ToList(),
-                _ => wkList.OrderBy(m => m.Name).ToList()
-            };
-
-            wkList = published switch
-            {
-                true => wkList.Where(w => w.Published).ToList(),
-                _ => wkList.Where(w => !w.Published).ToList()
-            };
 
             return wkList;
         }
@@ -104,13 +108,15 @@ namespace SWENG894.Data.Repository
                 _ => matchingWorkouts.OrderBy(s => s.Name).ToList(),
             };
 
-
-            foreach(var fave in user.WorkoutFavorites)
+            if (user != null)
             {
-                if(matchingWorkouts.Contains(fave.Workout))
+                foreach (var fave in user.WorkoutFavorites)
                 {
-                    matchingWorkouts.ElementAt(matchingWorkouts.IndexOf(fave.Workout)).IsFavorite = true;
-                }               
+                    if (matchingWorkouts.Contains(fave.Workout))
+                    {
+                        matchingWorkouts.ElementAt(matchingWorkouts.IndexOf(fave.Workout)).IsFavorite = true;
+                    }
+                }
             }
 
             return matchingWorkouts;
