@@ -322,6 +322,7 @@ namespace SWENG894.Areas.User.Controllers
                 LastName = user.LastName,
                 Email = user.Email,
                 ZipCode = user.ZipCode,
+                Rating = user.Rating
 
             };
 

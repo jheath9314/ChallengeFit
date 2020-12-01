@@ -717,6 +717,39 @@ namespace SWENG894.Test.Data.RepositoryTest
             _context.SaveChangesAsync().GetAwaiter();
         }
 
+        [Fact]
+        public void UpdateRatingest()
+        {
+            //Setup
+            var usr1 = new ApplicationUser
+            {
+                Id = "user-guid",
+                UserName = "user1@psu.edu",
+                Email = "user1@psu.edu",
+                EmailConfirmed = true,
+                FirstName = "User",
+                LastName = "One",
+                ZipCode = "11111",
+                Rating = 1500
+            };
+
+            _context.ApplicationUsers.Add(usr1);
+            _context.SaveChangesAsync().GetAwaiter();
+
+            //Test
+            _cut.UpdateRating(1400, usr1.Id);
+            _context.SaveChanges();
+
+            var result = _context.ApplicationUsers.FirstOrDefault(x => x.Id == usr1.Id);
+            Assert.NotNull(result);
+            Assert.Equal(1400, result.Rating);
+            Assert.Equal(1, _context.Users.Count());
+
+            //Reset
+            _context.Remove(usr1);
+            _context.SaveChangesAsync().GetAwaiter();
+        }
+
         #endregion
     }
 }

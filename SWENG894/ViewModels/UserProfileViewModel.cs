@@ -11,6 +11,7 @@ namespace SWENG894.ViewModels
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string ZipCode { get; set; }
+        public double Rating { get; set; }
         public string Email { get; set; }
     }
 }

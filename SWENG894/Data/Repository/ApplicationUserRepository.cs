@@ -133,5 +133,17 @@ namespace SWENG894.Data.Repository
 
             return ratings;
         }
+
+        public void UpdateRating(double newRating, string userId)
+        {
+            var user = _context.ApplicationUsers.FirstOrDefault(x => x.Id == userId);
+
+            if(user != null)
+            {
+                user.Rating = newRating;
+            }
+
+            _context.Update(user);
+        }
     }
 }

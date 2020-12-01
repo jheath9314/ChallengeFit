@@ -26,6 +26,8 @@ namespace SWENG894.Data.Repository.IRepository
 
         public List<int> GetAllUserRatings();
 
+        public void UpdateRating(double newRating, string userId);
+
         public void Save();
     }
 }

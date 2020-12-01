@@ -11,6 +11,7 @@ using SWENG894.Areas.User.Controllers;
 using SWENG894.Data;
 using SWENG894.Data.Repository.IRepository;
 using SWENG894.Models;
+using SWENG894.Ranking;
 
 namespace SWENG894.Areas.User.Controllers
 {
@@ -187,7 +188,7 @@ namespace SWENG894.Areas.User.Controllers
 
                 if (workoutResults.RelatedChallenge != null)
                 {
-                    var clg = await  _unitOfWork.Challenge.GetFirstOrDefaultAsync(x => x.Id == (int)workoutResults.RelatedChallenge, includeProperties: "Challenger,Contender,Workout");
+                    var clg = await  _unitOfWork.Challenge.GetFirstOrDefaultAsync(x => x.Id == (int)workoutResults.RelatedChallenge, includeProperties: "Challenger,Contender,Workout,ChallengerResult,ContenderResult");
 
                     if(clg != null)
                     {
@@ -231,6 +232,23 @@ namespace SWENG894.Areas.User.Controllers
                                         feed.User = clg.Contender;
                                         feed.RelatedUser = clg.Challenger;
                                         feed.Description = clg.Contender.FullName + " completed a challenge!";
+
+                                        var elo = new Elo();
+
+                                        int r1 = (int)clg.Challenger.Rating;
+                                        int r2 = (int)clg.Contender.Rating;
+
+                                        if(clg.ChallengerResult.Score > newResult.Score)
+                                        {                                           
+                                            elo.CalculateRating(ref r1, ref r2, Elo.Winner.P1);
+                                        }
+                                        else if(clg.ChallengerResult.Score < newResult.Score)
+                                        {
+                                            elo.CalculateRating(ref r1, ref r2, Elo.Winner.P2);
+                                        }
+
+                                        _unitOfWork.ApplicationUser.UpdateRating(r2, clg.Contender.Id);
+                                        _unitOfWork.ApplicationUser.UpdateRating(r1, clg.Challenger.Id);
                                     }                                      
                                     break;
 
@@ -242,6 +260,23 @@ namespace SWENG894.Areas.User.Controllers
                                         feed.User = clg.Challenger;
                                         feed.RelatedUser = clg.Contender;
                                         feed.Description = clg.Challenger.FullName + " completed a challenge!";
+
+                                        var elo = new Elo();
+
+                                        int r1 = (int)clg.Challenger.Rating;
+                                        int r2 = (int)clg.Contender.Rating;
+
+                                        if (clg.ContenderResult.Score > newResult.Score)
+                                        {
+                                            elo.CalculateRating(ref r1, ref r2, Elo.Winner.P2);
+                                        }
+                                        else if (clg.ContenderResult.Score < newResult.Score)
+                                        {
+                                            elo.CalculateRating(ref r1, ref r2, Elo.Winner.P1);
+                                        }
+
+                                        _unitOfWork.ApplicationUser.UpdateRating(r2, clg.Contender.Id);
+                                        _unitOfWork.ApplicationUser.UpdateRating(r1, clg.Challenger.Id);
                                     }                                      
                                     break;
                             }
