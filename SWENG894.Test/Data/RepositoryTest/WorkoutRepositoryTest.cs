@@ -148,18 +148,9 @@ namespace SWENG894.Test.Data.RepositoryTest
             workoutList = workouts.ToList();
             Assert.True(workoutList.Count == 2);
 
-            bool noUserExceptionCaught = false;
-            try
-            {
-
-                workouts = _cut.GetUserWorkouts("desc", "First", "2", true);
-            }
-            catch (Exception e)
-            {
-                noUserExceptionCaught = true;
-            }
-
-            Assert.True(noUserExceptionCaught);
+            workouts = _cut.GetUserWorkouts("desc", "First", "2", true);
+            workoutList = workouts.ToList();
+            Assert.True(workoutList.Count == 0);
 
             var fav = new WorkoutFavorite
             {
