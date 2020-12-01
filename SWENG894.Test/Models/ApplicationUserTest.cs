@@ -2,7 +2,7 @@ using System;
 using Xunit;
 using SWENG894.Models;
 
-namespace SWENG894.Test
+namespace SWENG894.Test.Models
 {
     public class ApplicationUserTest
     {

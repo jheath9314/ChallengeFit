@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using Xunit;
 
-namespace SWENG894.Test.RepositoryTest
+namespace SWENG894.Test.Data.RepositoryTest
 {
     public class FriendRequestRepositoryTest
     {

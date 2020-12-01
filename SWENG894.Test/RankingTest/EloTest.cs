@@ -3,7 +3,7 @@ using Xunit;
 using SWENG894.Ranking;
 
 
-namespace SWENG894.Test
+namespace SWENG894.Test.RankingTest
 {
     public class EloTest
     {

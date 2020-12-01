@@ -315,10 +315,14 @@ namespace SWENG894.Test.Controllers
                 Id = 0,
                 UserId = "guid-user1",
                 WorkoutId = workoutId,
-                Score = 600,
+                Score = 800,
                 ScoringType = Workout.Scoring.Time,
                 RelatedChallenge = (int)ch.Id
             };
+
+            ch.ChallengerResult = res;
+            _context.Challenges.Update(ch);
+            _context.SaveChangesAsync().GetAwaiter();
 
             await cont.Create(workoutId, res, 0);
             Assert.True(_context.NewsFeed.Count() == 1);
@@ -409,10 +413,14 @@ namespace SWENG894.Test.Controllers
                 Id = 0,
                 UserId = "guid-user1",
                 WorkoutId = workoutId,
-                Score = 600,
+                Score = 800,
                 ScoringType = Workout.Scoring.Time,
                 RelatedChallenge = (int)ch.Id
             };
+
+            ch.ContenderResult = res;
+            _context.Challenges.Update(ch);
+            _context.SaveChangesAsync().GetAwaiter();
 
             await cont.Create(workoutId, res, 0);
             Assert.True(_context.NewsFeed.Count() == 1);

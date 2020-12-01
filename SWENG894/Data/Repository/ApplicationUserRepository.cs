@@ -85,7 +85,7 @@ namespace SWENG894.Data.Repository
                     .Include(u => u.SentFriendRequests)
                     .ThenInclude(u => u.RequestedFor)
                     .Include(u => u.ReceievedFriendRequests)
-                    .ThenInclude(u => u.RequestedFor)
+                    .ThenInclude(u => u.RequestedBy)
                     .FirstOrDefaultAsync(u => u.Id == userId).Result;
 
                 if (user == null)
